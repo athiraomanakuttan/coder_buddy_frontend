@@ -14,6 +14,9 @@ const config: Config = {
         primarys: {
           DEFAULT: "#DF7521", // Correct format for colors
         },
+        secondarys:{
+          DEFAULT : "#4B6E8B",
+        }
       },
     },
   },
