@@ -8,6 +8,10 @@ const profile_page = () => {
     { qualification: string; university: string; year: string }[]
   >([{ qualification: "", university: "", year: "" }]);
 
+  const [jobs, setJobs] = useState<
+    { occupation: string; employer: string; startDate: string; endDate: string }[]
+  >([{ occupation: "", employer: "", startDate: "", endDate: "" }]);
+
   const addQualification = () => {
     setQualifications([
       ...qualifications,
@@ -23,6 +27,23 @@ const profile_page = () => {
     const updatedQualifications = [...qualifications];
     updatedQualifications[index][field] = value;
     setQualifications(updatedQualifications);
+  };
+
+  const addJob = () => {
+    setJobs([
+      ...jobs,
+      { occupation: "", employer: "", startDate: "", endDate: "" },
+    ]);
+  };
+
+  const updateJob = (
+    index: number,
+    field: "occupation" | "employer" | "startDate" | "endDate",
+    value: string
+  ) => {
+    const updatedJobs = [...jobs];
+    updatedJobs[index][field] = value;
+    setJobs(updatedJobs);
   };
 
   return (
@@ -96,7 +117,6 @@ const profile_page = () => {
                   />
                 </div>
               ))}
-              
 
               <div className="flex gap-8 items-end justify-evenly mb-7">
                 <textarea
@@ -127,30 +147,55 @@ const profile_page = () => {
             </div>
           ) : (
             <div className="part2 mt-16">
-              <div className="flex gap-8 items-end justify-evenly mb-7">
-                <input
-                  type="text"
-                  placeholder="Occupation"
-                  className="border rounded p-2 w-50"
-                />
-                <input
-                  type="text"
-                  placeholder="Employer"
-                  className="border rounded p-2 w-50"
-                />
-              </div>
-              <div className="flex gap-8 items-end justify-evenly mb-7">
-                <input
-                  type="text"
-                  placeholder="Start Date"
-                  className="border rounded p-2 w-50"
-                />
-                <input
-                  type="text"
-                  placeholder="End Date"
-                  className="border rounded p-2 w-50"
-                />
-              </div>
+              <button
+                className="border rounded-full pt-2 pb-2 pr-4 pl-4 float-end"
+                onClick={addJob}
+              >
+                +
+              </button>
+              {jobs.map((job, index) => (
+                <div
+                  key={index}
+                  className="flex gap-8 items-end justify-evenly mb-7"
+                >
+                  <input
+                    type="text"
+                    placeholder="Occupation"
+                    value={job.occupation}
+                    onChange={(e) =>
+                      updateJob(index, "occupation", e.target.value)
+                    }
+                    className="border rounded p-2 w-50"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Employer"
+                    value={job.employer}
+                    onChange={(e) =>
+                      updateJob(index, "employer", e.target.value)
+                    }
+                    className="border rounded p-2 w-50"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Start Date"
+                    value={job.startDate}
+                    onChange={(e) =>
+                      updateJob(index, "startDate", e.target.value)
+                    }
+                    className="border rounded p-2 w-50"
+                  />
+                  <input
+                    type="text"
+                    placeholder="End Date"
+                    value={job.endDate}
+                    onChange={(e) =>
+                      updateJob(index, "endDate", e.target.value)
+                    }
+                    className="border rounded p-2 w-50"
+                  />
+                </div>
+              ))}
               <div className="mb-7">
                 <label htmlFor="skills">Skills</label>
                 <textarea
