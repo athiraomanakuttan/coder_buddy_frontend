@@ -39,9 +39,9 @@ return (
       <div className="container">
         <div className="row">
           <div className="col-md-7 p-5  col-sm-12">
-            <div className="inner-div border rounded pr-3 pl-3 pt-14 pb-10">
+            <div className="inner-div border rounded pr-5 pl-5 pt-14 pb-10 ">
               <form onSubmit={handleFormSubmit}>
-                <h1 className="text-center">Sign Up</h1>
+                <h2 className="text-center mb-3 text-3xl">Sign Up</h2>
                 <input
                   type="email"
                   placeholder="Enter your email id"
@@ -51,7 +51,7 @@ return (
                   onChange={(e)=>setFormData({...formData,email:e.target.value})}
                 />
                 <input
-                  type="text"
+                  type="password"
                   placeholder="Enter your password"
                   className="border rounded w-100 p-2 mb-3"
                   value={formData.password}

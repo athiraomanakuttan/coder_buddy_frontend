@@ -8,7 +8,7 @@ const Navbar = () => {
       
       <div className="w-52 bg-primarys h-[100vh] flex-row ">
         <img src="/images/profile_pic.png" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3"/>
-        <ul className=" flex-row text-white space-y-7 ">
+        <ul className=" flex-row text-white space-y-7 pl-8 ">
           <li><Link href=''className="menu_link">Chats</Link> </li>
           <li><Link href='' className="menu_link">View post</Link> </li>
           <li><Link href='' className="menu_link">Scheduled calls</Link></li>
@@ -17,6 +17,7 @@ const Navbar = () => {
           <li><Link href='/profile' className="menu_link">Your profile</Link></li>
           <li><Link href='' className="menu_link">Feedbacks</Link></li>
           <li><Link href='' className="menu_link">Community</Link></li>
+          <li><Link href='' className="menu_link">log out</Link></li>
         </ul>
       </div>
     </div>

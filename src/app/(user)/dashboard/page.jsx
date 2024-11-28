@@ -9,25 +9,25 @@ const dashboard = () => {
       <div className="border w-100">
         <div className="container mt-5 flex justify-evenly">
           <div className="border pl-10 pr-10 pt-3 pb-3 text-center">
-            <h5>total post</h5>
-            <h1>10</h1>
+            <h5>TOTAL POST</h5>
+            <h1 className="text-3xl text-primarys">10</h1>
           </div>
           <div className="border pl-10 pr-10 pt-3 pb-3 text-center">
-          <h5>total post</h5>
-            <h1>10</h1>
+          <h5>TOTAL POST</h5>
+            <h1 className="text-3xl text-primarys">10</h1>
           </div>
           <div className="border pl-10 pr-10 pt-3 pb-3 text-center">
-          <h5>total post</h5>
-            <h1>10</h1>
+          <h5>TOTAL POST</h5>
+            <h1 className="text-3xl text-primarys">10</h1>
           </div>
           <div className="border pl-10 pr-10 pt-3 pb-3 text-center">
-          <h5>total post</h5>
-            <h1>10</h1>
+          <h5>TOTAL POST</h5>
+            <h1 className="text-3xl text-primarys">10</h1>
           </div>
 
           <div className="border pl-10 pr-10 pt-3 pb-3 text-center">
-          <h5>total post</h5>
-            <h1>10</h1>
+          <h5>TOTAL POST</h5>
+            <h1 className="text-3xl text-primarys">10</h1>
           </div>
 
         </div>
