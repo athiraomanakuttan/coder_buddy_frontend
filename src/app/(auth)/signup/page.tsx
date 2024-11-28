@@ -1,23 +1,62 @@
+'use client'
 import Link from "next/link";
-
+import { basicType } from "@/types/types";
+import { useState } from "react";
+import { signupValidation } from "@/app/utils/validation";
+import { userSignup } from "@/app/services/userApi";
+import {toast, ToastContainer} from 'react-toastify'
+import { useRouter } from "next/navigation";
 const signup = ()=>{
+  const [formData,setFormData]= useState<basicType>({
+    email:"",
+    password:""
+  })
+  const router = useRouter()
+  const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
+    e.preventDefault()
+    const valiation = signupValidation(formData)
+    if(valiation.status)
+    {
+      try {
+        const response = await userSignup(formData);
+        console.log("Signup successful:", response);
+        localStorage.setItem('email',response.email)
+        localStorage.setItem('otp',response.otp)
+        toast.success(response);
+        router.push('/otp')
+      } catch (error: any) {
+        console.error("Signup failed:", error.message);
+        alert(error.message); 
+      }
+
+    }
+    else{
+      alert(valiation.message);
+    }
+  }
 return (
     <>
       <div className="container">
         <div className="row">
           <div className="col-md-7 p-5  col-sm-12">
             <div className="inner-div border rounded pr-3 pl-3 pt-14 pb-10">
-              <form action="">
+              <form onSubmit={handleFormSubmit}>
                 <h1 className="text-center">Sign Up</h1>
                 <input
-                  type="text"
+                  type="email"
                   placeholder="Enter your email id"
                   className="border rounded w-100 p-2 mb-3"
+                  value={formData.email}
+                  name="email"
+                  onChange={(e)=>setFormData({...formData,email:e.target.value})}
                 />
                 <input
                   type="text"
                   placeholder="Enter your password"
                   className="border rounded w-100 p-2 mb-3"
+                  value={formData.password}
+                  name="password"
+                  onChange={(e)=>setFormData({...formData,password:e.target.value})}
                 />
                 <input type="submit" value="Register"  className="w-100 bg-primarys p-2 mb-3 text-white"  />
                 <button className="border-black border rounded w-100 p-2 mb-3" >
@@ -35,7 +74,9 @@ return (
           
         </div>
       </div>
+      
     </>
+    
 )
 }
 
