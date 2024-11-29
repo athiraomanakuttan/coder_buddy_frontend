@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useRef, KeyboardEvent, ClipboardEvent, createRef } from 'react';
 import { toast } from 'react-toastify';
-import { otpPost } from '@/app/services/userApi';
+import { otpPost } from '@/app/services/expertApi';
 import { useRouter } from 'next/navigation';
 
 const GetOTP = () => {
@@ -63,7 +63,7 @@ const GetOTP = () => {
             toast.success("Profile verified successfully");
             localStorage.removeItem("otp")
             localStorage.removeItem("email")
-            router.push('/login')
+            router.push('/expert/login')
           }
           else
           toast.error("invalid OTP try again")

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { basicType } from "@/types/types";
 import { toast } from "react-toastify";
-
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
+
 
 export const userSignup = async (userData: basicType) => {
   if (!API_URI) {
