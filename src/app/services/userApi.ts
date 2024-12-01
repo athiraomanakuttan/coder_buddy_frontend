@@ -1,5 +1,5 @@
 import axios from "axios";
-import { basicType } from "@/types/types";
+import { basicType, UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
@@ -39,7 +39,9 @@ export const signinPost = async (email: string, password: string) => {
     return null;
   }
   try {
-    const response = await axios.post(`${API_URI}/api/login`, { email, password });
+    const response = await axios.post(`${API_URI}/api/login`, { email, password },{
+      withCredentials: true
+    });
     return response.data; 
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -51,3 +53,43 @@ export const signinPost = async (email: string, password: string) => {
     }
   }
 };
+
+export const getProfile = async (token: string) => {
+  try {
+    const profileData = await axios.get(
+      `${API_URI}/api/get-profile`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,  
+        },
+        withCredentials: true,  
+      }
+    );
+    
+    return profileData.data;
+  } catch (error) {
+    console.log( error);
+  }
+};
+
+
+export const updateProfile = async (token: string, updateData: UserProfileType) => {
+  try {
+    const response = await axios.put(
+      `${API_URI}/api/update-profile`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error; // Re-throw the error for the caller to handle
+  }
+};
+

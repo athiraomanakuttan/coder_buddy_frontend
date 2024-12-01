@@ -14,12 +14,12 @@ const userLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const route = useRouter()
   useEffect(() => {
-    if (isAuthenticated) {
-      route.push("/dashboard");
-    }
+    // if (isAuthenticated) {
+    //   route.push("/dashboard");
+    // }
   }, [isAuthenticated, route]);
 
-  const [formData,steFormData]= useState<basicType>({
+  const [formData,setFormData]= useState<basicType>({
     email:"",
     password:""
   })
@@ -67,14 +67,14 @@ const userLogin = () => {
                   placeholder="Enter your email id"
                   className="border rounded w-100 p-2 mb-3"
                   value={formData.email}
-                  onChange={(e)=>steFormData({...formData,email : e.target.value})}
+                  onChange={(e)=>setFormData({...formData,email : e.target.value})}
                 />
                 <input
                   type="password"
                   placeholder="Enter your password"
                   className="border rounded w-100 p-2 mb-3"
                   value={formData.password}
-                  onChange={(e)=>steFormData({...formData,password : e.target.value})}
+                  onChange={(e)=>setFormData({...formData,password : e.target.value})}
                 />
                 <input type="submit" value="Login"  className="w-100 bg-primarys p-2 mb-3 text-white"  />
                 <button className="border-black border rounded w-100 p-2 mb-3" >
