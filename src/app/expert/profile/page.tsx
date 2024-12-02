@@ -87,6 +87,7 @@ const ProfilePage = () => {
         setSkills(transformedData.skills?.join(", ") || "");
       }
     } catch (error) {
+      console.log(error)
       toast.error("Failed to fetch profile data");
     }
   };
@@ -103,18 +104,14 @@ const ProfilePage = () => {
         toast.error("Please upload a valid image file (JPEG, PNG, GIF, or WEBP).");
         return;
       }
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          setFormData({
-            ...formData,
-            profilePicture: reader.result as string
-          });
-        }
-      };
-      reader.readAsDataURL(file);
+      
+      setFormData({
+        ...formData,
+        profilePicture: file  
+      });
     }
   };
+  
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -151,40 +148,40 @@ const ProfilePage = () => {
     setJobs(updatedJobs);
   };
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async (e:React.FormEvent<HTMLElement>) => {
+    e.preventDefault()
     try {
       const token = localStorage.getItem("userAccessToken")!;
       const parsedSkills = parseSkills(skills);
-      const transformedQualifications = qualifications.map(qual => ({
-        qualification: qual.qualification,
-        college: qual.university,
-        year_of_passout: qual.year
-      })); 
-
-      const transformedExperience = jobs.map(job => ({
-        job_role: job.occupation,
-        employer: job.employer,
-        start_date: job.startDate,
-        end_date: job.endDate
-      }));
-
+      
       const updatedFormData: ExpertType = {
         ...formData,
-        qualification: transformedQualifications,
-        experience: transformedExperience,
+        qualification: qualifications.map(qual => ({
+          qualification: qual.qualification,
+          college: qual.university,
+          year_of_passout: qual.year
+        })),
+        experience: jobs.map(job => ({
+          job_role: job.occupation,
+          employer: job.employer,
+          start_date: job.startDate,
+          end_date: job.endDate
+        })),
         skills: parsedSkills
       };
-
+  
       const updateExpert = await updateProfile(token, updatedFormData);
       if (updateExpert.status) {
-        toast.success("Profile updated successfully");
-      } else {
-        toast.error(updateExpert.message || "Failed to update profile");
-      }
+          toast.success("Profile updated successfully");
+        } else {
+          toast.error(updateExpert.message || "Failed to update profile");
+        }
     } catch (error) {
       toast.error("An error occurred while updating profile");
     }
   };
+
+
   return (
     <>
       <div className="m-0 p-0 flex">
@@ -193,6 +190,7 @@ const ProfilePage = () => {
         </div>
         <div className="w-100 border p-8">
           <h5>Your Profile</h5>
+          <form encType="multipart/form-data" onSubmit={handleFormSubmit}>
           {part ? (
             <div className="part1">
               <div className="flex gap-8 items-end justify-evenly mb-7">
@@ -214,7 +212,7 @@ const ProfilePage = () => {
                 />
                 <div className="relative">
                   <img
-                    src={formData.profilePicture}
+                    src={formData.profilePicture as string}
                     alt="Profile"
                     className="rounded-full w-32 cursor-pointer"
                     onClick={() =>
@@ -230,7 +228,7 @@ const ProfilePage = () => {
                   />
                 </div>
               </div>
-              <button
+              <button type="button"
                 className="border rounded-full pt-2 pb-2 pr-4 pl-4 float-end"
                 onClick={addQualification}
               >
@@ -304,6 +302,7 @@ const ProfilePage = () => {
                 />
               </div>
               <button
+              type="button"
                 className="bg-secondarys p-2 rounded float-right text-white"
                 onClick={() => setPart(false)}
               >
@@ -313,6 +312,7 @@ const ProfilePage = () => {
           ) : (
             <div className="part2 mt-16">
               <button
+              type="button"
                 className="border rounded-full pt-2 pb-2 pr-4 pl-4 float-end"
                 onClick={addJob}
               >
@@ -372,13 +372,15 @@ const ProfilePage = () => {
                 />
               </div>
               <button 
+              type="submit"
                 className="bg-secondarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
-                onClick={handleFormSubmit}
+                
               >
                 Save
               </button>
             </div>
           )}
+          </form>
         </div>
       </div>
     </>

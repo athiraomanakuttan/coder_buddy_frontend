@@ -69,22 +69,46 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
 
     }
   }
-  export const updateProfile = async (token : string , data : ExpertType)=>{
-    if(!token)
-      toast.error("user is not autherized please login again")
-    else{
+
+  export const updateProfile = async (token: string, data: ExpertType) => {
+    if (!token) {
+      toast.error("User is not authorized. Please login again.");
+    } else {
       try {
-        const response =  await axios.put(`${API_URL}/api/expert/update-profile`,data,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        })
-        console.log(response.data)
-        return response.data
+        const formData = new FormData();
+        
+        // Append text fields
+        formData.append('first_name', data.first_name);
+        formData.append('last_name', data.last_name);
+        formData.append('primary_contact', data.primary_contact  ? data.primary_contact : "");
+        formData.append('address', data.address ? data.address : "");
+        formData.append('secondary_contact', data.secondary_contact ? data.secondary_contact:"" );
+        formData.append('skills', JSON.stringify(data.skills));  
+        formData.append('experience', JSON.stringify(data.experience));  
+        formData.append('qualification', JSON.stringify(data.qualification));  
+
+        if (data.profilePicture  instanceof File) {
+          formData.append('profilePicture', data.profilePicture);
+        }
+
+        const response = await axios.put(
+          `${API_URL}/api/expert/update-profile`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true,
+          }
+        );
+  
+        console.log(response.data);
+        return response.data;
       } catch (error) {
-        console.log("error while updating user profile",error)
+        console.error("Error while updating user profile", error);
+        throw error;
       }
     }
-
-  }
+  };
+  

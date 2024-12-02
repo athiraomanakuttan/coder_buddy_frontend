@@ -5,10 +5,10 @@ import { UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
 import { getProfile, updateProfile } from "@/app/services/userApi";
 import { userProfileValidation } from "@/app/utils/validation";
+import { parseSkills } from "@/app/utils/skillUtils";
 
 const ProfilePage: React.FC = () => {
   const [part, setPart] = useState(true);
-
   const [formData, setFormData] = useState<UserProfileType>({
     firstName: "",
     lastName: "",
@@ -27,7 +27,7 @@ const ProfilePage: React.FC = () => {
   const getProfileData = async () => {
     const token = localStorage.getItem("userAccessToken")!;
     const userData = await getProfile(token as string);
-    
+    console.log("userData",userData.data.skills)
     if (userData.status) {
       const transformedData = {
         _id:userData.data._id,
@@ -46,7 +46,7 @@ const ProfilePage: React.FC = () => {
         endDate: userData.data.end_date
           ? new Date(userData.data.end_date).toISOString().split("T")[0]
           : "",
-        skills: userData.data.skills || "",
+        skills: userData.data.skills.join(" ") || "",
         profilePicture: userData.data.profilePicture || "/images/profile_pic.png",
       };
       setFormData(transformedData);
@@ -73,27 +73,30 @@ const ProfilePage: React.FC = () => {
         toast.error("Please upload a valid image file (JPEG, PNG, GIF, or WEBP).");
         return;
       }
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          setFormData({ ...formData, profilePicture: reader.result as string });
-        }
-      };
-      reader.readAsDataURL(file);
+      
+      setFormData({
+        ...formData,
+        profilePicture: file  
+      });
     }
   };
-
-  const handleFormSubmit = async () => {
+ 
+  const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     console.log(formData)
     const validation = userProfileValidation(formData)
+    const parsedSkills = parseSkills(formData.skills as string);
+    const parsedData = {...formData,skiils:parsedSkills}
     if(!validation.status)
       toast.error(validation.message)
     else{
       try {
         const token = localStorage.getItem('userAccessToken') as string
-        const updateUser =  await  updateProfile(token,formData)
+        const updateUser =  await  updateProfile(token,parsedData)
+        if(updateUser.status)
+          toast.success(updateUser.message)
       } catch (error) {
-        
+        console.log(error)
       }
     }
   };
@@ -106,6 +109,7 @@ const ProfilePage: React.FC = () => {
         </div>
         <div className="w-100 border p-8">
           <h5 className="text-3xl">Your Profile</h5>
+          <form onSubmit={handleFormSubmit} encType="multipart/form-data">
           {part ? (
             <div className="part1">
               <div className="flex gap-8 items-end justify-evenly mb-7">
@@ -127,9 +131,9 @@ const ProfilePage: React.FC = () => {
                 />
                 <div className="relative">
                   <img
-                    src={formData.profilePicture}
+                    src={formData.profilePicture as string}
                     alt="Profile"
-                    className="rounded-full w-32 cursor-pointer"
+                    className="rounded-full w-32 cursor-pointer border"
                     onClick={() =>
                       document.getElementById("profilePictureInput")?.click()
                     }
@@ -198,7 +202,7 @@ const ProfilePage: React.FC = () => {
             </div>
           ) : (
             <div className="part2 mt-16">
-              <h2>Current employment Details</h2>
+              <h2 className="text-2xl mb-7">Current employment Details</h2>
               <div className="flex gap-8 items-end justify-evenly mb-7">
                 <input
                   type="text"
@@ -247,13 +251,15 @@ const ProfilePage: React.FC = () => {
                 ></textarea>
               </div>
               <button
+              type="submit"
                 className="bg-primarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
-                 onClick={handleFormSubmit}
+                 
               >
                 Save
               </button>
             </div>
           )}
+          </form>
         </div>
       </div>
     </>

@@ -1,4 +1,6 @@
 export const parseSkills = (skillsInput: string): string[] => {
+  console.log(skillsInput)
+  console.log(typeof skillsInput)
     const trimmedInput = skillsInput.trim();
     const skillsArray = trimmedInput
       .split(/[,\s]+/)

@@ -81,6 +81,7 @@ export const updateProfile = async (token: string, updateData: UserProfileType) 
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
         withCredentials: true,
       }
@@ -89,7 +90,6 @@ export const updateProfile = async (token: string, updateData: UserProfileType) 
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error; // Re-throw the error for the caller to handle
   }
 };
 

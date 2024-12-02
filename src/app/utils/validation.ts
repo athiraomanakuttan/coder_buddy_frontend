@@ -36,7 +36,7 @@ export const userProfileValidation = (data: UserProfileType) => {
     } else if (new Date(data.endDate) >= today) {
         return { status: false, message: "End date must be before today" };
     }
-    else if(!data.skills?.trim() || !data.skills.includes('#'))
+    else if(!data.skills)
         return { status: false, message: "skills is not in the required format" };
 
     else
