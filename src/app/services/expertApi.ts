@@ -1,4 +1,4 @@
-import { basicType } from "@/types/types";
+import { basicType, ExpertType } from "@/types/types";
 import axios from "axios";
 import { toast } from "react-toastify";
 const API_URL = process.env.NEXT_PUBLIC_API_URI
@@ -48,3 +48,42 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
       }
     }
   };
+
+  export const getProfile = async (token : string)=>{
+    if(!token)
+      toast.error("user is not autherized please login again");
+    else{
+      try {
+        const response =  await axios.get(`${API_URL}/api/expert/get-expert-details`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          })
+          console.log("response.data",response.data)
+          return response.data
+      } catch (error) {
+        console.log( error);
+      }
+
+    }
+  }
+  export const updateProfile = async (token : string , data : ExpertType)=>{
+    if(!token)
+      toast.error("user is not autherized please login again")
+    else{
+      try {
+        const response =  await axios.put(`${API_URL}/api/expert/update-profile`,data,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
+        return response.data
+      } catch (error) {
+        console.log("error while updating user profile",error)
+      }
+    }
+
+  }

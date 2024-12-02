@@ -14,9 +14,9 @@ const userLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const route = useRouter()
   useEffect(() => {
-    if (isAuthenticated) {
-      route.push("/expert/dashboard");
-    }
+    // if (isAuthenticated) {
+    //   route.push("/expert/dashboard");
+    // }
   }, [isAuthenticated, route]);
 
   const [formData,steFormData]= useState<basicType>({
@@ -25,7 +25,7 @@ const userLogin = () => {
   })
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+    
     const validate = signupValidation(formData);
     if (validate.status) {
       try {
@@ -35,11 +35,13 @@ const userLogin = () => {
           toast.error("Unable to login. Please check your credentials.");
           return;
         }
-  
-        if (response.success) {
+       
+
+        if (response.status) {
+          console.log(response)
           const message = response.message || "Successfully logged in";
           toast.success(message);
-          setUserAuth(response.data.user,response.data.accessToken) 
+          setUserAuth(response.data.existExpert,response.data.accessToken) 
           route.push('/expert/dashboard');
         } else {
           toast.error(response.message || "An error occurred during login.");
@@ -76,19 +78,19 @@ const userLogin = () => {
                   value={formData.password}
                   onChange={(e)=>steFormData({...formData,password : e.target.value})}
                 />
-                <input type="submit" value="Login"  className="w-100 bg-primarys p-2 mb-3 text-white"  />
+                <input type="submit" value="Login"  className="w-100 bg-secondarys p-2 mb-3 text-white"  />
                 <button className="border-black border rounded w-100 p-2 mb-3" >
                     <img src="/icons/g-icon.png" alt=""  className="d-inline m-1"/>
                      Sign in with google </button>
               </form>
-              <div className="flex justify-between">
+              <div className="flex justify-between mb-7">
             <Link href='/forgot' className="custom-link" >forgot password</Link>
-            <p className="custom-link">Don't have an account yet ? <Link href='/signup'  className="custom-link">Register Now</Link></p>
+            <p className="custom-link">Don't have an account yet ? <Link href='/expert/signup'  className="custom-link">Register Now</Link></p>
           </div>
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <img src="/images/user-login.png" alt="" className="mx-auto" />
+            <img src="/images/expert_login.png" alt="" className="mx-auto border" />
           </div>
           
         </div>

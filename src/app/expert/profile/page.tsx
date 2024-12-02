@@ -1,9 +1,24 @@
 "use client";
 import Navbar from "@/components/expert/Navbar/Navbar";
-import { useState } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
+import { ExpertType } from "@/types/types";
+import { toast } from "react-toastify";
+import { getProfile, updateProfile } from "@/app/services/expertApi";
+import {parseSkills} from '@/app/utils/skillUtils'
 
-const profile_page = () => {
+const ProfilePage = () => {
   const [part, setPart] = useState<boolean>(true);
+  const [formData, setFormData] = useState<ExpertType>({
+    _id: "",
+    first_name: "",
+    last_name: "",
+    primary_contact: undefined,
+    secondary_contact: undefined,
+    qualification: [{ qualification: "", college: "", year_of_passout: "" }],
+    experience: [{ job_role: "", employer: "", start_date: "", end_date: "" }],
+    profilePicture: "/images/expert_profile_pic.jpg"
+  });
+
   const [qualifications, setQualifications] = useState<
     { qualification: string; university: string; year: string }[]
   >([{ qualification: "", university: "", year: "" }]);
@@ -12,11 +27,102 @@ const profile_page = () => {
     { occupation: string; employer: string; startDate: string; endDate: string }[]
   >([{ occupation: "", employer: "", startDate: "", endDate: "" }]);
 
+  const [skills, setSkills] = useState<string>("");
+
+  const getProfileData = async () => {
+    try {
+      const token = localStorage.getItem("userAccessToken")!;
+      const userData = await getProfile(token);
+
+      if (userData.status) {
+        const transformedData: ExpertType = {
+          _id: userData.data._id,
+          first_name: userData.data.first_name || "",
+          last_name: userData.data.last_name || "",
+          primary_contact: userData.data.primary_contact,
+          secondary_contact: userData.data.secondary_contact,
+          qualification: userData.data.qualification?.length
+            ? userData.data.qualification.map((qual: any) => ({
+                qualification: qual.qualification || "",
+                college: qual.college || "",
+                year_of_passout: qual.year_of_passout || ""
+              }))
+            : [{ qualification: "", college: "", year_of_passout: "" }],
+          experience: userData.data.experience?.length
+            ? userData.data.experience.map((exp: any) => ({
+                job_role: exp.job_role || "",
+                employer: exp.employer || "",
+                start_date: exp.start_date
+                  ? new Date(exp.start_date).toISOString().split("T")[0]
+                  : "",
+                end_date: exp.end_date
+                  ? new Date(exp.end_date).toISOString().split("T")[0]
+                  : ""
+              }))
+            : [{ job_role: "", employer: "", start_date: "", end_date: "" }],
+          skills: userData.data.skills || [],
+          profilePicture: userData.data.profilePicture || "/images/expert_profile_pic.jpg"
+        };
+
+        setFormData(transformedData);
+        setQualifications(
+          transformedData.qualification.map(qual => ({
+            qualification: qual.qualification,
+            university: qual.college,
+            year: qual.year_of_passout
+          }))
+        );
+
+        setJobs(
+          transformedData.experience.map(exp => ({
+            occupation: exp.job_role,
+            employer: exp.employer,
+            startDate: exp.start_date,
+            endDate: exp.end_date
+          }))
+        );
+
+        setSkills(transformedData.skills?.join(", ") || "");
+      }
+    } catch (error) {
+      toast.error("Failed to fetch profile data");
+    }
+  };
+
+  useEffect(() => {
+    getProfileData();
+  }, []);
+
+  const handleProfilePictureChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Please upload a valid image file (JPEG, PNG, GIF, or WEBP).");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          setFormData({
+            ...formData,
+            profilePicture: reader.result as string
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const addQualification = () => {
-    setQualifications([
-      ...qualifications,
-      { qualification: "", university: "", year: "" },
-    ]);
+    setQualifications([...qualifications, { qualification: "", university: "", year: "" }]);
   };
 
   const updateQualification = (
@@ -30,10 +136,7 @@ const profile_page = () => {
   };
 
   const addJob = () => {
-    setJobs([
-      ...jobs,
-      { occupation: "", employer: "", startDate: "", endDate: "" },
-    ]);
+    setJobs([...jobs, { occupation: "", employer: "", startDate: "", endDate: "" }]);
   };
 
   const updateJob = (
@@ -46,6 +149,40 @@ const profile_page = () => {
     setJobs(updatedJobs);
   };
 
+  const handleFormSubmit = async () => {
+    try {
+      const token = localStorage.getItem("userAccessToken")!;
+      const parsedSkills = parseSkills(skills);
+      const transformedQualifications = qualifications.map(qual => ({
+        qualification: qual.qualification,
+        college: qual.university,
+        year_of_passout: qual.year
+      }));
+
+      const transformedExperience = jobs.map(job => ({
+        job_role: job.occupation,
+        employer: job.employer,
+        start_date: job.startDate,
+        end_date: job.endDate
+      }));
+
+      const updatedFormData: ExpertType = {
+        ...formData,
+        qualification: transformedQualifications,
+        experience: transformedExperience,
+        skills: parsedSkills
+      };
+
+      const updateExpert = await updateProfile(token, updatedFormData);
+      if (updateExpert.status) {
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error(updateExpert.message || "Failed to update profile");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating profile");
+    }
+  };
   return (
     <>
       <div className="m-0 p-0 flex">
@@ -59,19 +196,37 @@ const profile_page = () => {
               <div className="flex gap-8 items-end justify-evenly mb-7">
                 <input
                   type="text"
+                  name="first_name"
                   placeholder="First name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
                   className="border rounded p-2 w-50"
                 />
                 <input
                   type="text"
+                  name="last_name"
                   placeholder="Last name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
                   className="border rounded p-2 w-50"
                 />
-                <img
-                  src="/images/expert_profile_pic.jpg"
-                  alt="Profile"
-                  className="rounded-full w-32 border"
-                />
+                <div className="relative">
+                  <img
+                    src={formData.profilePicture}
+                    alt="Profile"
+                    className="rounded-full w-32 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("profilePictureInput")?.click()
+                    }
+                  />
+                  <input
+                    type="file"
+                    id="profilePictureInput"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleProfilePictureChange}
+                  />
+                </div>
               </div>
               <button
                 className="border rounded-full pt-2 pb-2 pr-4 pl-4 float-end"
@@ -129,12 +284,18 @@ const profile_page = () => {
               <div className="flex gap-8 items-end justify-evenly mb-7">
                 <input
                   type="text"
+                  name="primary_contact"
                   placeholder="Primary contact"
+                  value={formData.primary_contact || ''}
+                  onChange={handleInputChange}
                   className="border rounded p-2 w-50"
                 />
                 <input
                   type="text"
+                  name="secondary_contact"
                   placeholder="Secondary contact"
+                  value={formData.secondary_contact || ''}
+                  onChange={handleInputChange}
                   className="border rounded p-2 w-50"
                 />
               </div>
@@ -177,7 +338,7 @@ const profile_page = () => {
                     className="border rounded p-2 w-50"
                   />
                   <input
-                    type="text"
+                    type="date"
                     placeholder="Start Date"
                     value={job.startDate}
                     onChange={(e) =>
@@ -186,7 +347,7 @@ const profile_page = () => {
                     className="border rounded p-2 w-50"
                   />
                   <input
-                    type="text"
+                    type="date"
                     placeholder="End Date"
                     value={job.endDate}
                     onChange={(e) =>
@@ -201,10 +362,15 @@ const profile_page = () => {
                 <textarea
                   id="skills"
                   className="w-100 border rounded p-3"
-                  placeholder="Skills"
-                ></textarea>
+                  placeholder="Enter skills separated by commas"
+                  value={skills}
+                  onChange={(e) => setSkills(e.target.value)}
+                />
               </div>
-              <button className="bg-secondarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white">
+              <button 
+                className="bg-secondarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
+                onClick={handleFormSubmit}
+              >
                 Save
               </button>
             </div>
@@ -215,4 +381,4 @@ const profile_page = () => {
   );
 };
 
-export default profile_page;
+export default ProfilePage;
