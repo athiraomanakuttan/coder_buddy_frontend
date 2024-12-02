@@ -16,7 +16,8 @@ const ProfilePage = () => {
     secondary_contact: undefined,
     qualification: [{ qualification: "", college: "", year_of_passout: "" }],
     experience: [{ job_role: "", employer: "", start_date: "", end_date: "" }],
-    profilePicture: "/images/expert_profile_pic.jpg"
+    profilePicture: "/images/expert_profile_pic.jpg",
+    address :""
   });
 
   const [qualifications, setQualifications] = useState<
@@ -61,6 +62,7 @@ const ProfilePage = () => {
               }))
             : [{ job_role: "", employer: "", start_date: "", end_date: "" }],
           skills: userData.data.skills || [],
+          address: userData.data.address || "",
           profilePicture: userData.data.profilePicture || "/images/expert_profile_pic.jpg"
         };
 
@@ -157,7 +159,7 @@ const ProfilePage = () => {
         qualification: qual.qualification,
         college: qual.university,
         year_of_passout: qual.year
-      }));
+      })); 
 
       const transformedExperience = jobs.map(job => ({
         job_role: job.occupation,
@@ -279,6 +281,8 @@ const ProfilePage = () => {
                   id="address"
                   className="w-100 border rounded p-3"
                   placeholder="Address"
+                  value={formData.address}
+                  onChange={handleInputChange}
                 ></textarea>
               </div>
               <div className="flex gap-8 items-end justify-evenly mb-7">

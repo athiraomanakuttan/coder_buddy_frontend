@@ -73,4 +73,5 @@ export interface UserProfileType {
     }[];
     skills?: string[];
     profilePicture: string;
+    address ?: string;
   };
