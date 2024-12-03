@@ -10,6 +10,7 @@ const clientListpage = () => {
         try {
             const token = localStorage.getItem('userAccessToken') || ""
             const response =  await getUserDetails(token as string)
+            console.log(response.data)
             if(response.status)
                 setUserData(response.data)
         } catch (error) {
@@ -25,7 +26,10 @@ const clientListpage = () => {
           <Navbar />
         </div>
         <div className="w-100 border p-8">
-            <TableComponent headings={["name","age"]} valueList={userData}/>
+        <TableComponent 
+        headings={['first_name', 'last_name', 'email','experiance','skills']} 
+        valueList={userData} 
+/>
         </div>
       </div>
   )
