@@ -16,7 +16,10 @@ const config: Config = {
         },
         secondarys:{
           DEFAULT : "#4B6E8B",
-        }
+        },
+        adminprimary:{
+          DEFAULT : '#C1CCA3'
+        },
       },
     },
   },
