@@ -23,21 +23,25 @@ const adminLogin = () => {
   })
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const validation = await signupValidation(formData)
+    const validation = signupValidation(formData)
     if(!validation.status)
     {
       toast.error(validation.message)
       return;
     }
     try { 
-      const responce = await signupPost(formData)
-      if(responce.status)
+      const response = await signupPost(formData)
+      if(response.status)
       {
-        toast.success(responce.message)
-        setUserAuth({email:formData.email},responce.data.accessToken)
+        setUserAuth(
+          { email: formData.email }, 
+          response.accessToken 
+        )
+        toast.success(response.message)
         router.push('/admin/dashboard')
       }
     } catch (error) {
+      console.log("error occured when fetching data", error);
       
     }
   };
@@ -65,7 +69,7 @@ const adminLogin = () => {
                   value={formData.password}
                   onChange={(e)=>steFormData({...formData,password : e.target.value})}
                 />
-                <input type="submit" value="Login"  className="w-100 bg-adminprimary p-2 mb-7 text-white text-black"  />
+                <input type="submit" value="Login"  className="w-100 bg-adminprimary p-2 mb-7  text-black"  />
                 
               </form>
               <div className="flex justify-between mb-7">

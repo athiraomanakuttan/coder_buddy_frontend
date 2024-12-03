@@ -15,3 +15,17 @@ export const  signupPost=async (data:basicType)=>{
         toast.error("unable to login. try again")
     }
 }
+
+export const getUserDetails =  async (token : string)=>{
+    try {
+        const response =  await axios.get(`${API_URL}/api/admin/user-details`,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+        })
+        return response.data
+    } catch (error) {
+        console.log("error fetchning user details", error)
+    }
+}
