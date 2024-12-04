@@ -38,10 +38,19 @@ export const signinPost = async (email: string, password: string) => {
     toast.error("Email and password are required");
     return null;
   }
-    const response = await axios.post(`${API_URI}/api/login`, { email, password },{
+    try{const response = await axios.post(`${API_URI}/api/login`, { email, password },{
       withCredentials: true
     });
-    return response.data; 
+    return response.data; }catch (error : any) {
+      if(error?.status === 403)
+      {
+        toast.error("Your account has been blocked")
+      }
+      else
+      toast.error(error.response.data.message)
+
+
+    }
   
 };
 

@@ -82,6 +82,7 @@ const ProfilePage: React.FC = () => {
   };
  
   const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+    console.log("event function ",e)
     e.preventDefault()
     console.log(formData)
     const validation = userProfileValidation(formData)

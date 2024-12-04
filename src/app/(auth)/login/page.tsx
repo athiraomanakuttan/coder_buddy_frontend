@@ -26,34 +26,14 @@ const userLogin = () => {
   
     const validate = signupValidation(formData);
     if (validate.status) {
-      try {
+      
         const response: any = await signinPost(formData.email, formData.password);
-  
-        if (!response) {
-          toast.error("Unable to login. Please check your credentials.");
-          return;
-        }
-  
-        if (response.success) {
+        if (response?.success) {
           const message = response.message || "Successfully logged in";
           toast.success(message);
           setUserAuth(response.data.user,response.data.accessToken) 
           route.push('/dashboard');
-        } else {
-          console.log("inside")
-          toast.error(response.message || "An error occurred during login.");
-        }
-      } catch (error : any) {
-
-        if(error?.status === 403)
-        {
-          toast.error("Your account has been blocked")
-        }
-        else
-        toast.error(error.data.message)
-
-
-      }
+        } 
     } else {
       toast.error(validate.message);
     }
