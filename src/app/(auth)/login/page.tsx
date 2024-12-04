@@ -8,8 +8,6 @@ import {  useState,useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 
-
-
 const userLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const route = useRouter()
@@ -42,11 +40,19 @@ const userLogin = () => {
           setUserAuth(response.data.user,response.data.accessToken) 
           route.push('/dashboard');
         } else {
+          console.log("inside")
           toast.error(response.message || "An error occurred during login.");
         }
-      } catch (error) {
-        console.error("Error logging in:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+      } catch (error : any) {
+
+        if(error?.status === 403)
+        {
+          toast.error("Your account has been blocked")
+        }
+        else
+        toast.error(error.data.message)
+
+
       }
     } else {
       toast.error(validate.message);

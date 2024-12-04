@@ -52,9 +52,7 @@ const userLogin = () => {
       }
     } else {
       toast.error(validate.message);
-    }
-  };
-  
+    }};
 
   return (
     <>
