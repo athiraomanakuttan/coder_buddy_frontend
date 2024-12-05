@@ -1,5 +1,6 @@
 "use client";
 import Navbar from "@/components/expert/Navbar/Navbar";
+import ProgressBar from "@/components/expert/Progressbar/ProgressBar";
 import { useState, ChangeEvent, useEffect } from "react";
 import { ExpertType } from "@/types/types";
 import { toast } from "react-toastify";
@@ -7,7 +8,7 @@ import { getProfile, updateProfile } from "@/app/services/expertApi";
 import {parseSkills} from '@/app/utils/skillUtils'
 
 const ProfilePage = () => {
-  const [part, setPart] = useState<boolean>(true);
+  const [currentPart, setCurrentPart] = useState<number>(1);
   const [formData, setFormData] = useState<ExpertType>({
     _id: "",
     first_name: "",
@@ -88,7 +89,6 @@ const ProfilePage = () => {
       }
     } catch (error) {
       console.log(error)
-      toast.error("Failed to fetch profile data");
     }
   };
 
@@ -111,7 +111,6 @@ const ProfilePage = () => {
       });
     }
   };
-  
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -148,6 +147,14 @@ const ProfilePage = () => {
     setJobs(updatedJobs);
   };
 
+  const handleNextPage = () => {
+    setCurrentPart(2);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPart(1);
+  };
+
   const handleFormSubmit = async (e:React.FormEvent<HTMLElement>) => {
     e.preventDefault()
     try {
@@ -173,6 +180,7 @@ const ProfilePage = () => {
       const updateExpert = await updateProfile(token, updatedFormData);
       if (updateExpert.status) {
           toast.success("Profile updated successfully");
+          getProfileData()
         } else {
           toast.error(updateExpert.message || "Failed to update profile");
         }
@@ -181,7 +189,6 @@ const ProfilePage = () => {
     }
   };
 
-
   return (
     <>
       <div className="m-0 p-0 flex">
@@ -189,9 +196,12 @@ const ProfilePage = () => {
           <Navbar />
         </div>
         <div className="w-100 border p-8">
-          <h5>Your Profile</h5>
+          <h5 className="text-3xl mb-3">Your Profile</h5>
+          
+          <ProgressBar currentPart={currentPart} totalParts={2} />
+          
           <form encType="multipart/form-data" onSubmit={handleFormSubmit}>
-          {part ? (
+          {currentPart === 1 ? (
             <div className="part1">
               <div className="flex gap-8 items-end justify-evenly mb-7">
                 <input
@@ -302,17 +312,18 @@ const ProfilePage = () => {
                 />
               </div>
               <button
-              type="button"
+                type="button"
                 className="bg-secondarys p-2 rounded float-right text-white"
-                onClick={() => setPart(false)}
+                onClick={handleNextPage}
               >
                 Next Page
               </button>
             </div>
           ) : (
             <div className="part2 mt-16">
+              
               <button
-              type="button"
+                type="button"
                 className="border rounded-full pt-2 pb-2 pr-4 pl-4 float-end"
                 onClick={addJob}
               >
@@ -371,11 +382,18 @@ const ProfilePage = () => {
                   onChange={(e) => setSkills(e.target.value)}
                 />
               </div>
-              <button 
-              type="submit"
-                className="bg-secondarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
-                
+              <button
+                type="button"
+                className="border rounded pt-2 pb-2 pr-4 pl-4 float-left bg-gray-200 "
+                onClick={handlePreviousPage}
               >
+                 prev
+              </button>
+              <button 
+                type="submit"
+                className="bg-secondarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
+                onClick={()=>setCurrentPart(1)} >
+                  
                 Save
               </button>
             </div>

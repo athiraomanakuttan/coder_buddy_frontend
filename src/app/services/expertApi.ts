@@ -26,7 +26,8 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
         const responce = await axios.post(`${API_URL}/api/expert/verify-otp`,{otp, storedOTP,storedEmail})
         return responce.data;
     } catch (error:any) {
-      throw new Error(error.message || "An unknown error occurred.");
+      if(error.response)
+        toast.error(error.response.data.message)
     }
   }
 

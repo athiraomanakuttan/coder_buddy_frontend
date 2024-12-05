@@ -64,8 +64,7 @@ const GetOTP = () => {
             localStorage.removeItem("otp")
             router.push('/expert/resetpassword')
           }
-          else
-          toast.error("invalid OTP try again")
+          
         }
         
       } catch (error) {

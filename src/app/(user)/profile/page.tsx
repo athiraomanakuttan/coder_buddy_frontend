@@ -1,5 +1,6 @@
 "use client";
 import Navbar from "@/components/user/Navbar/Navbar";
+import ProgressBar from "@/components/user/Progressbar/ProgressBar"; 
 import { useState, ChangeEvent, useEffect } from "react";
 import { UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
@@ -8,8 +9,8 @@ import { userProfileValidation } from "@/app/utils/validation";
 import { parseSkills } from "@/app/utils/skillUtils";
 
 const ProfilePage: React.FC = () => {
-  const [part, setPart] = useState(true);
-  const [formSubmit, setFormSubmit]= useState<boolean>(false)
+  const [part, setPart] = useState(1); 
+  const [formSubmit, setFormSubmit] = useState<boolean>(false)
   const [formData, setFormData] = useState<UserProfileType>({
     firstName: "",
     lastName: "",
@@ -25,6 +26,7 @@ const ProfilePage: React.FC = () => {
     skills: "",
     profilePicture: "/images/profile_pic.png",
   });
+
   const getProfileData = async () => {
     const token = localStorage.getItem("userAccessToken")!;
     const userData = await getProfile(token as string);
@@ -55,9 +57,8 @@ const ProfilePage: React.FC = () => {
   
   useEffect(()=>{
     getProfileData();
-    console.log("form data",formData)
-
   },[])
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -87,7 +88,7 @@ const ProfilePage: React.FC = () => {
       return;
     const validation = userProfileValidation(formData)
     const parsedSkills = parseSkills(formData.skills as string);
-    const parsedData = {...formData,skiils:parsedSkills}
+    const parsedData = {...formData, skills: parsedSkills}
     if(!validation.status)
       toast.error(validation.message)
     else{
@@ -102,6 +103,14 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  const handleNextPage = () => {
+    setPart(2); // Move to the next part
+  };
+
+  const handlePreviousPage = () => {
+    setPart(1); // Go back to the first part
+  };
+
   return (
     <>
       <div className="m-0 p-0 flex">
@@ -109,9 +118,13 @@ const ProfilePage: React.FC = () => {
           <Navbar />
         </div>
         <div className="w-100 border p-8">
-          <h5 className="text-3xl">Your Profile</h5>
+          <h5 className="text-3xl mb-6">Your Profile</h5>
+          
+          {/* Add Progress Bar */}
+          <ProgressBar currentPart={part} totalParts={2} />
+          
           <form onSubmit={handleFormSubmit} encType="multipart/form-data">
-          {part ? (
+          {part === 1 ? (
             <div className="part1">
               <div className="flex gap-8 items-end justify-evenly mb-7">
                 <input
@@ -194,9 +207,9 @@ const ProfilePage: React.FC = () => {
                 />
               </div>
               <button
-              type="button"
+                type="button"
                 className="bg-primarys p-2 rounded float-right text-white"
-                onClick={() => setPart(false)}
+                onClick={handleNextPage}
               >
                 Next Page
               </button>
@@ -238,7 +251,6 @@ const ProfilePage: React.FC = () => {
                   value={formData.endDate}
                   onChange={handleInputChange}
                   className="border rounded p-2 w-50"
-                  
                 />
               </div>
               <div className="mb-7">
@@ -251,13 +263,22 @@ const ProfilePage: React.FC = () => {
                   className="w-100 border rounded p-3"
                 ></textarea>
               </div>
-              <button
-              type="submit"
-                className="bg-primarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
-                 onClick={()=>setFormSubmit(true)}
-              >
-                Save
-              </button>
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  className="bg-gray-300 p-2 rounded text-black"
+                  onClick={handlePreviousPage}
+                >
+                  Previous
+                </button>
+                <button
+                  type="submit"
+                  className="bg-primarys pl-5 pr-5 pb-2 pt-2 rounded text-white"
+                  onClick={()=>setFormSubmit(true)}
+                >
+                  Save
+                </button>
+              </div>
             </div>
           )}
           </form>
