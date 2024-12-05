@@ -6,6 +6,7 @@ import { ExpertType } from "@/types/types";
 import { toast } from "react-toastify";
 import { getProfile, updateProfile } from "@/app/services/expertApi";
 import {parseSkills} from '@/app/utils/skillUtils'
+import  {expertProfileValidation} from '@/app/utils/validation'
 
 const ProfilePage = () => {
   const [currentPart, setCurrentPart] = useState<number>(1);
@@ -157,6 +158,12 @@ const ProfilePage = () => {
 
   const handleFormSubmit = async (e:React.FormEvent<HTMLElement>) => {
     e.preventDefault()
+    const validation = expertProfileValidation(formData,qualifications,jobs,skills)
+    if(!validation.status)
+    {
+      toast.error(validation.message)
+      return;
+    }
     try {
       const token = localStorage.getItem("userAccessToken")!;
       const parsedSkills = parseSkills(skills);
@@ -188,6 +195,15 @@ const ProfilePage = () => {
       toast.error("An error occurred while updating profile");
     }
   };
+  const removeQualification = (index: number) => {
+    const updatedQualifications = qualifications.filter((_, i) => i !== index);
+    setQualifications(updatedQualifications);
+  };
+  const removeJob = (index: number) => {
+    const updatedJobs = jobs.filter((_, i) => i !== index);
+    setJobs(updatedJobs);
+  };
+
 
   return (
     <>
@@ -245,43 +261,52 @@ const ProfilePage = () => {
                 +
               </button>
               {qualifications.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex gap-8 items-end justify-evenly mb-7"
-                >
-                  <input
-                    type="text"
-                    placeholder="Qualification"
-                    value={item.qualification}
-                    onChange={(e) =>
-                      updateQualification(
-                        index,
-                        "qualification",
-                        e.target.value
-                      )
-                    }
-                    className="border rounded p-2 w-50"
-                  />
-                  <input
-                    type="text"
-                    placeholder="College/ University"
-                    value={item.university}
-                    onChange={(e) =>
-                      updateQualification(index, "university", e.target.value)
-                    }
-                    className="border rounded p-2 w-50"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Passout year"
-                    value={item.year}
-                    onChange={(e) =>
-                      updateQualification(index, "year", e.target.value)
-                    }
-                    className="border rounded p-2 w-50"
-                  />
-                </div>
-              ))}
+  <div
+    key={index}
+    className="flex gap-8 items-end justify-evenly mb-7"
+  >
+    <input
+      type="text"
+      placeholder="Qualification"
+      value={item.qualification}
+      onChange={(e) =>
+        updateQualification(
+          index,
+          "qualification",
+          e.target.value
+        )
+      }
+      className="border rounded p-2 w-50"
+    />
+    <input
+      type="text"
+      placeholder="College/ University"
+      value={item.university}
+      onChange={(e) =>
+        updateQualification(index, "university", e.target.value)
+      }
+      className="border rounded p-2 w-50"
+    />
+    <input
+      type="text"
+      placeholder="Passout year"
+      value={item.year}
+      onChange={(e) =>
+        updateQualification(index, "year", e.target.value)
+      }
+      className="border rounded p-2 w-50"
+    />
+    {qualifications.length > 1 && (
+      <button
+        type="button"
+        className="border rounded-full p-2 bg-red-500  text-white"
+        onClick={() => removeQualification(index)}
+      >
+        -
+      </button>
+    )}
+  </div>
+))}
 
               <div className="flex gap-8 items-end justify-evenly mb-7">
                 <textarea
@@ -330,48 +355,57 @@ const ProfilePage = () => {
                 +
               </button>
               {jobs.map((job, index) => (
-                <div
-                  key={index}
-                  className="flex gap-8 items-end justify-evenly mb-7"
-                >
-                  <input
-                    type="text"
-                    placeholder="Occupation"
-                    value={job.occupation}
-                    onChange={(e) =>
-                      updateJob(index, "occupation", e.target.value)
-                    }
-                    className="border rounded p-2 w-50"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Employer"
-                    value={job.employer}
-                    onChange={(e) =>
-                      updateJob(index, "employer", e.target.value)
-                    }
-                    className="border rounded p-2 w-50"
-                  />
-                  <input
-                    type="date"
-                    placeholder="Start Date"
-                    value={job.startDate}
-                    onChange={(e) =>
-                      updateJob(index, "startDate", e.target.value)
-                    }
-                    className="border rounded p-2 w-50"
-                  />
-                  <input
-                    type="date"
-                    placeholder="End Date"
-                    value={job.endDate}
-                    onChange={(e) =>
-                      updateJob(index, "endDate", e.target.value)
-                    }
-                    className="border rounded p-2 w-50"
-                  />
-                </div>
-              ))}
+  <div
+    key={index}
+    className="flex gap-8 items-end justify-evenly mb-7"
+  >
+    <input
+      type="text"
+      placeholder="Occupation"
+      value={job.occupation}
+      onChange={(e) =>
+        updateJob(index, "occupation", e.target.value)
+      }
+      className="border rounded p-2 w-50"
+    />
+    <input
+      type="text"
+      placeholder="Employer"
+      value={job.employer}
+      onChange={(e) =>
+        updateJob(index, "employer", e.target.value)
+      }
+      className="border rounded p-2 w-50"
+    />
+    <input
+      type="date"
+      placeholder="Start Date"
+      value={job.startDate}
+      onChange={(e) =>
+        updateJob(index, "startDate", e.target.value)
+      }
+      className="border rounded p-2 w-50"
+    />
+    <input
+      type="date"
+      placeholder="End Date"
+      value={job.endDate}
+      onChange={(e) =>
+        updateJob(index, "endDate", e.target.value)
+      }
+      className="border rounded p-2 w-50"
+    />
+    {jobs.length > 1 && (
+      <button
+        type="button"
+        className="border rounded-full p-2 bg-red-500 text-white"
+        onClick={() => removeJob(index)}
+      >
+        -
+      </button>
+    )}
+  </div>
+))}
               <div className="mb-7">
                 <label htmlFor="skills">Skills</label>
                 <textarea
@@ -392,7 +426,7 @@ const ProfilePage = () => {
               <button 
                 type="submit"
                 className="bg-secondarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
-                onClick={()=>setCurrentPart(1)} >
+                >
                   
                 Save
               </button>

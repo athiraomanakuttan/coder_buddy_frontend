@@ -18,12 +18,16 @@ export interface UserProfileType {
     skills?: string | string[];
     profilePicture ?: string | File;
   }
+
+  
  
 
   export type QualificationType = {
     qualification?: string;
     college?: string;
+    university?:string;
     year_of_passout?: string;
+    year?:string;
   };
   
   export type experienceType = {
@@ -31,6 +35,9 @@ export interface UserProfileType {
     employer?: string;
     start_date?: string;
     end_date?: string;
+    occupation?:string;
+    startDate?:string;
+    endDate?:string;
   };
   
 
