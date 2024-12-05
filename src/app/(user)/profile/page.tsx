@@ -9,6 +9,7 @@ import { parseSkills } from "@/app/utils/skillUtils";
 
 const ProfilePage: React.FC = () => {
   const [part, setPart] = useState(true);
+  const [formSubmit, setFormSubmit]= useState<boolean>(false)
   const [formData, setFormData] = useState<UserProfileType>({
     firstName: "",
     lastName: "",
@@ -27,7 +28,6 @@ const ProfilePage: React.FC = () => {
   const getProfileData = async () => {
     const token = localStorage.getItem("userAccessToken")!;
     const userData = await getProfile(token as string);
-    console.log("userData",userData.data.skills)
     if (userData.status) {
       const transformedData = {
         _id:userData.data._id,
@@ -77,14 +77,14 @@ const ProfilePage: React.FC = () => {
       setFormData({
         ...formData,
         profilePicture: file  
-      });
+      });  
     }
   };
  
-  const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
-    console.log("event function ",e)
+  const handleFormSubmit = async (e:React.FormEvent<HTMLElement>) => {
     e.preventDefault()
-    console.log(formData)
+    if(!formSubmit)
+      return;
     const validation = userProfileValidation(formData)
     const parsedSkills = parseSkills(formData.skills as string);
     const parsedData = {...formData,skiils:parsedSkills}
@@ -194,9 +194,9 @@ const ProfilePage: React.FC = () => {
                 />
               </div>
               <button
-                type="button"
+              type="button"
                 className="bg-primarys p-2 rounded float-right text-white"
-                onClick={() => setPart(false)} 
+                onClick={() => setPart(false)}
               >
                 Next Page
               </button>
@@ -254,7 +254,7 @@ const ProfilePage: React.FC = () => {
               <button
               type="submit"
                 className="bg-primarys pl-5 pr-5 pb-2 pt-2 rounded float-right text-white"
-                 
+                 onClick={()=>setFormSubmit(true)}
               >
                 Save
               </button>

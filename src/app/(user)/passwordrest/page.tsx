@@ -34,8 +34,8 @@ const resetPassword = () => {
         <form onSubmit={handleFormSubmit}>
             <label className='text-gray-500'>New Password</label>
             <input
-                  type="text"
-                  placeholder="Enter your email id"
+                  type="password"
+                  placeholder="New Password"
                   className="border rounded w-100 p-2 mb-3 mt-1"
                   value={formData.password}
                   onChange={(e)=>setFormData({...formData,password:e.target.value})}
@@ -43,15 +43,15 @@ const resetPassword = () => {
             <label className='text-gray-500'>Confirm Password</label>
 
                 <input
-                  type="text "
-                  placeholder="Enter your email id"
+                  type="password"
+                  placeholder="Conform password"
                   className="border rounded w-100 p-2 mb-3 mt-1"
                   value={formData.confirm_password}
                   onChange={(e)=>setFormData({...formData,confirm_password:e.target.value})}
                 />
                 <input type="submit" value="Reset Password"  className="w-100 bg-primarys p-2 mb-3 text-white"  />
         </form>
-      </div>
+      </div> 
     </div>
   )
 }
