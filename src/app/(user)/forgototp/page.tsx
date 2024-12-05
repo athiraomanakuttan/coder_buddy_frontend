@@ -62,8 +62,7 @@ const GetOTP = () => {
           {
             toast.success("Profile verified successfully");
             localStorage.removeItem("otp")
-            localStorage.removeItem("email")
-            router.push('/login')
+            router.push('/passwordrest')
           }
           
         }

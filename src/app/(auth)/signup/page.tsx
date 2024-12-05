@@ -19,19 +19,17 @@ const signup = ()=>{
     {
       try {
         const response = await userSignup(formData);
-        console.log("Signup successful:", response);
         localStorage.setItem('email',response.email)
         localStorage.setItem('otp',response.otp)
-        toast.success(response);
+        toast.success(response.message);
         router.push('/otp')
       } catch (error: any) {
-        console.error("Signup failed:", error.message);
-        alert(error.message); 
+        toast.error(error.message); 
       }
 
     }
     else{
-      alert(valiation.message);
+      toast.error(valiation.message);
     }
   }
 return (

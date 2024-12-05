@@ -42,3 +42,14 @@ export const userProfileValidation = (data: UserProfileType) => {
     else
     return { status: true};
 };
+
+export const passwordValidation = (password: string, conform_password :  string)=>{
+    if(!password || !conform_password)
+        return { status: false , message:"password and confirm password is required"}
+    else if(!password.match(passwordPattern))
+        return { status: false , message:"password is not in required format"}
+    else if (password !== conform_password)
+        return { status: false , message:"password and confirm password is not matching"}
+    else 
+        return { status : true}
+}

@@ -28,8 +28,7 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
       const responce = await axios.post(`${API_URI}/api/verify-otp`,{otp, storedOTP,storedEmail})
       return responce.data;
   } catch (error:any) {
-    throw new Error(error.message || "An unknown error occurred.");
-    
+        toast.error(error?.response?.data?.message)
   }
 }
 
@@ -48,8 +47,6 @@ export const signinPost = async (email: string, password: string) => {
       }
       else
       toast.error(error.response.data.message)
-
-
     }
   
 };
@@ -93,3 +90,34 @@ export const updateProfile = async (token: string, updateData: UserProfileType) 
   }
 };
 
+export const userForgotPassword = async (email: string)=>{
+  if(!email)
+  {  toast.error("email is empty. please try again")
+    return;
+  }
+  try {
+    const response = await axios.post(`${API_URI}/api/forgot-password`,{email})
+    return response.data
+  } catch (error : any) {
+    console.log(error)
+    if(error.status === 400)
+      toast.error(error.response.data.message)
+  }
+}
+
+export const resetUserPassword = async (email:string, password: string)=>{
+  if(!email || !password)
+  {  toast.error("not an autherized user")
+    return 
+  }
+  try {
+    const response = await axios.put(`${API_URI}/api/update-password`,{email,password})
+    return response.data
+  } catch (error:any) {
+    if(error.status)
+      toast.error(error.response.data.message)
+    else
+      toast.error("unable to update the password.")
+  }
+
+}
