@@ -112,3 +112,40 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
     }
   };
   
+  
+
+  export const forgotPssword = async (email :  string)=>{
+    if(!email){
+      toast.error("email is required");
+      return
+    }
+    try {
+      const response =  await axios.post(`${API_URL}/api/expert/forgot-password`,{email})
+      return response.data
+    } catch (error: any) {
+      if(error.status)
+        toast.error(error?.response?.data?.message)
+      else
+      toast.error("not ble t send the otp try again")
+    }
+  }
+
+  export const resetUserPassword = async (email: string, password :  string)=>{
+     if(!email ){
+      toast.error("User is unautherized")
+      return;
+     }
+     else if(!password){
+      toast.error("password is required");
+      return;
+     }
+     try {
+      const response =  await axios.put(`${API_URL}/api/expert/update-password`,{email,password})
+      return response.data
+     } catch (error: any) {
+      if(error.response)
+        toast.error(error?.responce?.data?.message)
+      else
+      toast.error("unable to update the password")
+     }
+  }

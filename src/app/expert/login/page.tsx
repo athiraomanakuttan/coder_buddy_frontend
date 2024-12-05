@@ -82,7 +82,7 @@ const userLogin = () => {
                      Sign in with google </button>
               </form>
               <div className="flex justify-between mb-7">
-            <Link href='/forgot' className="custom-link" >forgot password</Link>
+            <Link href='/expert/forgot' className="custom-link" >forgot password</Link>
             <p className="custom-link">Don't have an account yet ? <Link href='/expert/signup'  className="custom-link">Register Now</Link></p>
           </div>
             </div>
