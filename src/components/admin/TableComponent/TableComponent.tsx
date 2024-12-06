@@ -50,7 +50,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
             onChange={() => functions(item['_id'],!item['status'])} 
           />
           <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:bg-green-500 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
-        </label>:<></>}
+        </label>: <button className='border bg-secondarys text-white p-2 pl-4 pr-4'>View</button>}
       </td>
     </tr>
 

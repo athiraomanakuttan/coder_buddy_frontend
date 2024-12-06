@@ -17,6 +17,9 @@ const expertListPage = () => {
             console.log("error fetching userData")
         }
     }
+    const getExpertProfile = async(id:string)=>{
+      
+    }
     useEffect(()=>{
         getUserData();
     },[])
@@ -29,6 +32,8 @@ const expertListPage = () => {
         <TableComponent 
         headings={['first_name', 'last_name', 'email','skills','primary_contact','createdAt']} 
         valueList={userData} 
+        role="expert"
+        functions={getexpertDetails}
 />
         </div>
       </div>
