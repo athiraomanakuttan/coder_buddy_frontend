@@ -1,5 +1,6 @@
 import { basicType, ExpertType } from "@/types/types";
 import axios from "axios";
+import { Stats } from "fs";
 import { toast } from "react-toastify";
 const API_URL = process.env.NEXT_PUBLIC_API_URI
 
@@ -41,5 +42,26 @@ export const getexpertDetails =  async (token : string)=>{
         return response.data
     } catch (error) {
         console.log("error fetchning user details", error)
+    }
+}
+
+export const userStatusChange = async (id:string, status: string,token: string)=>{
+    if(!id || status=== undefined){
+        toast.error("unable to change the user status")
+        return;
+    }
+    try {
+        const response = await axios.put(`${API_URL}/api/admin/changeUserStatus`,{ id,status},{
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+        }
+        )
+        return response.data
+    } catch (error:any) {
+        console.log(error)
+        if(error.status)
+            toast.error(error.response.data.message)
     }
 }

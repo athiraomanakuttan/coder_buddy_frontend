@@ -1,11 +1,25 @@
 'use client'
-import { getUserDetails } from "@/app/services/adminApi"
+import { getUserDetails, userStatusChange } from "@/app/services/adminApi"
 import Navbar from "@/components/admin/navbar/Navbar"
 import TableComponent from "@/components/admin/TableComponent/TableComponent"
 import { UserProfileType } from "@/types/types"
 import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 const clientListpage = () => {
     const [userData, setUserData]= useState<UserProfileType[]>()
+
+
+    const changeUserStatus = async (id : string , status:string) =>{
+      if(!id){  toast.error("unable to change the status. please try again");
+        return;
+      }
+    const token = localStorage.getItem("userAccessToken") as string
+      const response = await userStatusChange(id,status,token)
+      if(response)
+        toast.success("user status status changed")
+      getUserData()
+
+    }
     const getUserData = async ()=>{
         try {
             const token = localStorage.getItem('userAccessToken') || ""
@@ -29,6 +43,8 @@ const clientListpage = () => {
         <TableComponent 
         headings={['first_name', 'last_name', 'email','experiance','skills']} 
         valueList={userData} 
+        role ="user"
+        functions = {changeUserStatus}
 />
         </div>
       </div>
