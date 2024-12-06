@@ -45,6 +45,7 @@ export interface UserProfileType {
     _id: string;
     first_name: string;
     last_name: string;
+    email ?:string;
     primary_contact?: string;
     secondary_contact?: string;
     qualification: {

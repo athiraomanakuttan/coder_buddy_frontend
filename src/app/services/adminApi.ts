@@ -65,3 +65,20 @@ export const userStatusChange = async (id:string, status: string,token: string)=
             toast.error(error.response.data.message)
     }
 }
+
+export const getExpertsProfile  = async (id: string, token : string)=>{
+    if(!id){
+        toast.error("id is empty please try once more");
+        return
+    }
+    try {
+        const response =  await axios.get(`${API_URL}/api/admin/get-expert/${id}`,{
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error:any) {
+       console.log(error.response.message)
+    }
+}
