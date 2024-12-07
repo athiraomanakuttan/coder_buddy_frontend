@@ -39,14 +39,12 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
     try {
       const response = await axios.post(`${API_URL}/api/expert/login`, { email, password });
       return response.data; 
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const backendMessage = error.response.data?.message || "Unknown error occurred";
-        return null;
-      } else {
-        toast.error("Unable to connect to the server. Please try again later.");
-        return null;
-      }
+    } catch (error:any) {
+      if(error.response)
+        toast.error(error.response.data.message)
+      else
+      toast.error("something went wrong try again")
+
     }
   };
 

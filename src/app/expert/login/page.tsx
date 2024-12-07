@@ -28,28 +28,14 @@ const userLogin = () => {
     
     const validate = signupValidation(formData);
     if (validate.status) {
-      try {
+      
         const response: any = await signinPost(formData.email, formData.password);
-  
-        if (!response) {
-          toast.error("Unable to login. Please check your credentials.");
-          return;
-        }
-       
-
-        if (response.status) {
-          console.log(response)
-          const message = response.message || "Successfully logged in";
-          toast.success(message);
+        if (response) {
+          toast.success("Successfully logged in");
           setUserAuth(response.data.existExpert,response.data.accessToken) 
           route.push('/expert/dashboard');
-        } else {
-          toast.error(response.message || "An error occurred during login.");
-        }
-      } catch (error) {
-        console.error("Error logging in:", error);
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+        } 
+      
     } else {
       toast.error(validate.message);
     }};

@@ -82,3 +82,19 @@ export const getExpertsProfile  = async (id: string, token : string)=>{
        console.log(error.response.message)
     }
 }
+export const rejectExpertRequest =  async (id:string, token: string) =>{
+    if(!id || !token){
+        toast.error("not able to  reject request. Try again!")
+        return;
+    }
+    try {
+        const response = await axios.put(`${API_URL}/api/admin/reject-expert`,{id},{
+            headers:{
+                Authorization: `Bearer ${token}`
+            }})
+        return response.data
+    } catch (error:any) {
+        if(error.status)
+            toast.error(error.response.data.message)
+    }
+}
