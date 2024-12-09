@@ -3,7 +3,6 @@ import { basicType, UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
-
 export const userSignup = async (userData: basicType) => {
   if (!API_URI) {
     throw new Error("API_URI is not defined");
@@ -119,5 +118,20 @@ export const resetUserPassword = async (email:string, password: string)=>{
     else
       toast.error("unable to update the password.")
   }
+
+}
+
+
+export const googleSignup = async ()=>{
+ try {
+  const response = await axios.post(`${API_URI}/api/google-signin`,{ headers: {
+    'Content-Type': 'application/json'
+  }})
+  return response.data
+ } catch (error : any) {
+  console.log(error)
+  if(error.response)
+    toast.error(error.response.data.message)
+ }
 
 }
