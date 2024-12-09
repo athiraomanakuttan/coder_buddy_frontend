@@ -13,6 +13,9 @@ const handler = NextAuth({
       // You can perform initial checks here
       return true
     },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
     async session({ session, token }) {
       // Add additional user details to session
       session.user = {
@@ -26,6 +29,7 @@ const handler = NextAuth({
       }
       return session
     },
+    
     async jwt({ token, account, profile }) {
       // Capture additional details from Google profile
       if (account?.provider === 'google') {

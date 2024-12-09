@@ -1,5 +1,5 @@
 'use client'
-import { signinPost } from "@/app/services/userApi";
+import { googleSignup, signinPost } from "@/app/services/userApi";
 import { signupValidation } from "@/app/utils/validation";
 import { basicType } from "@/types/types";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
-import { signIn } from "next-auth/react"
+import { getSession, signIn } from "next-auth/react"
 
 const UserLogin = () => {
   const { setUserAuth, isAuthenticated } = useAuthStore()
@@ -35,28 +35,33 @@ const UserLogin = () => {
     setIsLoading(true)
     try {
       const result = await signIn('google', { 
-        redirect: false,  // Prevent automatic redirect for better error handling
-        callbackUrl: '/dashboard' 
+        redirect: false 
       })
-  
+      console.log
       if (result?.error) {
-        // More specific error messages
-        switch(result.error) {
-          case 'ConfigurationError':
-            toast.error('Google authentication is not configured correctly')
-            break
-          case 'OAuthSignInError':
-            toast.error('Failed to sign in with Google. Please try again.')
-            break
-          default:
-            toast.error('An unexpected error occurred during Google Sign-In')
-        }
-      } else if (result?.ok) {
-        route.push('/dashboard')
+        toast.error('Google Sign-In failed')
+        return
+      }
+  
+      // Get session directly
+      const session = await getSession()
+      
+      if (session?.user) {
+        // Explicitly pass user details to googleSignup
+        const response = await googleSignup({
+          name: session.user.name,
+          email: session.user.email,
+          image: session.user.image,
+          googleId: session.user.id
+        });
+  
+        console.log("google auth response", response);
+        
+        // Add your further logic here
       }
     } catch (error) {
       console.error('Google Sign-In Error:', error)
-      toast.error('Network error. Please check your connection.')
+      toast.error('An unexpected error occurred')
     } finally {
       setIsLoading(false)
     }

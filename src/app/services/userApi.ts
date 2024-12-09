@@ -1,6 +1,7 @@
 import axios from "axios";
 import { basicType, UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
+import { getSession } from "next-auth/react";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
 export const userSignup = async (userData: basicType) => {
@@ -121,17 +122,28 @@ export const resetUserPassword = async (email:string, password: string)=>{
 
 }
 
-
-export const googleSignup = async ()=>{
- try {
-  const response = await axios.post(`${API_URI}/api/google-signin`,{ headers: {
-    'Content-Type': 'application/json'
-  }})
-  return response.data
- } catch (error : any) {
-  console.log(error)
-  if(error.response)
-    toast.error(error.response.data.message)
- }
-
+export const googleSignup = async (userData: {
+  name?: string, 
+  email?: string, 
+  image?: string,
+  googleId?: string
+}) => {
+  try {
+    const response = await axios.post(`${API_URI}/api/google-signin`, userData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    console.log(response)
+    return response.data
+  } catch (error: any) {
+    console.error('Google Signup Error:', error)
+    
+    if (error.response) {
+      toast.error(error.response.data.message || 'Google signup failed')
+    }
+    
+    return null
+  }
 }
+
