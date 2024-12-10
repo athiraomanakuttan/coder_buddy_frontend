@@ -12,7 +12,7 @@ import { googleSignup } from "@/app/services/userApi";
 const signup = ()=>{
   const [formData,setFormData]= useState<basicType>({
     email:"",
-    password:""
+    password:"" 
   })
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()

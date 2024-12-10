@@ -1,7 +1,9 @@
+
 import { googleSignup } from "@/app/services/userApi";
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { ProfileType } from "@/types/types";
+
 
 const handler = NextAuth({
   providers: [
@@ -12,42 +14,7 @@ const handler = NextAuth({
   ],
   callbacks: {
     async signIn({ account, profile  }) {
-      const {name,email,picture,sub} = profile as ProfileType
-
-      try {
-        const response = await googleSignup({
-          name, 
-          email,
-          image: picture,
-          googleId: sub
-        })
-        if(response.status){
-          // console.log("==============================",response.data.userData)
-          // localStorage.setItem('user', JSON.stringify(response.data.userData));
-          // localStorage.setItem('userAccessToken', response.data.token);
-          return true
-        }
-      } catch (error) {
-        
-        return false
-      }
-      return false
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user = {
-          ...session.user,
-          id: token.sub,
-          googleId: token.sub,
-          name: token.name,
-          email: token.email,
-          image: token.picture
-        }
-
-       
-      }
-
-      return session
+      return true
     },
     async redirect({ url, baseUrl }) {
       // Custom redirect logic
@@ -59,13 +26,32 @@ const handler = NextAuth({
 
     async jwt({ token, account, profile }) {
       if (account?.provider === 'google') {
-        token.sub = profile?.sub
-        token.name = profile?.name
-        token.email = profile?.email
-        token.picture = profile?.picture  
+
+        const {name ,email,sub,picture} = profile as ProfileType
+        try {
+          
+          const res = await googleSignup({name,email,googleId:sub,image:picture})
+          if(res.status){
+            token.access = res.data.token
+            token.user = res.data.userData;
+          }
+          return token
+        } catch (error) {
+          return token
+        }  
       }
       return token
+    },
+
+    async session({ session, token }) {
+      if (token) {
+         session.user =  {
+          ...token,
+        }
+        return session
     }
+    return session
+  }
   }
 })
 
