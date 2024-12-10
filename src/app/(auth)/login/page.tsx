@@ -48,16 +48,15 @@ const UserLogin = () => {
       
       if (session?.user) {
         // Explicitly pass user details to googleSignup
-        const response = await googleSignup({
-          name: session.user.name,
-          email: session.user.email,
-          image: session.user.image,
-          googleId: session.user.id
-        });
+        // const response = await googleSignup({
+        //   name: session.user.name,
+        //   email: session.user.email,
+        //   image: session.user.image,
+        //   googleId: session.user.id
+        // });
   
-        console.log("google auth response", response);
+        // console.log("google auth response", response);
         
-        // Add your further logic here
       }
     } catch (error) {
       console.error('Google Sign-In Error:', error)

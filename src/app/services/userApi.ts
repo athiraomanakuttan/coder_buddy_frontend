@@ -134,7 +134,6 @@ export const googleSignup = async (userData: {
         'Content-Type': 'application/json'
       }
     })
-    console.log(response)
     return response.data
   } catch (error: any) {
     console.error('Google Signup Error:', error)

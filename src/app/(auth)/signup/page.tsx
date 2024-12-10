@@ -6,11 +6,15 @@ import { signupValidation } from "@/app/utils/validation";
 import { userSignup } from "@/app/services/userApi";
 import {toast, ToastContainer} from 'react-toastify'
 import { useRouter } from "next/navigation";
+import { getSession, signIn } from "next-auth/react"
+import { googleSignup } from "@/app/services/userApi";
+
 const signup = ()=>{
   const [formData,setFormData]= useState<basicType>({
     email:"",
     password:""
   })
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
@@ -30,6 +34,32 @@ const signup = ()=>{
     }
     else{
       toast.error(valiation.message);
+    }
+  }
+
+  //google signup
+  const handleGoogleSignUp = async () => {
+    setIsLoading(true)
+    try {
+      const result = await signIn('google', { 
+        redirect: false 
+      })
+  
+      if (result?.error) {
+        console.error('Google Sign-In Error:', result.error)
+        toast.error('Google Sign-In failed')
+        return
+      }
+  
+      const session = await getSession()
+      
+      // The signup is now handled in the backend session callback
+      // You can add any additional client-side logic here
+    } catch (error) {
+      console.error('Google Sign-In Error:', error)
+      toast.error('An unexpected error occurred')
+    } finally {
+      setIsLoading(false)
     }
   }
 return (
@@ -57,9 +87,19 @@ return (
                   onChange={(e)=>setFormData({...formData,password:e.target.value})}
                 />
                 <input type="submit" value="Register"  className="w-100 bg-primarys p-2 mb-3 text-white"  />
-                <button className="border-black border rounded w-100 p-2 mb-3" >
-                    <img src="/icons/g-icon.png" alt=""  className="d-inline m-1"/>
-                     Sign up with google </button>
+                <button 
+                  type="button"
+                  onClick={handleGoogleSignUp}
+                  disabled={isLoading}
+                  className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
+                >
+                  <img 
+                    src="/icons/g-icon.png" 
+                    alt="Google Icon" 
+                    className="d-inline m-1 mr-2"
+                  />
+                  {isLoading ? 'Signing in...' : 'Sign in with Google'}
+                </button>
               </form>
               <div className="flex justify-end">
             <p className="custom-link">Already have an account? <Link href='/login'  className="custom-link">Sign In</Link></p>

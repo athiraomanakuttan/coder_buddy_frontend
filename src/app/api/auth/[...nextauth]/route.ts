@@ -1,5 +1,7 @@
+import { googleSignup } from "@/app/services/userApi";
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import { ProfileType } from "@/types/types";
 
 const handler = NextAuth({
   providers: [
@@ -9,29 +11,53 @@ const handler = NextAuth({
     })
   ],
   callbacks: {
-    async signIn({ account, profile }) {
-      // You can perform initial checks here
-      return true
-    },
-    async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl;
+    async signIn({ account, profile  }) {
+      const {name,email,picture,sub} = profile as ProfileType
+
+      try {
+        const response = await googleSignup({
+          name, 
+          email,
+          image: picture,
+          googleId: sub
+        })
+        if(response.status){
+          // console.log("==============================",response.data.userData)
+          // localStorage.setItem('user', JSON.stringify(response.data.userData));
+          // localStorage.setItem('userAccessToken', response.data.token);
+          return true
+        }
+      } catch (error) {
+        
+        return false
+      }
+      return false
     },
     async session({ session, token }) {
-      // Add additional user details to session
-      session.user = {
-        ...session.user,
-        id: token.sub,
-        // Add any additional fields from Google profile
-        googleId: token.sub,
-        name: token.name,
-        email: token.email,
-        image: token.picture
+      if (token) {
+        session.user = {
+          ...session.user,
+          id: token.sub,
+          googleId: token.sub,
+          name: token.name,
+          email: token.email,
+          image: token.picture
+        }
+
+       
       }
+
       return session
     },
-    
+    async redirect({ url, baseUrl }) {
+      // Custom redirect logic
+      if (url.startsWith(baseUrl)) {
+        return `${baseUrl}/dashboard`; // Redirect to dashboard on successful login
+      }
+      return baseUrl; // Fallback to base URL
+    },
+
     async jwt({ token, account, profile }) {
-      // Capture additional details from Google profile
       if (account?.provider === 'google') {
         token.sub = profile?.sub
         token.name = profile?.name

@@ -1,3 +1,5 @@
+import { Profile } from "next-auth";
+
 export type basicType={
     email:string
     password:string
@@ -18,6 +20,13 @@ export interface UserProfileType {
     skills?: string | string[];
     profilePicture ?: string | File;
   }
+
+export interface ProfileType extends Profile {
+  name: string,
+  email:string,
+  sub:string
+  picture:string
+}
 
   
  
