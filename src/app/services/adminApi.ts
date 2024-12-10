@@ -17,31 +17,36 @@ export const  signupPost=async (data:basicType)=>{
     }
 }
 
-export const getUserDetails =  async (token : string)=>{
+export const getUserDetails = async (token: string, page: number = 1, limit: number = 10) => {
     try {
-        const response =  await axios.get(`${API_URL}/api/admin/user-details`,{
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
-        })
-        return response.data
+        const response = await axios.get(`${API_URL}/api/admin/user-details?page=${page}&limit=${limit}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        console.log(response)
+        return response.data;
     } catch (error) {
-        console.log("error fetchning user details", error)
+        console.error('Error fetching user details', error);
+        throw error;
     }
 }
-export const getexpertDetails =  async (token : string)=>{
+
+
+export const getexpertDetails = async (token: string, page: number = 1, limit: number = 10) => {
     try {
-        const response =  await axios.get(`${API_URL}/api/admin/expert-details`,{
+        const response = await axios.get(`${API_URL}/api/admin/expert-details`, {
             headers: {
-              Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
+            },
+            params: {
+                page,
+                limit
             },
             withCredentials: true,
         })
-        console.log(response.data)
+        
         return response.data
     } catch (error) {
-        console.log("error fetchning user details", error)
+        console.error("Error fetching user details", error)
     }
 }
 
