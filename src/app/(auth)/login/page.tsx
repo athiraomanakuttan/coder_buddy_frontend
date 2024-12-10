@@ -37,26 +37,11 @@ const UserLogin = () => {
       const result = await signIn('google', { 
         redirect: false 
       })
-      console.log
+  
       if (result?.error) {
+        console.error('Google Sign-In Error:', result.error)
         toast.error('Google Sign-In failed')
         return
-      }
-  
-      // Get session directly
-      const session = await getSession()
-      
-      if (session?.user) {
-        // Explicitly pass user details to googleSignup
-        // const response = await googleSignup({
-        //   name: session.user.name,
-        //   email: session.user.email,
-        //   image: session.user.image,
-        //   googleId: session.user.id
-        // });
-  
-        // console.log("google auth response", response);
-        
       }
     } catch (error) {
       console.error('Google Sign-In Error:', error)

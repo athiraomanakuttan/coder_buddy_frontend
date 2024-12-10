@@ -50,11 +50,6 @@ const signup = ()=>{
         toast.error('Google Sign-In failed')
         return
       }
-  
-      const session = await getSession()
-      
-      // The signup is now handled in the backend session callback
-      // You can add any additional client-side logic here
     } catch (error) {
       console.error('Google Sign-In Error:', error)
       toast.error('An unexpected error occurred')
@@ -63,7 +58,7 @@ const signup = ()=>{
     }
   }
 return (
-    <>
+    <> 
       <div className="container">
         <div className="row">
           <div className="col-md-7 p-5  col-sm-12">
