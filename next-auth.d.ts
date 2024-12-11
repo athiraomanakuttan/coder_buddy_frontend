@@ -16,6 +16,10 @@ declare module 'next-auth' {
       email?: string
       image?: string
       googleId?: string
+      access?:string
+      userData?:any
+      isExpert?: boolean;
+      googleId?: string;
     }
   }
 }

@@ -6,9 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import {  signIn } from "next-auth/react"
 
 const signup = ()=>{
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+
   const [formData, setFormData]= useState<basicType>({
     email:"",
     password:""
@@ -37,6 +40,29 @@ const signup = ()=>{
       
     }
   }
+
+   const handleGoogleSignUp = async () => {
+    setIsLoading(true)
+    try {
+
+      const result = await signIn('google', { 
+        redirect: false,
+        callbackUrl: '/expert/dashboard',
+        isExpert: true 
+      })
+  
+      if (result?.error) {
+        console.error('Google Sign-In Error:', result.error)
+        toast.error('Google Sign-In failed')
+        return
+      }
+    } catch (error) {
+      console.error('Google Sign-In Error:', error)
+      toast.error('An unexpected error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 return (
     <>
       <div className="container">
@@ -60,9 +86,19 @@ return (
                   onChange={(e)=>setFormData({...formData,password:e.target.value})}
                 />
                 <input type="submit" value="Register"  className="w-100 bg-secondarys p-2 mb-3 text-white"  />
-                <button className="border-black border rounded w-100 p-2 mb-3" >
-                    <img src="/icons/g-icon.png" alt=""  className="d-inline m-1"/>
-                     Sign up with google </button>
+                <button 
+                  type="button"
+                  onClick={handleGoogleSignUp}
+                  disabled={isLoading}
+                  className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
+                >
+                  <img 
+                    src="/icons/g-icon.png" 
+                    alt="Google Icon" 
+                    className="d-inline m-1 mr-2"
+                  />
+                  {isLoading ? 'Signing in...' : 'Sign in with Google'}
+                </button>
               </form>
               <div className="flex justify-end">
             <p className="custom-link mb-8">Already have an account? <Link href='/expert/login'  className="custom-link">Sign In</Link></p>

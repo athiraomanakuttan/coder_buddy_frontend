@@ -7,12 +7,14 @@ import { useRouter } from "next/navigation";
 import {  useState,useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
+import {  signIn } from "next-auth/react"
 
 
 
 const userLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const route = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     // if (isAuthenticated) {
     //   route.push("/expert/dashboard");
@@ -40,6 +42,30 @@ const userLogin = () => {
       toast.error(validate.message);
     }};
 
+    const handleGoogleSignIn = async () => {
+      setIsLoading(true)
+      try {
+
+        const result = await signIn('google', { 
+          redirect: false,
+          callbackUrl: '/expert/dashboard',
+          isExpert: true 
+        })
+    
+        if (result?.error) {
+          console.error('Google Sign-In Error:', result.error)
+          toast.error('Google Sign-In failed')
+          return
+        }
+      } catch (error) {
+        console.error('Google Sign-In Error:', error)
+        toast.error('An unexpected error occurred')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  
+
   return (
     <>
       <div className="container">
@@ -63,9 +89,19 @@ const userLogin = () => {
                   onChange={(e)=>steFormData({...formData,password : e.target.value})}
                 />
                 <input type="submit" value="Login"  className="w-100 bg-secondarys p-2 mb-3 text-white"  />
-                <button className="border-black border rounded w-100 p-2 mb-3" >
-                    <img src="/icons/g-icon.png" alt=""  className="d-inline m-1"/>
-                     Sign in with google </button>
+                <button 
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={isLoading}
+                  className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
+                >
+                  <img 
+                    src="/icons/g-icon.png" 
+                    alt="Google Icon" 
+                    className="d-inline m-1 mr-2"
+                  />
+                  {isLoading ? 'Signing in...' : 'Sign in with Google'}
+                </button>
               </form>
               <div className="flex justify-between mb-7">
             <Link href='/expert/forgot' className="custom-link" >forgot password</Link>

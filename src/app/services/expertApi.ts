@@ -148,3 +148,21 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
       toast.error("unable to update the password")
      }
   }
+
+
+  // In your services/userApi.ts or services/expertApi.ts
+export const googleExpertSignup = async (expertData: {
+  name: string;
+  email: string;
+  googleId: string;
+  image?: string;
+}) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/expert/google-signup`, expertData);
+    return response.data;
+  } catch (error) {
+    // Handle error
+    console.error('Expert Google Signup Error:', error);
+    throw error;
+  }
+};

@@ -97,6 +97,7 @@ const ProfilePage: React.FC = () => {
         const updateUser =  await  updateProfile(token,parsedData)
         if(updateUser.status)
           toast.success(updateUser.message)
+        getProfileData()
       } catch (error) {
         console.log(error)
       }
