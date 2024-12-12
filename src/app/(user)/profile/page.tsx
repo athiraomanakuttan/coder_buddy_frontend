@@ -105,11 +105,11 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleNextPage = () => {
-    setPart(2); // Move to the next part
+    setPart(2); 
   };
 
   const handlePreviousPage = () => {
-    setPart(1); // Go back to the first part
+    setPart(1); 
   };
 
   return (

@@ -76,7 +76,6 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
       try {
         const formData = new FormData();
         
-        // Append text fields
         formData.append('first_name', data.first_name);
         formData.append('last_name', data.last_name);
         formData.append('primary_contact', data.primary_contact  ? data.primary_contact : "");
@@ -150,7 +149,6 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
   }
 
 
-  // In your services/userApi.ts or services/expertApi.ts
 export const googleExpertSignup = async (expertData: {
   name: string;
   email: string;
@@ -161,7 +159,6 @@ export const googleExpertSignup = async (expertData: {
     const response = await axios.post(`${API_URL}/api/expert/google-signup`, expertData);
     return response.data;
   } catch (error) {
-    // Handle error
     console.error('Expert Google Signup Error:', error);
     throw error;
   }

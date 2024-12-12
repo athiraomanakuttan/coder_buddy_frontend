@@ -7,6 +7,7 @@ declare module 'next-auth' {
     sub?: string
     name?: string
     email?: string
+    isExpert?:boolean
   }
 
   interface Session {

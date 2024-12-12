@@ -72,3 +72,20 @@ export interface ProfileType extends Profile {
     profilePicture: File | string | undefined;
     address ?: string;
   };
+
+  export type CommentType = {
+    expert_id:string,
+    comment:string,
+    uploaded_time:string,
+    status?: number,
+    expert_name ?:string
+    expert_image_url ?: string
+  }
+
+  export interface PostType{
+    title:string,
+    description: string,
+    technologies:string[],
+    uploads ?: string
+    comments : CommentType[]
+  }

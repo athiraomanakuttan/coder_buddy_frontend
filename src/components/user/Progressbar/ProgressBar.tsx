@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Define the prop types explicitly
 interface ProgressBarProps {
   currentPart: number;
   totalParts: number;

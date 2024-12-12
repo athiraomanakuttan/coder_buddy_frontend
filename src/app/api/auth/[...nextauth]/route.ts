@@ -17,7 +17,7 @@ declare module "next-auth/jwt" {
   }
 }
 
-const authOptions: AuthOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -28,7 +28,7 @@ const authOptions: AuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ account, profile}) {
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -37,12 +37,13 @@ const authOptions: AuthOptions = {
       }
       return `${baseUrl}/dashboard`;
     },
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user, }) {
       if (account?.provider === "google") {
+        
         const { name, email, sub, picture } = profile as ProfileType;
 
         try {
-          const isExpert = token.isExpert ?? false;
+          const isExpert =  false;
 
           let res;
           if (isExpert) {
@@ -68,7 +69,7 @@ const authOptions: AuthOptions = {
               googleId: sub,
               access: res.data.token,
               userData: res.data.userData,
-              isExpert: isExpert,
+              isExpert,
               name,
               email,
               picture,
@@ -83,7 +84,6 @@ const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      // Transfer token properties to session
       if (token) {
         session.user = {
           id: token.sub,
@@ -96,6 +96,7 @@ const authOptions: AuthOptions = {
           isExpert: token.isExpert as boolean,
         };
       }
+      
       return session;
     },
   },
@@ -104,3 +105,5 @@ const authOptions: AuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
+
+

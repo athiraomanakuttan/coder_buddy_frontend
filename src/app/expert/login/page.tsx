@@ -10,7 +10,6 @@ import useAuthStore from "@/store/authStore";
 import {  signIn } from "next-auth/react"
 
 
-
 const userLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const route = useRouter()
@@ -45,12 +44,12 @@ const userLogin = () => {
     const handleGoogleSignIn = async () => {
       setIsLoading(true)
       try {
-
-        const result = await signIn('google', { 
+        const result = await signIn('google',{
           redirect: false,
           callbackUrl: '/expert/dashboard',
-          isExpert: true 
-        })
+          isExpert: "true" 
+          
+        });
     
         if (result?.error) {
           console.error('Google Sign-In Error:', result.error)
