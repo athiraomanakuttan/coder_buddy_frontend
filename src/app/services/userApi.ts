@@ -1,5 +1,5 @@
 import axios from "axios";
-import { basicType, UserProfileType } from "@/types/types";
+import { basicType, PostType, UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
 import { getSession } from "next-auth/react";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
@@ -146,4 +146,19 @@ export const googleSignup = async (userData: {
   }
 }
 
+export const addPost = async (token : string, data:PostType)=>{
+  if(!token)
+    toast.error("session timeout. please login")
+  try {
+    const response =   await axios.post(`${API_URI}/upload-post`,data,{
+      headers:{
+          Authorization:`Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error:any) {
+    if(error.response)
+      toast.error(error.response.message)
+  }
+}
 

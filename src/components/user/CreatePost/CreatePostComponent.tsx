@@ -1,8 +1,10 @@
 'use client'
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { PostType } from "@/types/types";
-
+import {parseSkills} from '@/app/utils/skillUtils'
+import { toast } from 'react-toastify';
+import { addPost } from '@/app/services/userApi';
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,27 +16,39 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   onClose,
   onCreatePost ,
 }) => {
-  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [technologies, setTechnologies] = useState('');
   const [uploads, setUploads] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData]= useState<PostType>({
+    title:"",
+    description:"",
+    technologies:[],
+    uploads:""
+  })
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const newPost: PostType = {
-      title,
-      description,
-      uploads: uploads || '#',
-      technologies: technologies 
-        ? technologies.split(',').map(tech => tech.trim())
-        : [],
-      comments: []
-    };
-
-    onCreatePost(newPost);
+    const parsedTechnologies = parseSkills(technologies)
+    setFormData({...formData,"technologies":parsedTechnologies})
+    const token = localStorage.getItem("userAccessToken") as string
+    const response =  await addPost(token, formData);
+    if(response.status)
+      toast.success(response.message)
     onClose();
   };
+    const handleProfilePictureChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+          if (!allowedTypes.includes(file.type)) {
+            toast.error("Please upload a valid image file (JPEG, PNG, GIF, or WEBP).");
+            return;
+          }
+          setFormData({
+            ...formData,
+            uploads: file  
+          });  
+        }
+      };
 
   if (!isOpen) return null;
 
@@ -54,8 +68,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <label className="block mb-2 text-sm font-medium">Title</label>
             <input 
               type="text" 
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={formData.title}
+              onChange={(e) => setFormData({...formData,"title":e.target.value})}
               className="w-full border rounded p-2" 
               placeholder="Enter post title"
               required 
@@ -65,8 +79,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
           <div>
             <label className="block mb-2 text-sm font-medium">Description</label>
             <textarea 
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={formData.description}
+              onChange={(e) => setFormData({...formData,"description":e.target.value})}
               className="w-full border rounded p-2 h-24" 
               placeholder="Enter post description"
               required 
@@ -78,7 +92,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <input 
               type="text" 
               value={technologies}
-              onChange={(e) => setTechnologies(e.target.value)}
+              onChange={(e)=>setTechnologies(e.target.value)}
               className="w-full border rounded p-2" 
               placeholder="React Node.js MongoDB "
             />
@@ -87,9 +101,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
           <div>
             <label className="block mb-2 text-sm font-medium">Uploads</label>
             <input 
-              type="text" 
+              type="file" 
               value={uploads}
-              onChange={(e) => setUploads(e.target.value)}
+              onChange={handleProfilePictureChange}
               className="w-full border rounded p-2" 
               placeholder="Optional upload link"
             />

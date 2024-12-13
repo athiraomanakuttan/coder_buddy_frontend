@@ -86,7 +86,7 @@ export interface ProfileType extends Profile {
     title:string,
     description: string,
     technologies:string[],
-    uploads ?: string
+    uploads ?: string | File
     comments ?: CommentType[]
   }
 

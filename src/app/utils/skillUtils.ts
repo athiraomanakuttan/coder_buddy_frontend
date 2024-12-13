@@ -6,5 +6,6 @@ export const parseSkills = (skillsInput: string): string[] => {
       .split(/[,\s]+/)
       .filter(skill => skill.trim() !== '')
       .map(skill => skill.startsWith('#') ? skill : `#${skill}`);
+      console.log("skillsArray",skillsArray)
     return [...new Set(skillsArray)];
   };
