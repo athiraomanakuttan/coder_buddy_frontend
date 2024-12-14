@@ -69,8 +69,8 @@ export const getProfile = async (token: string) => {
   }
 };
 
-
 export const updateProfile = async (token: string, updateData: UserProfileType) => {
+  console.log("======",updateData)
   try {
     const response = await axios.put(
       `${API_URI}/api/update-profile`,
@@ -146,19 +146,53 @@ export const googleSignup = async (userData: {
   }
 }
 
-export const addPost = async (token : string, data:PostType)=>{
-  if(!token)
-    toast.error("session timeout. please login")
-  try {
-    const response =   await axios.post(`${API_URI}/upload-post`,data,{
-      headers:{
-          Authorization:`Bearer ${token}`
-      }
-    })
-    return response.data
-  } catch (error:any) {
-    if(error.response)
-      toast.error(error.response.message)
+export const addPost = async (token: string, data: PostType) => {
+  console.log(data)
+  if (!token) {
+    toast.error("Session timeout. Please login");
+    return { status: false, message: "Unauthorized" };
   }
-}
+
+  try {
+    
+
+    const response = await axios.post(`${API_URI}/api/upload-post`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+      withCredentials: true,
+    });
+    
+    return {
+      status: true,
+      message: response.data.message || "Post created successfully",
+      data: response.data
+    };
+  } catch (error: any) {
+    console.error("Post upload error:", error);
+    
+    if (error.response) {
+      const errorMessage = error.response.data.message || "Failed to upload post";
+      toast.error(errorMessage);
+      
+      return {
+        status: false,
+        message: errorMessage
+      };
+    } else if (error.request) {
+      toast.error("No response received from server");
+      return {
+        status: false,
+        message: "No response from server"
+      };
+    } else {
+      toast.error("Error uploading post");
+      return {
+        status: false,
+        message: "Unknown error occurred"
+      };
+    }
+  }
+};
 

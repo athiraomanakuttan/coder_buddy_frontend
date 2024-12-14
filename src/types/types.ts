@@ -83,10 +83,11 @@ export interface ProfileType extends Profile {
   }
 
   export interface PostType{
+    userId ?:  string,
     title:string,
     description: string,
     technologies:string[],
-    uploads ?: string | File
+    uploads ?: string | File | null
     comments ?: CommentType[]
   }
 

@@ -2,9 +2,10 @@
 import { X } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { PostType } from "@/types/types";
-import {parseSkills} from '@/app/utils/skillUtils'
+import { parseSkills } from '@/app/utils/skillUtils'
 import { toast } from 'react-toastify';
 import { addPost } from '@/app/services/userApi';
+
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,41 +15,93 @@ interface CreatePostModalProps {
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ 
   isOpen, 
   onClose,
-  onCreatePost ,
+  onCreatePost,
 }) => {
-  const [description, setDescription] = useState('');
   const [technologies, setTechnologies] = useState('');
-  const [uploads, setUploads] = useState('');
-  const [formData, setFormData]= useState<PostType>({
-    title:"",
-    description:"",
-    technologies:[],
-    uploads:""
+  const [fileInput, setFileInput] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [formData, setFormData] = useState<PostType>({
+    title: "",
+    description: "",
+    technologies: [],
+    uploads: ""
   })
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsedTechnologies = parseSkills(technologies)
-    setFormData({...formData,"technologies":parsedTechnologies})
-    const token = localStorage.getItem("userAccessToken") as string
-    const response =  await addPost(token, formData);
-    if(response.status)
-      toast.success(response.message)
-    onClose();
+    
+    try {
+      
+      const parsedTechnologies = parseSkills(technologies)
+      const token = localStorage.getItem("userAccessToken") as string
+      console.log("token",token)
+      const userString = localStorage.getItem("user"); 
+      const user = userString ? JSON.parse(userString) : undefined; 
+      console.log("user?.id",user?.id)
+
+      setFormData({...formData,
+        'technologies':parsedTechnologies,
+        'uploads':fileInput,
+        'userId' : user?.id
+      })
+
+
+
+      const response = await addPost(token, formData);
+      
+      if(response.status) {
+        toast.success(response.message);
+        // Reset form
+        setFormData({
+          title: "",
+          description: "",
+          technologies: [],
+          uploads: ""
+        });
+        setTechnologies('');
+        setFileInput(null);
+        setPreviewUrl(null);
+        onClose();
+      } else {
+        toast.error(response.message || "Failed to create post");
+      }
+    } catch (error) {
+      console.error("Post submission error:", error);
+      toast.error("An error occurred while creating the post");
+    }
   };
-    const handleProfilePictureChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-          if (!allowedTypes.includes(file.type)) {
-            toast.error("Please upload a valid image file (JPEG, PNG, GIF, or WEBP).");
-            return;
-          }
-          setFormData({
-            ...formData,
-            uploads: file  
-          });  
-        }
+  
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Please upload a valid image file (JPEG, PNG, GIF, or WEBP).");
+        return;
+      }
+
+      // Validate file size (e.g., max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        toast.error("File size should not exceed 5MB.");
+        return;
+      }
+
+      // Set file and create preview
+      setFileInput(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
       };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleClearFile = () => {
+    setFileInput(null);
+    setPreviewUrl(null);
+  };
 
   if (!isOpen) return null;
 
@@ -63,13 +116,13 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         </button>
         <h2 className="text-2xl mb-4 text-center">Create New Post</h2>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} encType='multipart/form-data' className="space-y-4">
           <div>
             <label className="block mb-2 text-sm font-medium">Title</label>
             <input 
               type="text" 
               value={formData.title}
-              onChange={(e) => setFormData({...formData,"title":e.target.value})}
+              onChange={(e) => setFormData({...formData, title: e.target.value})}
               className="w-full border rounded p-2" 
               placeholder="Enter post title"
               required 
@@ -80,7 +133,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <label className="block mb-2 text-sm font-medium">Description</label>
             <textarea 
               value={formData.description}
-              onChange={(e) => setFormData({...formData,"description":e.target.value})}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
               className="w-full border rounded p-2 h-24" 
               placeholder="Enter post description"
               required 
@@ -94,19 +147,34 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
               value={technologies}
               onChange={(e)=>setTechnologies(e.target.value)}
               className="w-full border rounded p-2" 
-              placeholder="React Node.js MongoDB "
+              placeholder="React Node.js MongoDB"
             />
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium">Uploads</label>
+            <label className="block mb-2 text-sm font-medium">Upload Image</label>
             <input 
               type="file" 
-              value={uploads}
-              onChange={handleProfilePictureChange}
+              onChange={handleFileChange}
               className="w-full border rounded p-2" 
-              placeholder="Optional upload link"
+              accept="image/jpeg,image/png,image/gif,image/webp"
             />
+            {previewUrl && (
+              <div className="mt-2 flex items-center">
+                <img 
+                  src={previewUrl} 
+                  alt="Preview" 
+                  className="w-20 h-20 object-cover rounded mr-2" 
+                />
+                <button 
+                  type="button"
+                  onClick={handleClearFile}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end space-x-2">
@@ -117,8 +185,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             >
               Cancel
             </button>
-            <button type="submit" 
-              className="bg-primarys text-white rounded px-4 py-2 hover:bg-green-600"> Create Post
+            <button 
+              type="submit" 
+              className="bg-primarys text-white rounded px-4 py-2 hover:bg-green-600"
+            >
+              Create Post
             </button>
           </div>
         </form>
