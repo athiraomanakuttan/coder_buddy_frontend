@@ -1,4 +1,4 @@
-import { basicType, experienceType, ExpertType, QualificationType, UserProfileType } from "@/types/types";
+import { basicType, experienceType, ExpertType, PostType, QualificationType, UserProfileType } from "@/types/types";
 import {parseSkills} from '@/app/utils/skillUtils'
 const emailPattern = /^(?!.\.\d)(?=[a-zA-Z0-9._%+-][a-zA-Z]{3,}\d*@)[a-zA-Z0-9._%+-]+@[a-z]{3,}\.[a-z]{2,}$/i
 const passwordPattern = /^(?=(.*[A-Za-z]){3,})(?=.*\d).{6,}$/
@@ -169,4 +169,16 @@ export const expertProfileValidation = (
     return { status: true };
   };
   
-  
+  export const postValidation = (data: PostType)=>{
+    if(!data.title || data.title===""){
+      return {status: false , message : "post title is requied"}
+    }
+    else if(!data.description || data.description===""){
+      return {status: false , message : "post description is requied"}
+    }
+    else if(!data.technologies || data.technologies.length<1){
+      return {status: false , message : "Add the technologied used"}
+    }
+    else
+    return { status: true}
+  }

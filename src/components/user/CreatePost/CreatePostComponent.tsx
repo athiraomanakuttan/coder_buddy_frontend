@@ -1,10 +1,11 @@
 'use client'
 import { X } from 'lucide-react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { PostType } from "@/types/types";
 import { parseSkills } from '@/app/utils/skillUtils'
 import { toast } from 'react-toastify';
 import { addPost } from '@/app/services/userApi';
+import { postValidation } from '@/app/utils/validation';
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -26,32 +27,47 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     technologies: [],
     uploads: ""
   })
+  useEffect(()=>{
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+    
+    if (user?.id) {
+      setFormData(prevData => ({
+        ...prevData,
+        userId: user.id
+      }));
+    }
+  },[])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       
-      const parsedTechnologies = parseSkills(technologies)
-      const token = localStorage.getItem("userAccessToken") as string
-      console.log("token",token)
-      const userString = localStorage.getItem("user"); 
-      const user = userString ? JSON.parse(userString) : undefined; 
-      console.log("user?.id",user?.id)
+      
 
+      const validate =  postValidation(formData);
+      if(!validate.status){
+        toast.error(validate.message)
+        return;
+      }
       setFormData({...formData,
-        'technologies':parsedTechnologies,
         'uploads':fileInput,
+      })
+      if(!formData.userId)
+      {
+        const userString = localStorage.getItem("user"); 
+      const user = userString ? JSON.parse(userString) : undefined; 
+      setFormData({...formData,
         'userId' : user?.id
       })
-
-
+      }
+      const token = localStorage.getItem("userAccessToken") as string
 
       const response = await addPost(token, formData);
       
       if(response.status) {
         toast.success(response.message);
-        // Reset form
         setFormData({
           title: "",
           description: "",
@@ -102,6 +118,10 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     setFileInput(null);
     setPreviewUrl(null);
   };
+const handleTechnologies = (e: ChangeEvent<HTMLInputElement>)=>{
+  setTechnologies(e.target.value)
+  setFormData({...formData,'technologies':parseSkills(e.target.value)})
+}
 
   if (!isOpen) return null;
 
@@ -145,7 +165,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <input 
               type="text" 
               value={technologies}
-              onChange={(e)=>setTechnologies(e.target.value)}
+              onChange={handleTechnologies}
               className="w-full border rounded p-2" 
               placeholder="React Node.js MongoDB"
             />
