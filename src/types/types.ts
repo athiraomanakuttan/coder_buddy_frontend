@@ -83,6 +83,7 @@ export interface ProfileType extends Profile {
   }
 
   export interface PostType{
+    _id ?:string
     userId ?:  string,
     title:string,
     description: string,

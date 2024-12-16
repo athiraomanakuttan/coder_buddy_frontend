@@ -10,13 +10,11 @@ import { postValidation } from '@/app/utils/validation';
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreatePost: (post: PostType) => void;
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ 
   isOpen, 
   onClose,
-  onCreatePost,
 }) => {
   const [technologies, setTechnologies] = useState('');
   const [fileInput, setFileInput] = useState<File | null>(null);
@@ -41,11 +39,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      
-      
-
       const validate =  postValidation(formData);
       if(!validate.status){
         toast.error(validate.message)

@@ -1,5 +1,7 @@
+import { postStatus } from "@/app/services/userApi";
 import { CommentType, PostType } from "@/types/types";
 import { Paperclip } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface PostComponentProps {
   postdata: PostType;
@@ -7,8 +9,17 @@ interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ postdata, role }) => {
-  const { title, description, uploads, technologies, comments } = postdata;
-
+  const {_id, title, description, uploads, technologies, comments } = postdata;
+  const token = localStorage.getItem('userAccessToken') as string
+  const changePostStatus = async (postId : string , status : number)=>{
+    if(!postId || !status){
+      toast.error("unable to change the status")
+      return;
+    }
+    const response = await postStatus(token, {postId, status})
+    if(response)
+      toast.success(response.message)
+  }
   return ( 
     <div className="border-gray-300 rounded-md mb-2">
       <div className="container">
@@ -25,8 +36,8 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role }) => {
               <div className="flex gap-2 justify-end mt-auto">
                 {role === "user" && (
                   <div className="flex gap-2 justify-end">
-                    <button className="rounded border-primarys pl-3 pr-3 pb-1 pt-1">Resolved</button>
-                    <button className="border rounded pl-3 pr-3 pb-1 pt-1 bg-primarys text-white">Close</button>
+                    <button className="rounded border border-primarys pl-3 pr-3 pb-1 pt-1" onClick={()=>changePostStatus(_id !,1)}>Resolved</button>
+                    <button className="border rounded pl-3 pr-3 pb-1 pt-1 bg-primarys text-white" onClick={()=>changePostStatus(_id !,2)}>Close</button>
                   </div>
                 )}
                 <button><Paperclip className="text-lg text-secondarys"/></button>
@@ -35,7 +46,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role }) => {
           </div>
           <div className="w-1/2 border rounded h-[200px] overflow-auto"> 
             <div className="p-4">
-              {comments.map((comment: CommentType, index: number) => (
+              { comments && comments.length ? comments.map((comment: CommentType, index: number) => (
                 <div key={index} className="mb-2">
                   <div className="border rounded p-2">
                     <div className="flex items-center justify-between mb-2"> 
@@ -50,7 +61,8 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role }) => {
                     <p>{comment.comment}</p>
                   </div>
                 </div>
-              ))}
+              )) : <p>No comments yet !</p>}
+              {}
             </div>
           </div>
         </div>

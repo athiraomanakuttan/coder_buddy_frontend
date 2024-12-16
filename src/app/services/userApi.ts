@@ -1,7 +1,7 @@
 import axios from "axios";
 import { basicType, PostType, UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
-import { getSession } from "next-auth/react";
+
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
 export const userSignup = async (userData: basicType) => {
@@ -195,4 +195,41 @@ export const addPost = async (token: string, data: PostType) => {
     }
   }
 };
+
+export const getPostDetails = async (token: string, params: {
+  status?: number | null, 
+  page?: number, 
+  limit?: number
+}) => {
+  console.log("params",params)
+  try {
+    const response = await axios.post(`${API_URI}/api/get-post-details`, params, {
+      headers: { 
+        'Authorization': `Bearer ${token}` 
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    throw error;
+  }
+}
+
+export const postStatus  = async (token : string, params:{ postId: string, status:number})=>{
+  if(!params.postId || !params.status){
+    toast.error("unable to update the post status")
+    return
+  }
+  try {
+    const response =  await axios.put(`${API_URI}/api/update-post-status`,params,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error:any) {
+    if(error.response)
+      toast.error(error.response.message)
+  }
+}
 
