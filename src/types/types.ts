@@ -88,8 +88,9 @@ export interface ProfileType extends Profile {
     title:string,
     description: string,
     technologies:string[],
-    uploads ?: string | File | null
-    comments ?: CommentType[]
+    uploads ?: string | File | null,
+    comments ?: CommentType[],
+    status : number
   }
 
   
