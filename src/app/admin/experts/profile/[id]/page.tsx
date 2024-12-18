@@ -67,7 +67,9 @@ const ExpertProfilePage = ({
       router.push('/admin/experts')
     }
   }
-
+const handleMeetingSchedule = (id : string )=>{
+  router.push(`/admin/meeting/${id}`)
+}
   return (
     <>
        <div className=" m-0 p-0 flex bg-gray">
@@ -141,10 +143,7 @@ const ExpertProfilePage = ({
               </h3>
               <div className="flex flex-wrap gap-2">
                 {expertData.skills?.length && expertData.skills.map((skill, index) => (
-                  <span 
-                    key={index} 
-                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                  >
+                  <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                     {skill}
                   </span>
                 ))}
@@ -157,7 +156,7 @@ const ExpertProfilePage = ({
                 <Briefcase className="mr-3 text-purple-500" size={20} />
                 Professional Experience
               </h3>
-              {expertData.experience.length > 0 ? (
+              {expertData?.experience?.length > 0 ? (
                 expertData.experience.map((exp, index) => (
                   <div key={index} className="mb-3 pb-3 border-b last:border-b-0">
                     <p className="font-medium">{exp.job_role} at {exp.employer}</p>
@@ -171,13 +170,12 @@ const ExpertProfilePage = ({
               )}
             </div>
 
-            {/* Qualifications */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="text-xl font-semibold mb-4 text-gray-700 border-b pb-2 flex items-center">
                 <GraduationCap className="mr-3 text-orange-500" size={20} />
-                Educational Qualifications
+                Educational Qualifications  
               </h3>
-              {expertData.qualification.length > 0 ? (
+              {expertData?.qualification?.length > 0 ? (
                 expertData.qualification.map((qual, index) => (
                   <div key={index} className="mb-3 pb-3 border-b last:border-b-0">
                     <p className="font-medium">{qual.qualification}</p>
@@ -193,7 +191,7 @@ const ExpertProfilePage = ({
             <div></div>
             <div className=" w-100  flex justify-end mt-2 mb-2  gap-3">
               <button className="border bg-red-700 pt-2 pb-2 pr-5 pl-5 text-white" onClick={()=>rejectExpert(params?.id as string)}>Reject </button> 
-              <button className="border bg-adminprimary pt-2 pb-2 pr-5 pl-5 text-black ">Schedule meeting </button>
+              <button className="border bg-adminprimary pt-2 pb-2 pr-5 pl-5 text-black " onClick={()=>handleMeetingSchedule(params?.id as string)}>Schedule meeting </button>
             </div>
 
           </div>
