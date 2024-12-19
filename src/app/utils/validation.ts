@@ -1,4 +1,4 @@
-import { basicType, experienceType, ExpertType, PostType, QualificationType, UserProfileType } from "@/types/types";
+import { basicType, experienceType, ExpertType, NewMeetingType, PostType, QualificationType, UserProfileType } from "@/types/types";
 import {parseSkills} from '@/app/utils/skillUtils'
 const emailPattern = /^(?!.\.\d)(?=[a-zA-Z0-9._%+-][a-zA-Z]{3,}\d*@)[a-zA-Z0-9._%+-]+@[a-z]{3,}\.[a-z]{2,}$/i
 const passwordPattern = /^(?=(.*[A-Za-z]){3,})(?=.*\d).{6,}$/
@@ -181,4 +181,16 @@ export const expertProfileValidation = (
     }
     else
     return { status: true}
+  }
+  export const meetingValidation = (data : NewMeetingType)=>{
+    const today =  new Date()
+    const {title , meetingDate} = data
+    if(!title || title.trim()==="")
+      return { status: false, message :  "Meeting Title is required"} 
+    else if(!meetingDate || isNaN(Date.parse(meetingDate)))
+      return { status: false, message :  "please enter a valid date and time"} 
+    else if(new Date(meetingDate) < today)
+      return { status: false, message :  "The date should be a future date"} 
+    else
+    return { status :  true , message : "validation successfull"}
   }

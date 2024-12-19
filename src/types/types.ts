@@ -93,4 +93,4 @@ export interface ProfileType extends Profile {
     status : number
   }
 
-  
+  export type NewMeetingType = { title: string, meetingDate : string , expertId : string}
