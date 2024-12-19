@@ -29,6 +29,10 @@ const handleFormSubmit = async (e : React.FormEvent<HTMLFormElement>)=>{
       router.push('/admin/experts')
     }
 }
+
+const handleCancel = ()=>{
+  router.push('/admin/experts')
+}
 return (
     <>
       <div className="m-0 p-0 flex">
@@ -48,7 +52,7 @@ return (
                     <input type="datetime-local" className='w-100 border rounded p-2' placeholder='Meeting label' value={formData.meetingDate} onChange={(e)=>setFormData({...formData,'meetingDate':e.target.value})}/>
                 </div>
                 <button type="submit" className='mb-3 bg-adminprimary w-100 p-2 text-white'>Create Meeting</button>
-                <button type="button" className='bg-red-600  w-100 p-2  text-white'>Cancel</button>
+                <button type="button" className='bg-red-600  w-100 p-2  text-white' onClick={handleCancel}>Cancel</button>
             </form>
             </div>
           
