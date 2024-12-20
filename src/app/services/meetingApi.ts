@@ -23,3 +23,20 @@ export const createMeetingLink = async (token : string , data: NewMeetingType)=>
     }
     
 }
+
+export const getMeetingDetails = async (token : string , page : number , status :  number) =>{
+    if(!token){
+        toast.error("Not authorized try again")
+        return
+    }
+    try {
+            const response =  await axios.post(`${API_URL}/api/admin/get-meeting-details`,{page,status},{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            })
+            return response.data
+    } catch (error:any) {
+            console.log(error)
+    }
+}

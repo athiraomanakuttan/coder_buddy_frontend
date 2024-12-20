@@ -10,7 +10,6 @@ const ExpertListPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
-
     const getUserData = async (page: number = 1) => {
        
             setIsLoading(true)
