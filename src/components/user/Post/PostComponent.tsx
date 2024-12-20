@@ -1,14 +1,15 @@
 import { postStatus } from "@/app/services/userApi";
 import { CommentType, PostType } from "@/types/types";
-import { Paperclip } from "lucide-react";
+import { Paperclip , Trash } from "lucide-react";
 import { toast } from "react-toastify";
 
 interface PostComponentProps {
   postdata: PostType;
   role: string;
+  getPostData:(postStatus?: number | null, page?: number) => Promise<void>
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ postdata, role }) => {
+const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
   const { _id, title, description, uploads, technologies, comments, status } =
     postdata;
   const token = localStorage.getItem("userAccessToken") as string;
@@ -18,14 +19,18 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role }) => {
       return;
     }
     const response = await postStatus(token, { postId, status });
+    getPostData()
     if (response) toast.success(response.message);
   };
+
+  
   return (
     <div className="border-gray-300 rounded-md mb-2">
       <div className="container">
         <div className="flex gap-1">
           <div className="w-1/2 border rounded p-4 h-[200px]">
             <div className="h-full overflow-auto">
+
               <h1 className="text-2xl text-primarys mb-1">{title}</h1>
               <p className="mb-1">{description}</p>
               <div className="flex gap-3 text-secondarys">
@@ -62,6 +67,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role }) => {
 )}
                 <button>
                   <Paperclip className="text-lg text-secondarys" />
+                </button>
+                <button onClick={()=>changePostStatus(_id!, -1)}>
+                  <Trash className="text-lg text-red-400" />
                 </button>
               </div>
             </div>

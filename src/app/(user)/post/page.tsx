@@ -88,7 +88,7 @@ const PostPage = () => {
               {postData.length > 0 ? (
                 <>
                   {postData.map((post: PostType, index: number) => (
-                    <Post key={index} postdata={post} role="user" />
+                    <Post key={index} postdata={post} role="user" getPostData={getPostData} />
                   ))}
                   
                   {/* Pagination Controls */}
