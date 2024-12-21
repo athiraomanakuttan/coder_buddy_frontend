@@ -1,4 +1,4 @@
-import Navbar from "@/components/expert/Navbar/Navbar.jsx";
+import Navbar from "@/components/expert/Navbar/Navbar";
 
 
 const dashboard = () => {

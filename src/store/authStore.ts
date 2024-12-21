@@ -7,6 +7,7 @@ interface AuthState{
   token:string | null
   isAuthenticated: boolean;
   isLoading: boolean;
+  isVerified?:number;
   setUserAuth: (admin: any, token:string) => void; 
   setUser: (admin: any) => void;
   logout: () => void;

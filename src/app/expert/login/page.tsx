@@ -29,9 +29,10 @@ const userLogin = () => {
     
     const validate = signupValidation(formData);
     if (validate.status) {
-      
         const response: any = await signinPost(formData.email, formData.password);
+        
         if (response) {
+          localStorage.setItem("isVerified",response?.data?.existExpert?.isVerified)
           toast.success("Successfully logged in");
           setUserAuth(response.data.existExpert,response.data.accessToken) 
           route.push('/expert/dashboard');
