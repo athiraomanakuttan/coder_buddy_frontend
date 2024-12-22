@@ -1,5 +1,9 @@
+'use client'
+import { addComment } from "@/app/services/expertApi";
 import { CommentType, PostType } from "@/types/types";
 import { Paperclip , Trash } from "lucide-react";
+import { useState } from "react";
+import {toast} from 'react-toastify'
 
 interface PostComponentProps {
   postdata: PostType;
@@ -8,17 +12,27 @@ interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
+
+  const [comment, setComment] = useState<string>("");
   const { _id, title, description, uploads, technologies, comments, status } =
     postdata;
   const token = localStorage.getItem("userAccessToken") as string;
- 
+ const handleCommenting = async (postId: string ="")=>{
+  if(!postId){
+    toast.error("unable to add comment. please try again")
+    return
+  }
+  const response =  await addComment(token,comment, postId)
+  if(response)
+    toast.success(response.message)
+ }
 
   
   return (
     <div className="border-gray-300 rounded-md mb-2">
       <div className="container">
         <div className="flex gap-1">
-          <div className="w-1/2 border rounded p-4 h-[200px]">
+          <div className="w-1/2 border rounded p-4 h-[250px]">
             <div className="h-full overflow-auto">
 
               <h1 className="text-2xl text-primarys mb-1">{title}</h1>
@@ -30,14 +44,36 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
               </div>
               <div className="flex gap-2 justify-end mt-auto">
               
-                <button>
-                  <Paperclip className="text-lg text-secondarys" />
-                </button>
-                
+              <div className="flex gap-2 justify-end mt-auto">
+              {uploads && (
+  <a
+    href={
+      typeof uploads === "string"
+        ? uploads
+        : uploads instanceof File
+        ? URL.createObjectURL(uploads)
+        : undefined
+    }
+    download={
+      typeof uploads === "string"
+        ? uploads.split('/').pop() 
+        : uploads instanceof File
+        ? uploads.name 
+        : undefined
+    }
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="flex items-center gap-1 text-secondarys"
+  >
+    <Paperclip className="text-lg" />
+    <span>Download</span>
+  </a>
+)}
+</div>  
               </div>
             </div>
           </div>
-          <div className="w-1/2 border rounded h-[200px] overflow-auto">
+          <div className="w-1/2 border rounded h-[250px] overflow-auto">
             <div className="p-4">
               {comments && comments.length ? (
                 comments.map((comment: CommentType, index: number) => (
@@ -46,7 +82,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <img
-                            src={comment.expert_image_url}
+                            src={comment.expert_image_url ? comment.expert_image_url : "https://res.cloudinary.com/dicelwy0k/image/upload/v1734162966/k1hkdcipfx9ywadit4lr.png"}
                             alt={comment.expert_name}
                             className="w-10 h-10 rounded-full"
                           />
@@ -55,9 +91,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
                           </h1>
                         </div>
                         <>
-                          <p className="text-gray-400">
-                            {comment.uploaded_time}
-                          </p>
+                        <p className="text-gray-400 text-sm">
+  {new Date(comment.date!).toISOString().split("T")[0]}
+</p>
                         </>
                       </div>
                       <p>{comment.comment}</p>
@@ -68,6 +104,10 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
                 <p>No comments yet !</p>
               )}
               {}
+             <div className="flex gap-1">
+             <input type="text" className="w-100 border rounded  mb-2 p-2" placeholder="Enter your comment" value={comment} onChange={(e)=>setComment(e.target.value)}/>
+             <button className="border rounded bg-secondarys text-white " onClick={()=>{handleCommenting(_id)}}>Comment</button>
+             </div>
             </div>
           </div>
         </div>

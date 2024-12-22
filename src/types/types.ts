@@ -74,9 +74,9 @@ export interface ProfileType extends Profile {
   };
 
   export type CommentType = {
-    expert_id:string,
+    expert_id?:string,
     comment:string,
-    uploaded_time:string,
+    date?:string,
     status?: number,
     expert_name ?:string
     expert_image_url ?: string

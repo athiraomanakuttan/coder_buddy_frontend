@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { basicType, ExpertType } from "@/types/types";
+import { basicType, CommentType, ExpertType } from "@/types/types";
 import { headers } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URI
@@ -175,5 +175,19 @@ export const getUserPost = async (token : string, page :  number = 1 , limit:num
       return response.data
   } catch (error:any) {
     console.log(error)
+  }
+}
+
+export const addComment= async (token :  string, comment: string, postId :  string)=>{
+  try {
+    const response =  await axios.post(`${API_URL}/api/expert/add-comment`,{comment, postId},{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error:any) {
+    if(error.response)
+      toast.error(error.response.message)
   }
 }
