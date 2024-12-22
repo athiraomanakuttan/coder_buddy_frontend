@@ -24,7 +24,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     description: "",
     technologies: [""],
     uploads: "",
-    status : 1
+    status : 0
   })
   useEffect(()=>{
     const userString = localStorage.getItem("user");

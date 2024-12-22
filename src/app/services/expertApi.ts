@@ -1,7 +1,10 @@
-import { basicType, ExpertType } from "@/types/types";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { basicType, ExpertType } from "@/types/types";
+import { headers } from "next/headers";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URI
+
 export const signupPost = async(data:basicType)=>{
     if(!API_URL)
         toast.error("unable to connect backend")
@@ -109,8 +112,6 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
       }
     }
   };
-  
-  
 
   export const forgotPssword = async (email :  string)=>{
     if(!email){
@@ -163,3 +164,16 @@ export const googleExpertSignup = async (expertData: {
     throw error;
   }
 };
+
+export const getUserPost = async (token : string, page :  number = 1 , limit:number = 5 )=>{
+  try {
+    
+      const response = await axios.get(`${API_URL}/api/expert/get-post`,{
+        params: { page, limit },
+        headers:{ Authorization:`Bearer ${token}` }
+      })
+      return response.data
+  } catch (error:any) {
+    console.log(error)
+  }
+}
