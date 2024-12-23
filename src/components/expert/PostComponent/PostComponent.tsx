@@ -22,6 +22,10 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
     toast.error("unable to add comment. please try again")
     return
   }
+  if(!comment){
+    toast.error("comment is required")
+    return
+  }
   const response =  await addComment(token,comment, postId)
   if(response)
     toast.success(response.message)
