@@ -1,4 +1,4 @@
-import { postStatus } from "@/app/services/userApi";
+import { postStatus } from "@/app/services/user/userApi";
 import { CommentType, PostType } from "@/types/types";
 import { Paperclip , Trash } from "lucide-react";
 import { toast } from "react-toastify";

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { NewMeetingType } from '@/types/types'
 import { meetingValidation } from '@/app/utils/validation'
 import { toast } from 'react-toastify'
-import { createMeetingLink } from '@/app/services/meetingApi'
+import { createMeetingLink } from '@/app/services/admin/meetingApi'
 
 const meetingLink = () => {
   const router = useRouter()

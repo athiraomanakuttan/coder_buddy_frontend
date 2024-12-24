@@ -1,5 +1,5 @@
-import { googleSignup } from "@/app/services/userApi";
-import { googleExpertSignup } from "@/app/services/expertApi";
+import { googleSignup } from "@/app/services/user/userApi";
+import { googleExpertSignup } from "@/app/services/expert/expertApi";
 
 import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";

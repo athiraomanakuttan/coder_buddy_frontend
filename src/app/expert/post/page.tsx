@@ -3,7 +3,7 @@ import Navbar from "@/components/expert/Navbar/Navbar"
 import Post from '@/components/expert/PostComponent/PostComponent'
 import { PostType } from "@/types/types";
 import { useEffect, useState } from "react";
-import { getUserPost } from "@/app/services/expertApi";
+import { getUserPost } from "@/app/services/expert/expertApi";
 
 const PostPage = () => {
   const [postData, setPostData] = useState<PostType[]>([])

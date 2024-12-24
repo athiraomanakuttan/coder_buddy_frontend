@@ -4,7 +4,7 @@ import ProgressBar from "@/components/expert/Progressbar/ProgressBar";
 import { useState, ChangeEvent, useEffect } from "react";
 import { ExpertType } from "@/types/types";
 import { toast } from "react-toastify";
-import { getProfile, updateProfile } from "@/app/services/expertApi";
+import { getProfile, updateProfile } from "@/app/services/expert/expertApi";
 import {parseSkills} from '@/app/utils/skillUtils'
 import  {expertProfileValidation} from '@/app/utils/validation'
 

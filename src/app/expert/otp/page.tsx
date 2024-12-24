@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useRef, KeyboardEvent, ClipboardEvent, createRef } from 'react';
 import { toast } from 'react-toastify';
-import { otpPost } from '@/app/services/expertApi';
+import { otpPost } from '@/app/services/expert/expertApi';
 import { useRouter } from 'next/navigation';
 
 const GetOTP = () => {

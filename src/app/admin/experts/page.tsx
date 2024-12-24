@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from "react"
-import { getexpertDetails } from "@/app/services/adminApi"
+import { getexpertDetails } from "@/app/services/admin/adminApi"
 import Navbar from "@/components/admin/navbar/Navbar"
 import TableComponent from "@/components/admin/TableComponent/TableComponent"
 import { UserProfileType } from "@/types/types"
@@ -43,7 +43,7 @@ const ExpertListPage = () => {
                 <TableComponent 
                     headings={['first_name', 'last_name', 'email', 'skills', 'primary_contact', 'createdAt']} 
                     valueList={userData} 
-                    role="expert"
+                    role="admin"
                     functions={getexpertDetails}
                 />
                 

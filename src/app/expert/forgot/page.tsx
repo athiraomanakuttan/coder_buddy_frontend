@@ -1,6 +1,6 @@
 'use client'
 
-import { forgotPssword } from "@/app/services/expertApi";
+import { forgotPssword } from "@/app/services/expert/expertApi";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";

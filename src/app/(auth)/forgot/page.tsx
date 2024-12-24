@@ -1,5 +1,5 @@
  'use client'
-import { userForgotPassword } from "@/app/services/userApi"
+import { userForgotPassword } from "@/app/services/user/userApi"
  import { useState } from "react"
  import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"

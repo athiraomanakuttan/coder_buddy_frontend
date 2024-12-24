@@ -5,7 +5,7 @@ import { PlusCircle } from 'lucide-react'
 import { PostType } from "@/types/types";
 import CreatePostModal from '@/components/user/CreatePost/CreatePostComponent'
 import { useEffect, useState } from "react";
-import { getPostDetails } from "@/app/services/userApi";
+import { getPostDetails } from "@/app/services/user/userApi";
 
 const PostPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

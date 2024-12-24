@@ -1,5 +1,5 @@
 "use client";
-import { getExpertsProfile, rejectExpertRequest } from "@/app/services/adminApi";
+import { getExpertsProfile, rejectExpertRequest } from "@/app/services/admin/adminApi";
 import Navbar from "@/components/admin/navbar/Navbar";
 import { ExpertType } from "@/types/types";
 import Link from "next/link";

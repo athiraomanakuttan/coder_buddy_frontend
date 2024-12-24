@@ -1,5 +1,5 @@
 'use client'
-import { addComment, deleteComment } from "@/app/services/expertApi";
+import { addComment, deleteComment } from "@/app/services/expert/expertApi";
 import { CommentType, PostType } from "@/types/types";
 import { Paperclip , Trash } from "lucide-react";
 import { useState } from "react";

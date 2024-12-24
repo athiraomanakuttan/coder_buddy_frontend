@@ -1,5 +1,5 @@
 'use client'
-import { getUserDetails, userStatusChange } from "@/app/services/adminApi"
+import { getUserDetails, userStatusChange } from "@/app/services/admin/adminApi"
 import Navbar from "@/components/admin/navbar/Navbar"
 import TableComponent from "@/components/admin/TableComponent/TableComponent"
 import { UserProfileType } from "@/types/types"

@@ -40,3 +40,4 @@ export const getMeetingDetails = async (token : string , page : number , status 
             console.log(error)
     }
 }
+

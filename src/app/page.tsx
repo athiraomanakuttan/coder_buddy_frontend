@@ -1,5 +1,5 @@
 'use client'
-import { signinPost } from "@/app/services/userApi";
+import { signinPost } from "@/app/services/user/userApi";
 import { signupValidation } from "@/app/utils/validation";
 import { basicType } from "@/types/types";
 import Link from "next/link";

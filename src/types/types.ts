@@ -95,3 +95,12 @@ export interface ProfileType extends Profile {
   }
 
   export type NewMeetingType = { title: string, meetingDate : string , expertId : string}
+
+  export type ExpertMeetingType = {
+    dateTime : string,
+    meetingId :  string,
+    status : number,
+    title : string,
+    userId: string,
+    _id : string
+  }

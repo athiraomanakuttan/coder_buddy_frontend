@@ -1,5 +1,5 @@
 'use client'
-import { resetUserPassword } from '@/app/services/userApi'
+import { resetUserPassword } from '@/app/services/user/userApi'
 import { passwordValidation } from '@/app/utils/validation'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'

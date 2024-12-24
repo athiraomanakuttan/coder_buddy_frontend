@@ -3,11 +3,11 @@ import Link from "next/link";
 import { basicType } from "@/types/types";
 import { useState } from "react";
 import { signupValidation } from "@/app/utils/validation";
-import { userSignup } from "@/app/services/userApi";
+import { userSignup } from "@/app/services/user/userApi";
 import {toast, ToastContainer} from 'react-toastify'
 import { useRouter } from "next/navigation";
 import { getSession, signIn } from "next-auth/react"
-import { googleSignup } from "@/app/services/userApi";
+import { googleSignup } from "@/app/services/user/userApi";
 
 const signup = ()=>{
   const [formData,setFormData]= useState<basicType>({

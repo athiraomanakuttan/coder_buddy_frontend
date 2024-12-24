@@ -6,7 +6,7 @@ import {  useState,useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 import { signupValidation } from "@/app/utils/validation";
-import { signupPost } from "@/app/services/adminApi";
+import { signupPost } from "@/app/services/admin/adminApi";
 
 const adminLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()

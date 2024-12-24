@@ -4,7 +4,7 @@ import ProgressBar from "@/components/user/Progressbar/ProgressBar";
 import { useState, ChangeEvent, useEffect } from "react";
 import { UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
-import { getProfile, updateProfile } from "@/app/services/userApi";
+import { getProfile, updateProfile } from "@/app/services/user/userApi";
 import { userProfileValidation } from "@/app/utils/validation";
 import { parseSkills } from "@/app/utils/skillUtils";
 

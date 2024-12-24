@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react'
 import Navbar from "@/components/admin/navbar/Navbar"
 import TableComponent from "@/components/admin/TableComponent/TableComponent"
 import { NewMeetingType } from '@/types/types'
-import { getMeetingDetails } from '@/app/services/meetingApi'
+import { getMeetingDetails } from '@/app/services/admin/meetingApi'
 
 
 const ClientListPage = () => {
