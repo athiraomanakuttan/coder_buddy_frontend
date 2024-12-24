@@ -1,5 +1,5 @@
 'use client'
-import { addComment } from "@/app/services/expertApi";
+import { addComment, deleteComment } from "@/app/services/expertApi";
 import { CommentType, PostType } from "@/types/types";
 import { Paperclip , Trash } from "lucide-react";
 import { useState } from "react";
@@ -12,25 +12,36 @@ interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
-
   const [comment, setComment] = useState<string>("");
   const { _id, title, description, uploads, technologies, comments, status } =
     postdata;
   const token = localStorage.getItem("userAccessToken") as string;
- const handleCommenting = async (postId: string ="")=>{
+  const expertString= localStorage.getItem("user") 
+  const expert =  expertString && JSON.parse(expertString)
+  const expertId = expert._id
+  console.log("expert", expertId)
+ const handleCommenting = async (postId: string ="")=>{ 
   if(!postId){
     toast.error("unable to add comment. please try again")
     return
   }
   if(!comment){
-    toast.error("comment is required")
+    toast.error("comment field is required")
     return
   }
-  const response =  await addComment(token,comment, postId)
-  if(response)
+  const response =   await addComment(token,comment, postId)
+  if(response){
+    getPostData();
+    setComment("")
+  }
     toast.success(response.message)
  }
-
+const handleCommentDelete = async (commentId : string, expertId : string ,  postId :  string) => {
+    const response = await deleteComment(token,{commentId,expertId,postId})
+    if(response){
+      toast.success(response.message)
+    getPostData()}
+}
   
   return (
     <div className="border-gray-300 rounded-md mb-2">
@@ -79,7 +90,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
           </div>
           <div className="w-1/2 border rounded h-[250px] overflow-auto">
             <div className="p-4">
-              {comments && comments.length ? (
+              {comments && comments?.length && comments[0]?.comment ? (
                 comments.map((comment: CommentType, index: number) => (
                   <div key={index} className="mb-2">
                     <div className="border rounded p-2">
@@ -87,20 +98,22 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
                         <div className="flex items-center gap-2">
                           <img
                             src={comment.expert_image_url ? comment.expert_image_url : "https://res.cloudinary.com/dicelwy0k/image/upload/v1734162966/k1hkdcipfx9ywadit4lr.png"}
-                            alt={comment.expert_name}
                             className="w-10 h-10 rounded-full"
                           />
-                          <h1 className="font-semibold">
-                            {comment.expert_name}
+                          <h1 className="text-sm">
+                            {comment.expertName ? comment.expertName : "expert"}
                           </h1>
                         </div>
                         <>
                         <p className="text-gray-400 text-sm">
-  {new Date(comment.date!).toISOString().split("T")[0]}
-</p>
+                            {new Date(comment.date!).toISOString().split("T")[0]}
+                        </p>
                         </>
                       </div>
-                      <p>{comment.comment}</p>
+                      <div className="flex justify-between">
+                        <p>{comment.comment}</p>
+                        { expertId === comment.expertId && ( <button onClick={()=>handleCommentDelete(comment._id!, expertId ,_id ! )}><Trash className="text-red-400" /></button>) }
+                      </div>
                     </div>
                   </div>
                 ))

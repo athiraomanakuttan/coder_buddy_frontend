@@ -74,12 +74,13 @@ export interface ProfileType extends Profile {
   };
 
   export type CommentType = {
-    expert_id?:string,
+    expertId?:string,
     comment:string,
     date?:string,
     status?: number,
-    expert_name ?:string
-    expert_image_url ?: string
+    expertName ?:string
+    expert_image_url ?: string,
+    _id?:string
   }
 
   export interface PostType{

@@ -191,3 +191,18 @@ export const addComment= async (token :  string, comment: string, postId :  stri
       toast.error(error.response.message)
   }
 }
+
+export const deleteComment =  async (token:string , data:{commentId : string, expertId : string , postId:string})=>{
+  try{
+    const response = await axios.put(`${API_URL}/api/expert/delete-comment`, data , {
+      headers :{
+        Authorization : `Bearer ${token}`
+      }
+    })
+    console.log(response)
+    return response.data
+  }catch(error:any){
+    console.log("error", error)
+    toast.error(error.response.data.message)
+  }
+}
