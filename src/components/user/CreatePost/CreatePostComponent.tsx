@@ -30,10 +30,10 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     const userString = localStorage.getItem("user");
     const user = userString ? JSON.parse(userString) : null;
     
-    if (user?.id) {
+    if (user?.id ) {
       setFormData(prevData => ({
         ...prevData,
-        userId: user.id
+        userId: user.id ? user.id : user._id
       }));
     }
   },[])
@@ -54,7 +54,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         const userString = localStorage.getItem("user"); 
       const user = userString ? JSON.parse(userString) : undefined; 
       setFormData({...formData,
-        'userId' : user?.id
+        'userId' : user?.id ? user?.id : user?._id
       })
       }
       const token = localStorage.getItem("userAccessToken") as string

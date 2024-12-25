@@ -8,12 +8,16 @@ import { SessionProvider } from "next-auth/react";
 
 const dashboard = () => {
 
-  const { data: session, status } = getSession()
-  const {setUserAuth} = useAuthStore()
+  const { data: session, status } = useSession();
+  console.log("session",session)
+  console.log("status",status)
+  const setUserAuth = useAuthStore(state => state.setUserAuth);
+
   useEffect(() => {
-    console.log("session",session)
-    // setUserAuth(session.user.user,session.user.access)
-  },[])
+    if (session?.user && status === "authenticated") {
+      setUserAuth(session.user.userData, session.user.access || '');
+    }
+  }, [session, status, setUserAuth]);
 
   return (
 <SessionProvider >

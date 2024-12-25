@@ -5,9 +5,19 @@ import { ExpertMeetingType, NewMeetingType } from "@/types/types";
 import { useEffect, useState } from "react";
 import { Video } from 'lucide-react';
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import useAuthStore from "@/store/authStore";
 
 
 const Dashboard = () => {
+  const { data: session, status } = useSession();
+  const setUserAuth = useAuthStore(state => state.setUserAuth);
+
+  useEffect(() => {
+    if (session?.user && status === "authenticated") {
+      setUserAuth(session.user.userData, session.user.access || '');
+    }
+  }, [session, status, setUserAuth]);
   const isVarified = localStorage.getItem("isVerified");
   const token = localStorage.getItem("userAccessToken") as string;
   const [varified, setVarified] = useState<string | number | null>(isVarified);

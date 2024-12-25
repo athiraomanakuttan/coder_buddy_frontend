@@ -22,7 +22,6 @@ const PostPage = () => {
         page: page,
         limit: 5
       });
-      console.log("response",response)
       if (response && response.data) {
         console.log(response)
         setPostData(response.data);
@@ -34,7 +33,7 @@ const PostPage = () => {
       console.error("Failed to fetch posts", error);
     }
   }
-  
+
   useEffect(() => {
     getPostData()
   }, [])

@@ -1,18 +1,47 @@
 import { googleSignup } from "@/app/services/user/userApi";
 import { googleExpertSignup } from "@/app/services/expert/expertApi";
-
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { ProfileType } from "@/types/types";
 
 declare module "next-auth" {
   interface Session {
-    isExpert?: boolean;
+    isExpert?: boolean | undefined;
+    user: {
+      id?: string | undefined;
+      name?: string | undefined;
+      email?: string | undefined;
+      image?: string | undefined;
+      googleId?: string | undefined;
+      access?: string | undefined;
+      userData?: any;
+      isExpert?: boolean | undefined;
+    }
+  }
+
+  interface User {
+    id?: string | undefined;
+    name?: string | undefined;
+    email?: string | undefined;
+    image?: string | undefined;
+    googleId?: string | undefined;
+    access?: string | undefined;
+    userData?: any;
+    isExpert?: boolean | undefined;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
+    sub?: string;
+    id?: string;
+    googleId?: string;
+    name?: string | undefined;
+    email?: string | undefined;
+    picture?: string | undefined;
+    image?: string | null;
+    access?: string;
+    userData?: any;
     isExpert?: boolean;
   }
 }
@@ -28,7 +57,7 @@ export const authOptions: AuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async signIn({ account, profile}) {
+    async signIn({ account, profile }) {
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -37,15 +66,14 @@ export const authOptions: AuthOptions = {
       }
       return `${baseUrl}/dashboard`;
     },
-    async jwt({ token, account, profile, user, }) {
+    async jwt({ token, account, profile }) {
       if (account?.provider === "google") {
-        
         const { name, email, sub, picture } = profile as ProfileType;
-
+        
         try {
-          const isExpert =  false;
-
+          const isExpert = false;
           let res;
+
           if (isExpert) {
             res = await googleExpertSignup({
               name: name || "",
@@ -68,7 +96,7 @@ export const authOptions: AuthOptions = {
               id: sub,
               googleId: sub,
               access: res.data.token,
-              userData: res.data.userData,
+              userData: {...res.data.userData,id:res.data.userData._id},
               isExpert,
               name,
               email,
@@ -84,20 +112,19 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user = {
+      return {
+        ...session,
+        user: {
           id: token.sub,
           googleId: token.sub,
           name: token.name,
           email: token.email,
           image: token.picture,
-          access: token.access as string,
+          access: token.access,
           userData: token.userData,
-          isExpert: token.isExpert as boolean,
-        };
-      }
-      
-      return session;
+          isExpert: token.isExpert,
+        },
+      };
     },
   },
 };
@@ -105,5 +132,3 @@ export const authOptions: AuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-
-

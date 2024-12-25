@@ -148,6 +148,7 @@ export const googleSignup = async (userData: {
 
 export const addPost = async (token: string, data: PostType) => {
   console.log(data)
+  console.log('token',token)
   if (!token) {
     toast.error("Session timeout. Please login");
     return { status: false, message: "Unauthorized" };
@@ -201,6 +202,7 @@ export const getPostDetails = async (token: string, params: {
   page?: number, 
   limit?: number
 }) => {
+  
   console.log("params",params)
   try {
     const response = await axios.post(`${API_URI}/api/get-post-details`, params, {
