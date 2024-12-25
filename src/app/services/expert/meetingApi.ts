@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import {toast} from 'react-toastify'
 const API_URL =  process.env.NEXT_PUBLIC_API_URI
 
 
@@ -11,5 +11,18 @@ export const getadminexpertMeeting = async (token: string)=>{
         return response.data
     } catch (error:any) {
             console.log("error while getting data",error)
+    }
+}
+
+export  const verificationMeeting = async (token: string, id: string, meetingId:string)=>{
+    try {
+        const response =  await axios.post(`${API_URL}/api/expert/meetings/join`,{id,meetingId},{
+            headers:{ Authorization:`Bearer ${token}`}
+        })
+        return response.data
+    } catch (error:any) {
+        if(error?.response?.data){
+            toast.error(error.response.data.message)
+        }
     }
 }
