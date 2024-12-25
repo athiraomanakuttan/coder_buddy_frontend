@@ -1,12 +1,27 @@
 import { googleSignup } from "@/app/services/user/userApi";
 import { googleExpertSignup } from "@/app/services/expert/expertApi";
-import NextAuth, { AuthOptions, DefaultSession } from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { ProfileType } from "@/types/types";
 
+interface GoogleSignupResponse {
+  status: boolean;
+  data: {
+    token: string;
+    userData: {
+      _id: string;
+      name?: string;
+      email?: string;
+      image?: string;
+      googleId?: string;
+      [key: string]: any;
+    };
+  };
+}
+
 declare module "next-auth" {
   interface Session {
-    isExpert?: boolean | undefined;
+    isExpert?: boolean;
     user: {
       id?: string | undefined;
       name?: string | undefined;
@@ -20,14 +35,14 @@ declare module "next-auth" {
   }
 
   interface User {
-    id?: string | undefined;
-    name?: string | undefined;
-    email?: string | undefined;
-    image?: string | undefined;
-    googleId?: string | undefined;
-    access?: string | undefined;
-    userData?: any;
-    isExpert?: boolean | undefined;
+    id?: string;
+    name?: string;
+    email?: string;
+    image?: string;
+    googleId?: string;
+    access?: string;
+    userData?: Record<string, any>;
+    isExpert?: boolean;
   }
 }
 
@@ -36,12 +51,12 @@ declare module "next-auth/jwt" {
     sub?: string;
     id?: string;
     googleId?: string;
-    name?: string | undefined;
-    email?: string | undefined;
-    picture?: string | undefined;
+    name?: string;
+    email?: string;
+    picture?: string;
     image?: string | null;
     access?: string;
-    userData?: any;
+    userData?: Record<string, any>;
     isExpert?: boolean;
   }
 }
@@ -51,13 +66,19 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      id: 'google'
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      id: 'google-expert'
     }),
   ],
   pages: {
     signIn: "/login",
   },
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ account, profile }): Promise<boolean> {
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -67,13 +88,13 @@ export const authOptions: AuthOptions = {
       return `${baseUrl}/dashboard`;
     },
     async jwt({ token, account, profile }) {
-      if (account?.provider === "google") {
+      if (account?.provider) {
         const { name, email, sub, picture } = profile as ProfileType;
         
         try {
-          const isExpert = false;
-          let res;
-
+          let res: GoogleSignupResponse | undefined;
+          const isExpert = account.provider === 'google-expert';
+          
           if (isExpert) {
             res = await googleExpertSignup({
               name: name || "",
@@ -96,7 +117,7 @@ export const authOptions: AuthOptions = {
               id: sub,
               googleId: sub,
               access: res.data.token,
-              userData: {...res.data.userData,id:res.data.userData._id},
+              userData: { ...res.data.userData, id: res.data.userData._id },
               isExpert,
               name,
               email,
@@ -104,13 +125,14 @@ export const authOptions: AuthOptions = {
             };
           }
           return token;
-        } catch (error) {
+        } catch (error: unknown) {
           console.error("Signup error:", error);
           return token;
         }
       }
       return token;
     },
+
     async session({ session, token }) {
       return {
         ...session,

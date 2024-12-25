@@ -45,11 +45,9 @@ const userLogin = () => {
     const handleGoogleSignIn = async () => {
       setIsLoading(true)
       try {
-        const result = await signIn('google',{
+        const result = await signIn('google-expert', {
           redirect: false,
-          callbackUrl: '/expert/dashboard',
-          isExpert: "true" 
-          
+          callbackUrl: '/expert/dashboard'
         });
     
         if (result?.error) {
