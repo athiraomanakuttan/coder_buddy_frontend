@@ -288,7 +288,7 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     }, [roomId]);
 
     return (
-        <div className="flex flex-col items-center p-4 bg-gray-900 min-h-screen">
+        <div className="flex flex-col items-center p-1 bg-gray-900 min-h-screen">
             <div className="text-white mb-4">
                 {!isConnected && <p>Waiting for another participant to join...</p>}
                 {isConnected && <p>Connected</p>}

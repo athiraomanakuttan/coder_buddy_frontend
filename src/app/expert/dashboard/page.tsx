@@ -50,7 +50,7 @@ const Dashboard = () => {
       const meetingsData = JSON.stringify({_id:meetingData?._id,meetingId:meetingData?.meetingId}) 
       if (data) {
         localStorage.setItem("currentMeeting",meetingsData)
-        router.push('/videoCall')
+        router.push(`/expert/videoCall/${meetingData?.meetingId}`)
       } else {
         throw new Error('Join URL not received');
       } 
