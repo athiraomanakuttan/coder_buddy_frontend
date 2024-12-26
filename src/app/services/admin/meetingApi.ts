@@ -41,3 +41,15 @@ export const getMeetingDetails = async (token : string , page : number , status 
     }
 }
 
+export const approveExpert =  async (token:string, expertId:string)=>{
+    try {
+        const response =  await axios.put(`${API_URL}/api/admin/approve-expert`,{expertId},{ 
+            headers:{ Authorization:`Bearer ${token}`}
+        })
+        return response.data;
+    } catch (error:any) {
+        if(error.response){
+            toast.error(error?.response?.data?.message)
+        }
+    }
+}

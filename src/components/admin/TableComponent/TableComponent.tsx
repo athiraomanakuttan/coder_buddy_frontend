@@ -1,5 +1,7 @@
+'use client'
 import Link from 'next/link';
 import React from 'react'
+import { useRouter } from 'next/navigation';
 
 interface TableComponentProps {
   headings: string[];
@@ -9,6 +11,13 @@ interface TableComponentProps {
 }
 
 const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, role, functions}) => {
+  const router = useRouter()
+  const handleMeetingJoin = (_id : string, meetingId: string)=>{
+    const data =  JSON.stringify({_id,meetingId} )
+    localStorage.setItem("currentMeeting",data)
+    router.push(`/expert/videoCall/${meetingId}`)
+
+  }
   return (
     <div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -58,6 +67,11 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
         {
           role ==="meetingList" &&  <Link href={`/admin/experts/profile/${item['userId']}`} className='text-primary'>View Profile</Link>
         }
+      </td>
+      <td>
+      {
+          role ==="meetingList" &&  <button className='border rounded pl-2 pr-2 pt-1 pb-1 bg-adminprimary text-white ' onClick={()=> handleMeetingJoin(item['_id'],item['meetingId'])}>Join Meeting</button>
+      }
       </td>
     </tr>
 

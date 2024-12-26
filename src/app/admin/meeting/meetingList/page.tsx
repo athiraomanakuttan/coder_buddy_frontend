@@ -2,9 +2,8 @@
 import {useState, useEffect} from 'react'
 import Navbar from "@/components/admin/navbar/Navbar"
 import TableComponent from "@/components/admin/TableComponent/TableComponent"
-import { NewMeetingType } from '@/types/types'
-import { getMeetingDetails } from '@/app/services/admin/meetingApi'
-
+import { NewMeetingType } from '@/types/types' 
+import { getMeetingDetails } from '@/app/services/admin/meetingApi' 
 
 const ClientListPage = () => {
     const [pagination, setPagination] = useState({
@@ -75,9 +74,7 @@ const ClientListPage = () => {
                         onClick={() => handlePageChange(pagination.currentPage + 1)}
                         disabled={pagination.currentPage === pagination.totalPages}
                         className="px-4 py-2 bg-adminprimary text-white rounded disabled:opacity-50"
-                    >
-                        Next
-                    </button>
+                    > Next </button>
                 </div>
             </div>
         </div>

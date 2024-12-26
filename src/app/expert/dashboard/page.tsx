@@ -16,6 +16,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (session?.user && status === "authenticated") {
       setUserAuth(session.user.userData, session.user.access || '');
+      localStorage.setItem("isVerified",session.user.userData.isVerified)
+      setVarified(session.user.userData.isVerified)
     }
   }, [session, status, setUserAuth]);
   const isVarified = localStorage.getItem("isVerified");
