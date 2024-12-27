@@ -1,11 +1,13 @@
 'use client'
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import VideoCall from '@/components/VideoComponent/VideoCall';
 import { verificationMeeting } from '@/app/services/expert/meetingApi';
+import VideoCallUI from '@/components/VideoComponent/VideoCallUI';
 
 export default function VideoCallPage() {
   const router = useRouter();
+  const params = useParams(); // Move this to top level
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [meetingData, setMeetingData] = useState<{
     _id: string;
@@ -15,35 +17,29 @@ export default function VideoCallPage() {
   useEffect(() => {
     const validateMeeting = async () => {
       try {
-        const token = localStorage.getItem("userAccessToken");
-        if (!token) {
-          router.push('/login');
+        const id = params.id; // Access params here instead
+        if (!id) {
+          // router.push('/expert/dashboard');
           return;
         }
-
-        // Get meeting details from localStorage (set during handleJoinMeeting)
-        const storedMeeting = localStorage.getItem('currentMeeting');
-        console.log("storedMeeting",storedMeeting)
-        if (!storedMeeting) {
-        //   router.push('/dashboard');
+        
+        const response = await verificationMeeting(id as string);
+        console.log("response", response);
+        if (!response.status) {
           return;
         }
-        const { _id, meetingId } = JSON.parse(storedMeeting);
-        const response = await verificationMeeting(token,_id,meetingId)
-        if(!response.status){
-            return
-        }
-        setMeetingData({ _id, meetingId });
+        
+        setMeetingData({ _id: id as string, meetingId: id as string });
         setIsAuthorized(true);
       } catch (error) {
         console.error('Meeting validation failed:', error);
-        // router.push('/dashboard');
+        // router.push('/expert/dashboard');
       }
     };
-
+    
     validateMeeting();
-  }, [router]);
-
+  }, [params]); // Add params as a dependency
+    
   const handleCallEnd = () => {
     localStorage.removeItem('currentMeeting');
     // router.push('/dashboard');
@@ -55,9 +51,13 @@ export default function VideoCallPage() {
 
   return (
     <div>
-      <VideoCall 
+      {/* <VideoCall 
         roomId={`${meetingData._id}-${meetingData.meetingId}`}
         onCallEnd={handleCallEnd}
+      /> */}
+      <VideoCallUI 
+      roomId={`${meetingData._id}-${meetingData.meetingId}`}
+      onCallEnd={handleCallEnd}
       />
     </div>
   );

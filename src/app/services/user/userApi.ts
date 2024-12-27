@@ -147,7 +147,7 @@ export const googleSignup = async (userData: {
 }
 
 export const addPost = async (token: string, data: PostType) => {
-  console.log(data)
+  console.log(token)
   console.log('token',token)
   if (!token) {
     toast.error("Session timeout. Please login");

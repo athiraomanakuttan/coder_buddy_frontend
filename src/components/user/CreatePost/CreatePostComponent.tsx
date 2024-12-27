@@ -24,7 +24,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     description: "",
     technologies: [""],
     uploads: "",
-    status : 0
   })
   useEffect(()=>{
     const userString = localStorage.getItem("user");
@@ -68,7 +67,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
           description: "",
           technologies: [],
           uploads: "",
-          status: 1
         });
         setTechnologies('');
         setFileInput(null);

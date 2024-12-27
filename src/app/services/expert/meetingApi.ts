@@ -14,11 +14,9 @@ export const getadminexpertMeeting = async (token: string)=>{
     }
 }
 
-export  const verificationMeeting = async (token: string, id: string, meetingId:string)=>{
+export  const verificationMeeting = async (meetingId:string)=>{
     try {
-        const response =  await axios.post(`${API_URL}/api/expert/meetings/join`,{id,meetingId},{
-            headers:{ Authorization:`Bearer ${token}`}
-        })
+        const response =  await axios.post(`${API_URL}/api/expert/meetings/join`,{meetingId},)
         return response.data
     } catch (error:any) {
         if(error?.response?.data){

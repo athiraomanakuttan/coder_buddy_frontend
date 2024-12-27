@@ -14,7 +14,9 @@ const Dashboard = () => {
   const setUserAuth = useAuthStore(state => state.setUserAuth);
 
   useEffect(() => {
-    if (session?.user && status === "authenticated") {
+    console.log("session",session)
+    if ( session?.user && status === "authenticated") {
+      console.log("inside of this",session.user)
       setUserAuth(session.user.userData, session.user.access || '');
       localStorage.setItem("isVerified",session.user.userData.isVerified)
       setVarified(session.user.userData.isVerified)
@@ -36,6 +38,7 @@ const Dashboard = () => {
   // To get the verification meeting details with admin
   const getMeetingDetails = async () => {
     const response = await getadminexpertMeeting(token);
+    console.log("response")
     if (response) {
       setMeetingData(response.data);
     }
@@ -47,15 +50,10 @@ const Dashboard = () => {
       console.error('Meeting ID not found');
       return;
     } 
-      setIsJoining(true); 
-      const data =  await verificationMeeting(token, meetingData?._id ,meetingData?.meetingId) 
-      const meetingsData = JSON.stringify({_id:meetingData?._id,meetingId:meetingData?.meetingId}) 
-      if (data) {
-        localStorage.setItem("currentMeeting",meetingsData)
-        router.push(`/expert/videoCall/${meetingData?.meetingId}`)
-      } else {
-        throw new Error('Join URL not received');
-      } 
+      
+        // localStorage.setItem("currentMeeting",meetingsData)
+        router.push(`/videoCall/${meetingData?.meetingId}`)
+      
       setIsJoining(false);
      
   };

@@ -15,7 +15,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
   const handleMeetingJoin = (_id : string, meetingId: string)=>{
     const data =  JSON.stringify({_id,meetingId} )
     localStorage.setItem("currentMeeting",data)
-    router.push(`/expert/videoCall/${meetingId}`)
+    router.push(`/videoCall/${meetingId}`)
 
   }
   return (

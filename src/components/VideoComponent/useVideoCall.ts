@@ -1,33 +1,9 @@
-'use client';
-
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Video, VideoOff, Mic, MicOff, PhoneOff, Monitor, StopCircle } from 'lucide-react';
+import { IceCandidateMessage, OfferMessage, AnswerMessage } from './types';
 
-interface IceCandidateMessage {
-    candidate: RTCIceCandidateInit;
-}
-
-interface OfferMessage {
-    offer: RTCSessionDescriptionInit;
-    from: string;
-    roomId: string;
-}
-
-interface AnswerMessage {
-    answer: RTCSessionDescriptionInit;
-    from: string;
-    roomId: string; 
-}
-
-interface VideoCallProps {
-    roomId: string;
-    onCallEnd?: () => void;
-}
-
-const socket: Socket = io(process.env.NEXT_PUBLIC_API_URI as string);
-
-const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
+export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
+    const socketRef = useRef<Socket | null>(null);
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
     const peerConnection = useRef<RTCPeerConnection | null>(null);
@@ -43,23 +19,37 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     const [participantCount, setParticipantCount] = useState(1);
     const [isRecording, setIsRecording] = useState(false);
 
-    const toggleVideo = () => {
-        if (localStreamRef.current) {
-            const videoTrack = localStreamRef.current.getVideoTracks()[0];
-            if (videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                setIsVideoEnabled(!isVideoEnabled);
-            }
-        }
-    };
+    const setupPeerConnection = async () => {
+        const servers: RTCConfiguration = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
 
-    const toggleAudio = () => {
-        if (localStreamRef.current) {
-            const audioTrack = localStreamRef.current.getAudioTracks()[0];
-            if (audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-                setIsAudioEnabled(!isAudioEnabled);
+        peerConnection.current = new RTCPeerConnection(servers);
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+
+            localStreamRef.current = stream;
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = stream;
             }
+
+            stream.getTracks().forEach((track) => {
+                if (peerConnection.current) {
+                    peerConnection.current.addTrack(track, stream);
+                }
+            });
+
+            return stream;
+        } catch (error) {
+            console.error('Error accessing media devices:', error);
+            throw error;
         }
     };
 
@@ -109,8 +99,10 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     };
 
     const stopRecording = () => {
-        mediaRecorderRef.current?.stop();
-        setIsRecording(false);
+        if (mediaRecorderRef.current && isRecording) {
+            mediaRecorderRef.current.stop();
+            setIsRecording(false);
+        }
     };
 
     const startScreenShare = async () => {
@@ -171,6 +163,26 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
         }
     };
 
+    const toggleVideo = () => {
+        if (localStreamRef.current) {
+            const videoTrack = localStreamRef.current.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                setIsVideoEnabled(!isVideoEnabled);
+            }
+        }
+    };
+
+    const toggleAudio = () => {
+        if (localStreamRef.current) {
+            const audioTrack = localStreamRef.current.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                setIsAudioEnabled(!isAudioEnabled);
+            }
+        }
+    };
+
     const endCall = () => {
         if (isRecording) {
             stopRecording();
@@ -180,62 +192,61 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
         }
         localStreamRef.current?.getTracks().forEach(track => track.stop());
         peerConnection.current?.close();
-        socket.emit('leave-room', { roomId });
+        socketRef.current?.emit('leave-room', { roomId });
         onCallEnd?.();
     };
 
     useEffect(() => {
-        const setupCall = async () => {
+        socketRef.current = io(process.env.NEXT_PUBLIC_API_URI as string, {
+            transports: ['websocket'],
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000
+        });
+
+        const socket = socketRef.current;
+
+        const initializeConnection = async () => {
             try {
-                const servers: RTCConfiguration = { 
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
-                    ] 
-                };
+                await setupPeerConnection();
 
-                peerConnection.current = new RTCPeerConnection(servers);
+                if (peerConnection.current) {
+                    peerConnection.current.onicecandidate = (event) => {
+                        if (event.candidate) {
+                            socket.emit('ice-candidate', {
+                                candidate: event.candidate,
+                                roomId
+                            });
+                        }
+                    };
 
-                peerConnection.current.onicecandidate = (event) => {
-                    if (event.candidate) {
-                        socket.emit('ice-candidate', { 
-                            candidate: event.candidate,
-                            roomId 
-                        });
-                    }
-                };
-
-                peerConnection.current.ontrack = (event) => {
-                    console.log('Received remote track:', event.streams[0]);
-                    if (remoteVideoRef.current) {
-                        remoteVideoRef.current.srcObject = event.streams[0];
-                    }
-                };
-
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: true
-                });
-
-                localStreamRef.current = stream;
-                if (localVideoRef.current) {
-                    localVideoRef.current.srcObject = stream;
+                    peerConnection.current.ontrack = (event) => {
+                        console.log('Received remote track:', event.streams[0]);
+                        if (remoteVideoRef.current) {
+                            remoteVideoRef.current.srcObject = event.streams[0];
+                        }
+                    };
                 }
-
-                stream.getTracks().forEach((track) => {
-                    if (peerConnection.current) {
-                        peerConnection.current.addTrack(track, stream);
-                    }
-                });
-
             } catch (error) {
-                console.error('Error setting up call:', error);
+                console.error('Error setting up connection:', error);
                 alert('Failed to access camera/microphone');
             }
         };
 
-        setupCall();
-        socket.emit('join-room', { roomId });
+        socket.on('connect', () => {
+            console.log('Connected to socket server:', socket.id);
+            socket.emit('join-room', { roomId });
+            initializeConnection();
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Socket connection error:', error);
+        });
+
+        socket.on('disconnect', (reason) => {
+            console.log('Socket disconnected:', reason);
+            setIsConnected(false);
+        });
 
         socket.on('room-full', () => {
             alert('Room is full. Only two participants are allowed.');
@@ -243,9 +254,10 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
         });
 
         socket.on('participant-count', async (count: number) => {
+            console.log('Participant count:', count);
             setParticipantCount(count);
             if (count === 2) {
-                // Create and send offer when second participant joins
+                setIsConnected(true);
                 try {
                     if (peerConnection.current) {
                         const offer = await peerConnection.current.createOffer();
@@ -259,7 +271,6 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
                 } catch (error) {
                     console.error('Error creating offer:', error);
                 }
-                setIsConnected(true);
                 startRecording();
             }
         });
@@ -272,6 +283,16 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
             }
             if (isRecording) {
                 stopRecording();
+            }
+        });
+
+        socket.on('ice-candidate', async (data: IceCandidateMessage) => {
+            try {
+                if (data.candidate && peerConnection.current) {
+                    await peerConnection.current.addIceCandidate(new RTCIceCandidate(data.candidate));
+                }
+            } catch (error) {
+                console.error('Error adding ICE candidate:', error);
             }
         });
 
@@ -305,96 +326,29 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
             }
         });
 
-        socket.on('ice-candidate', async (data: IceCandidateMessage) => {
-            if (data.candidate && peerConnection.current) {
-                await peerConnection.current.addIceCandidate(data.candidate);
-            }
-        });
-
         return () => {
             endCall();
-            socket.disconnect();
+            if (socket) {
+                socket.disconnect();
+            }
         };
     }, [roomId]);
 
-    return (
-        <div className="flex flex-col items-center p-1 bg-gray-900 min-h-screen">
-            <div className="text-white mb-4">
-                {!isConnected && <p>Waiting for another participant to join...</p>}
-                {isConnected && <p>Connected</p>}
-                {isRecording && (
-                    <div className="flex items-center gap-2 text-red-500">
-                        <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-                        Recording
-                    </div>
-                )}
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-4 mb-4">
-                <div className="relative">
-                    <video
-                        ref={localVideoRef}
-                        autoPlay
-                        muted
-                        playsInline
-                        className="w-96 h-72 rounded-lg object-cover bg-gray-800"
-                    />
-                    <p className="absolute bottom-2 left-2 text-white bg-black bg-opacity-50 px-2 rounded">
-                        You {isScreenSharing ? '(Screen)' : ''}
-                    </p>
-                </div>
-                
-                <div className="relative">
-                    <video
-                        ref={remoteVideoRef}
-                        autoPlay
-                        playsInline
-                        className="w-96 h-72 rounded-lg object-cover bg-gray-800"
-                    />
-                    <p className="absolute bottom-2 left-2 text-white bg-black bg-opacity-50 px-2 rounded">
-                        Remote User
-                    </p>
-                </div>
-            </div>
-
-            <div className="flex gap-4">
-                <button
-                    onClick={toggleVideo}
-                    className="p-3 rounded-full bg-gray-700 hover:bg-gray-600 text-white"
-                >
-                    {isVideoEnabled ? <Video size={24} /> : <VideoOff size={24} />}
-                </button>
-                <button
-                    onClick={toggleAudio}
-                    className="p-3 rounded-full bg-gray-700 hover:bg-gray-600 text-white"
-                >
-                    {isAudioEnabled ? <Mic size={24} /> : <MicOff size={24} />}
-                </button>
-                <button
-                    onClick={isScreenSharing ? stopScreenShare : startScreenShare}
-                    className={`p-3 rounded-full ${
-                        isScreenSharing ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-700 hover:bg-gray-600'
-                    } text-white`}
-                >
-                    <Monitor size={24} />
-                </button>
-                <button
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className={`p-3 rounded-full ${
-                        isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-700 hover:bg-gray-600'
-                    } text-white`}
-                >
-                    <StopCircle size={24} />
-                </button>
-                <button
-                    onClick={endCall}
-                    className="p-3 rounded-full bg-red-600 hover:bg-red-700 text-white"
-                >
-                    <PhoneOff size={24} />
-                </button>
-            </div>
-        </div>
-    );
+    return {
+        localVideoRef,
+        remoteVideoRef,
+        isConnected,
+        isVideoEnabled,
+        isAudioEnabled,
+        isScreenSharing,
+        isRecording,
+        participantCount,
+        toggleVideo,
+        toggleAudio,
+        startScreenShare,
+        stopScreenShare,
+        startRecording,
+        stopRecording,
+        endCall
+    };
 };
-
-export default VideoCall;

@@ -91,7 +91,7 @@ export interface ProfileType extends Profile {
     technologies:string[],
     uploads ?: string | File | null,
     comments ?: CommentType[],
-    status : number
+    status ?: number
   }
 
   export type NewMeetingType = { title: string, meetingDate : string , expertId : string}
