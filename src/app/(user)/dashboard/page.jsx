@@ -14,13 +14,12 @@ const dashboard = () => {
   const setUserAuth = useAuthStore(state => state.setUserAuth);
 
   useEffect(() => {
-    if (session?.user && status === "authenticated") {
+    if (session?.user && status === "authenticated" && session.user.provider === "google") {
       setUserAuth(session.user.userData, session.user.access || '');
     }
   }, [session, status, setUserAuth]);
 
   return (
-<SessionProvider >
     <div className=" m-0 p-0 flex">
       <div className=" p-0 m-0">
         <Navbar />
@@ -52,7 +51,6 @@ const dashboard = () => {
         </div>
       </div>
     </div>
-    </SessionProvider>
   );
 };
 

@@ -1,8 +1,36 @@
 "use client"
 
 import Link from "next/link";
+import useAuthStore from "@/store/authStore";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const Navbar = () => {
+  const router = useRouter()
+  const logout = useAuthStore((state) => state.logout);
+  
+  const handleLogout = async () => {
+    const cookies = document.cookie.split(";");
+    console.log("cookies",cookies)
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+      document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; SameSite=Lax`;
+      document.cookie = `${name}=; path=/; domain=${window.location.hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; SameSite=Lax`;
+    }
+    localStorage.clear();
+    sessionStorage.clear();
+    logout();
+    await signOut({ 
+      redirect: false,
+      callbackUrl: "/login"
+    });
+    setTimeout(() => {
+      router.push('/login');
+      router.refresh();
+    }, 100);
+  }
   return (
     <div className="navbar m-0 p-0">
       
@@ -17,7 +45,10 @@ const Navbar = () => {
           <li><Link href='/profile' className="menu_link">Your profile</Link></li>
           <li><Link href='' className="menu_link">Feedbacks</Link></li>
           <li><Link href='' className="menu_link">Community</Link></li>
-          <li><Link href='' className="menu_link">log out</Link></li>
+          <li><Link href="" className="menu_link" onClick={(e) => { e.preventDefault(); handleLogout(); }}
+  >
+    Log out
+  </Link></li>
         </ul>
       </div>
     </div>

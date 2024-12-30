@@ -14,9 +14,7 @@ const Dashboard = () => {
   const setUserAuth = useAuthStore(state => state.setUserAuth);
 
   useEffect(() => {
-    console.log("session",session)
     if ( session?.user && status === "authenticated") {
-      console.log("inside of this",session.user)
       setUserAuth(session.user.userData, session.user.access || '');
       localStorage.setItem("isVerified",session.user.userData.isVerified)
       setVarified(session.user.userData.isVerified)
@@ -64,7 +62,7 @@ const Dashboard = () => {
         <Navbar />
       </div>
       <div className="border w-100">
-        {varified === 1 ? (
+        {varified === "1" ? (
           <div className="container mt-5 flex justify-evenly">
             <div className="border pl-10 pr-10 pt-3 pb-3 text-center">
               <h5>total post</h5>

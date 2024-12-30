@@ -297,12 +297,14 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         });
 
         socket.on('offer', async (data: OfferMessage) => {
+
             if (!peerConnection.current) return;
             
             try {
                 await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.offer));
                 const answer = await peerConnection.current.createAnswer();
                 await peerConnection.current.setLocalDescription(answer);
+                console.log("answer",answer)
                 socket.emit('answer', { 
                     answer,
                     to: data.from,

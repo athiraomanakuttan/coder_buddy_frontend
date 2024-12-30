@@ -46,8 +46,10 @@ const useAuthStore = create<AuthState>()(
         },
         logout: () => {
           if (typeof window !== 'undefined') {
-            localStorage.removeItem('user');
-            localStorage.removeItem('userAccessToken');
+            // localStorage.removeItem('user');
+            // localStorage.removeItem('userAccessToken');
+            localStorage.clear();
+            sessionStorage.clear()
           }
           set({ user: null, token: null, isAuthenticated: false, isLoading: false });
         },
