@@ -230,11 +230,29 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
 
                     peerConnection.current.ontrack = (event) => {
                         console.log('Received remote track:', event.streams[0]);
+                        console.log('Track kind:', event.track.kind);
+                        console.log('Track enabled:', event.track.enabled);
+                        console.log('Track readyState:', event.track.readyState);
                         if (remoteVideoRef.current && event.streams[0]) {
+                            console.log('Setting remote video source');
                             remoteVideoRef.current.srcObject = event.streams[0];
+                            
+                            // Add event listeners to the remote video element
+                            remoteVideoRef.current.onloadedmetadata = () => {
+                                console.log('Remote video metadata loaded');
+                            };
+                            remoteVideoRef.current.onplay = () => {
+                                console.log('Remote video started playing');
+                            };
+                            remoteVideoRef.current?.play().catch(e => console.error('Error auto-playing:', e));
                         }
                     };
 
+                    peerConnection.current.oniceconnectionstatechange = () => {
+                        console.log('ICE Connection State:', peerConnection.current?.iceConnectionState);
+                        console.log('Connection State:', peerConnection.current?.connectionState);
+                        console.log('Signaling State:', peerConnection.current?.signalingState);
+                    };
                     peerConnection.current.onconnectionstatechange = () => {
                         console.log('ICE Connection State:', peerConnection.current?.iceConnectionState);
                         if (peerConnection.current?.connectionState === 'failed') {
@@ -249,10 +267,12 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             }
         };
 
-        socket.on('connect', () => {
-            socket.emit('join-room', { roomId }); 
-            initializeConnection();
-        });
+        socket.on('connect', async () => {
+    console.log('Socket connected, initializing connection...');
+    await initializeConnection();
+    console.log('Connection initialized, joining room...');
+    socket.emit('join-room', { roomId }); 
+});
 
         socket.on('connect_error', (error) => {
             console.error('Socket connection error:', error);

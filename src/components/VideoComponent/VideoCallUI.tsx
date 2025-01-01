@@ -21,7 +21,10 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
         stopRecording,
         endCall
     } = useVideoCall(roomId, onCallEnd);
+    console.log("localVideoRef",localVideoRef)
+    console.log("remoteVideoRef",remoteVideoRef)
     return (
+        
         <div className="flex flex-col items-center p-1 bg-gray-900 min-h-screen">
             {/* Connection Status */}
             <div className="text-white mb-4">
@@ -62,12 +65,15 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
                 
                 {/* Remote Video */}
                 <div className="relative flex-1 min-w-[320px]">
-                    <video
-                        ref={remoteVideoRef}
-                        autoPlay
-                        playsInline
-                        className="w-full h-96 rounded-lg object-cover bg-gray-800 shadow-lg"
-                    />
+                <video
+    ref={remoteVideoRef}
+    autoPlay
+    playsInline
+    className="w-full h-96 rounded-lg object-cover bg-gray-800 shadow-lg"
+    onLoadedMetadata={() => console.log('Remote video loadedmetadata event')}
+    onPlay={() => console.log('Remote video play event')}
+    onError={(e) => console.error('Remote video error:', e)}
+/>
                     <div className="absolute bottom-2 left-2 text-white bg-black bg-opacity-50 px-2 py-1 rounded-md text-sm">
                         Remote User
                     </div>
