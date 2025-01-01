@@ -75,14 +75,14 @@ const userLogin = () => {
                 <input
                   type="email"
                   placeholder="Enter your email id"
-                  className="border rounded w-100 p-2 mb-3"
+                  className="border rounded w-100 p-2 mb-3 text-black"
                   value={formData.email}
                   onChange={(e)=>steFormData({...formData,email : e.target.value})}
                 />
                 <input
                   type="password"
                   placeholder="Enter your password"
-                  className="border rounded w-100 p-2 mb-3"
+                  className="border rounded w-100 p-2 mb-3 text-black"
                   value={formData.password}
                   onChange={(e)=>steFormData({...formData,password : e.target.value})}
                 />

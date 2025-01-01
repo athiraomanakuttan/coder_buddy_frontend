@@ -21,7 +21,6 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
         stopRecording,
         endCall
     } = useVideoCall(roomId, onCallEnd);
-
     return (
         <div className="flex flex-col items-center p-1 bg-gray-900 min-h-screen">
             {/* Connection Status */}

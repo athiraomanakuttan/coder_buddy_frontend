@@ -1,5 +1,7 @@
 export interface IceCandidateMessage {
-    candidate: RTCIceCandidateInit;
+    candidate: RTCIceCandidate;
+    from: string;  // Adding the missing 'from' property
+    roomId: string;
 }
 
 export interface OfferMessage {
@@ -11,6 +13,7 @@ export interface OfferMessage {
 export interface AnswerMessage {
     answer: RTCSessionDescriptionInit;
     from: string;
+    to: string;
     roomId: string;
 }
 

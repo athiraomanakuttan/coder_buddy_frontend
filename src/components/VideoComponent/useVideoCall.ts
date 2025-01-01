@@ -42,6 +42,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
 
             stream.getTracks().forEach((track) => {
                 if (peerConnection.current) {
+                    console.log('Adding track:', track.kind);
                     peerConnection.current.addTrack(track, stream);
                 }
             });
@@ -68,34 +69,39 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             });
         });
 
-        const mediaRecorder = new MediaRecorder(combinedStream, {
-            mimeType: 'video/webm;codecs=vp8,opus'
-        });
-
-        mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-                recordedChunksRef.current.push(event.data);
-            }
-        };
-
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunksRef.current, {
-                type: 'video/webm'
+        try {
+            const mediaRecorder = new MediaRecorder(combinedStream, {
+                mimeType: 'video/webm;codecs=vp8,opus'
             });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `recording-${new Date().toISOString()}.webm`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-            recordedChunksRef.current = [];
-        };
 
-        mediaRecorderRef.current = mediaRecorder;
-        mediaRecorder.start(1000);
-        setIsRecording(true);
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunksRef.current.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunksRef.current, {
+                    type: 'video/webm'
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                document.body.appendChild(a);
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `recording-${new Date().toISOString()}.webm`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                recordedChunksRef.current = [];
+            };
+
+            mediaRecorderRef.current = mediaRecorder;
+            mediaRecorder.start(1000);
+            setIsRecording(true);
+        } catch (error) {
+            console.error('Error starting recording:', error);
+        }
     };
 
     const stopRecording = () => {
@@ -193,6 +199,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         localStreamRef.current?.getTracks().forEach(track => track.stop());
         peerConnection.current?.close();
         socketRef.current?.emit('leave-room', { roomId });
+        setIsConnected(false);
         onCallEnd?.();
     };
 
@@ -215,15 +222,24 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                         if (event.candidate) {
                             socket.emit('ice-candidate', {
                                 candidate: event.candidate,
-                                roomId
+                                roomId,
+                                from: socket.id
                             });
                         }
                     };
 
                     peerConnection.current.ontrack = (event) => {
                         console.log('Received remote track:', event.streams[0]);
-                        if (remoteVideoRef.current) {
+                        if (remoteVideoRef.current && event.streams[0]) {
                             remoteVideoRef.current.srcObject = event.streams[0];
+                        }
+                    };
+
+                    peerConnection.current.onconnectionstatechange = () => {
+                        console.log('ICE Connection State:', peerConnection.current?.iceConnectionState);
+                        if (peerConnection.current?.connectionState === 'failed') {
+                            console.log('Peer connection failed, attempting to reconnect...');
+                            socket.emit('join-room', { roomId });
                         }
                     };
                 }
@@ -234,13 +250,13 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         };
 
         socket.on('connect', () => {
-            console.log('Connected to socket server:', socket.id);
-            socket.emit('join-room', { roomId });
+            socket.emit('join-room', { roomId }); 
             initializeConnection();
         });
 
         socket.on('connect_error', (error) => {
             console.error('Socket connection error:', error);
+            setIsConnected(false);
         });
 
         socket.on('disconnect', (reason) => {
@@ -256,10 +272,13 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         socket.on('participant-count', async (count: number) => {
             console.log('Participant count:', count);
             setParticipantCount(count);
-            if (count === 2) {
+            if (count === 2 && !isConnected) {  // Add this check
                 setIsConnected(true);
                 try {
-                    if (peerConnection.current) {
+                    if (peerConnection.current && 
+                        peerConnection.current.signalingState === 'stable' &&
+                        !peerConnection.current.currentLocalDescription) {  // Check if we haven't already created an offer
+                        console.log('Creating initial offer...');
                         const offer = await peerConnection.current.createOffer();
                         await peerConnection.current.setLocalDescription(offer);
                         socket.emit('offer', { 
@@ -271,7 +290,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                 } catch (error) {
                     console.error('Error creating offer:', error);
                 }
-                startRecording();
             }
         });
 
@@ -288,7 +306,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
 
         socket.on('ice-candidate', async (data: IceCandidateMessage) => {
             try {
-                if (data.candidate && peerConnection.current) {
+                if (data.candidate && peerConnection.current && data?.from !== socket.id) {
                     await peerConnection.current.addIceCandidate(new RTCIceCandidate(data.candidate));
                 }
             } catch (error) {
@@ -297,14 +315,31 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         });
 
         socket.on('offer', async (data: OfferMessage) => {
-
-            if (!peerConnection.current) return;
+            if (!peerConnection.current || data.from === socket.id) return;
             
+            console.log('Received offer from:', data.from, 'Current state:', peerConnection.current.signalingState);
             try {
-                await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.offer));
-                const answer = await peerConnection.current.createAnswer();
-                await peerConnection.current.setLocalDescription(answer);
-                console.log("answer",answer)
+                const pc = peerConnection.current;
+                
+                if (pc.signalingState !== "stable") {
+                    console.log('Handling colliding offers...');
+                    // Only the "polite" peer rolls back
+                    if (data.from > socket.id!) {
+                        await Promise.all([
+                            pc.setLocalDescription({type: "rollback"}),
+                            pc.setRemoteDescription(new RTCSessionDescription(data.offer))
+                        ]);
+                    } else {
+                        console.log('Ignoring offer as impolite peer');
+                        return;
+                    }
+                } else {
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+                }
+                
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+                
                 socket.emit('answer', { 
                     answer,
                     to: data.from,
@@ -315,13 +350,20 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                 console.error('Error handling offer:', error);
             }
         });
+        
 
         socket.on('answer', async (data: AnswerMessage) => {
+            console.log('Received answer, signaling state:', peerConnection.current?.signalingState);
+    
             try {
-                if (peerConnection.current) {
+                if (peerConnection.current && 
+                    peerConnection.current.signalingState === 'have-local-offer') {
                     await peerConnection.current.setRemoteDescription(
                         new RTCSessionDescription(data.answer)
                     );
+                } else {
+                    console.log('Peer connection not in correct state for setting remote answer:', 
+                               peerConnection.current?.signalingState);
                 }
             } catch (error) {
                 console.error('Error handling answer:', error);
@@ -330,9 +372,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
 
         return () => {
             endCall();
-            if (socket) {
-                socket.disconnect();
-            }
+            socket.disconnect();
         };
     }, [roomId]);
 
