@@ -18,7 +18,81 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [participantCount, setParticipantCount] = useState(1);
     const [isRecording, setIsRecording] = useState(false);
-    
+    const pendingCandidatesRef = useRef<RTCIceCandidate[]>([]);
+
+    const handleIceCandidate = async (candidate: RTCIceCandidate) => {
+        try {
+            const pc = peerConnection.current;
+            if (!pc) return;
+
+            if (pc.remoteDescription && pc.remoteDescription.type) {
+                await pc.addIceCandidate(candidate);
+            } else {
+                console.log('Storing ICE candidate for later');
+                pendingCandidatesRef.current.push(candidate);
+            }
+        } catch (error) {
+            console.error('Error handling ICE candidate:', error);
+        }
+    };
+
+    const handleRemoteStream = async (stream: MediaStream) => {
+        if (!remoteVideoRef.current) return;
+        
+        try {
+            remoteVideoRef.current.srcObject = stream;
+            
+            // Wait for metadata to load before attempting to play
+            await new Promise((resolve) => {
+                if (!remoteVideoRef.current) return;
+                
+                remoteVideoRef.current.onloadedmetadata = () => {
+                    console.log('Remote video metadata loaded');
+                    resolve(true);
+                };
+            });
+
+            // Attempt to play with retry logic
+            const attemptPlay = async (attempts = 3) => {
+                try {
+                    if (!remoteVideoRef.current) return;
+                    await remoteVideoRef.current.play();
+                    console.log('Remote video started playing');
+                } catch (error) {
+                    if (error instanceof Error) {
+                        console.warn(`Play attempt failed: ${error.message}`);
+                        if (attempts > 0 && remoteVideoRef.current) {
+                            // Wait a bit before retrying
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                            await attemptPlay(attempts - 1);
+                        } else {
+                            console.error('Failed to auto-play after all attempts');
+                        }
+                    }
+                }
+            };
+
+            await attemptPlay();
+        } catch (error) {
+            console.error('Error handling remote stream:', error);
+        }
+    };
+
+    const processPendingCandidates = async () => {
+        const pc = peerConnection.current;
+        if (!pc || !pc.remoteDescription) return;
+
+        console.log(`Processing ${pendingCandidatesRef.current.length} pending candidates`);
+        
+        try {
+            for (const candidate of pendingCandidatesRef.current) {
+                await pc.addIceCandidate(candidate);
+            }
+            pendingCandidatesRef.current = [];
+        } catch (error) {
+            console.error('Error processing pending candidates:', error);
+        }
+    };
     const setupPeerConnection = async () => {
         const servers: RTCConfiguration = {
             iceServers: [
@@ -26,27 +100,75 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                 { urls: 'stun:stun1.l.google.com:19302' }
             ]
         };
-
+    
         peerConnection.current = new RTCPeerConnection(servers);
-
+    
         try {
+            // Get local media stream
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: true
             });
-
+    
+            // Set up local video
             localStreamRef.current = stream;
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = stream;
+                // Ensure local video plays
+                try {
+                    await localVideoRef.current.play();
+                } catch (error) {
+                    console.warn('Local video autoplay failed:', error);
+                }
             }
-
+    
+            // Add tracks to peer connection
             stream.getTracks().forEach((track) => {
                 if (peerConnection.current) {
                     console.log('Adding track:', track.kind);
                     peerConnection.current.addTrack(track, stream);
                 }
             });
-
+    
+            // Set up remote video handling
+            peerConnection.current.ontrack = async (event) => {
+                console.log('Received remote track:', event.streams[0]);
+                if (remoteVideoRef.current && event.streams[0]) {
+                    remoteVideoRef.current.srcObject = event.streams[0];
+                    
+                    try {
+                        // Wait for metadata to load
+                        await new Promise((resolve) => {
+                            if (!remoteVideoRef.current) return;
+                            remoteVideoRef.current.onloadedmetadata = () => {
+                                console.log('Remote video metadata loaded');
+                                resolve(true);
+                            };
+                        });
+    
+                        // Try to play with retries
+                        let attempts = 3;
+                        while (attempts > 0) {
+                            try {
+                                await remoteVideoRef.current.play();
+                                console.log('Remote video started playing');
+                                break;
+                            } catch (error) {
+                                attempts--;
+                                if (attempts === 0) {
+                                    console.error('Failed to play remote video after all attempts');
+                                    break;
+                                }
+                                console.warn(`Play attempt failed, retrying... (${attempts} attempts left)`);
+                                await new Promise(resolve => setTimeout(resolve, 1000));
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error setting up remote video:', error);
+                    }
+                }
+            };
+    
             return stream;
         } catch (error) {
             console.error('Error accessing media devices:', error);
@@ -325,38 +447,33 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             }
         });
 
-        socket.on('ice-candidate', async (data: IceCandidateMessage) => {
-            try {
-                if (data.candidate && peerConnection.current && data?.from !== socket.id) {
-                    await peerConnection.current.addIceCandidate(new RTCIceCandidate(data.candidate));
-                }
-            } catch (error) {
-                console.error('Error adding ICE candidate:', error);
+         socket.on('ice-candidate', async (data: IceCandidateMessage) => {
+            if (data.candidate && peerConnection.current && data?.from !== socket.id) {
+                await handleIceCandidate(new RTCIceCandidate(data.candidate));
             }
         });
 
         socket.on('offer', async (data: OfferMessage) => {
             if (!peerConnection.current || data.from === socket.id) return;
             
-            console.log('Received offer from:', data.from, 'Current state:', peerConnection.current.signalingState);
             try {
                 const pc = peerConnection.current;
                 
                 if (pc.signalingState !== "stable") {
-                    console.log('Handling colliding offers...');
-                    // Only the "polite" peer rolls back
                     if (data.from > socket.id!) {
                         await Promise.all([
                             pc.setLocalDescription({type: "rollback"}),
                             pc.setRemoteDescription(new RTCSessionDescription(data.offer))
                         ]);
                     } else {
-                        console.log('Ignoring offer as impolite peer');
                         return;
                     }
                 } else {
                     await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
                 }
+                
+                // Add this line to process pending candidates
+                await processPendingCandidates();
                 
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
@@ -370,21 +487,18 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             } catch (error) {
                 console.error('Error handling offer:', error);
             }
-        });
+        })
         
 
         socket.on('answer', async (data: AnswerMessage) => {
-            console.log('Received answer, signaling state:', peerConnection.current?.signalingState);
-    
             try {
                 if (peerConnection.current && 
                     peerConnection.current.signalingState === 'have-local-offer') {
                     await peerConnection.current.setRemoteDescription(
                         new RTCSessionDescription(data.answer)
                     );
-                } else {
-                    console.log('Peer connection not in correct state for setting remote answer:', 
-                               peerConnection.current?.signalingState);
+                    
+                    await processPendingCandidates();
                 }
             } catch (error) {
                 console.error('Error handling answer:', error);
