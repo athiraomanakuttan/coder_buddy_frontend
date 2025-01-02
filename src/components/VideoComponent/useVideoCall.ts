@@ -18,7 +18,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [participantCount, setParticipantCount] = useState(1);
     const [isRecording, setIsRecording] = useState(false);
-
+    
     const setupPeerConnection = async () => {
         const servers: RTCConfiguration = {
             iceServers: [
@@ -201,6 +201,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         socketRef.current?.emit('leave-room', { roomId });
         setIsConnected(false);
         onCallEnd?.();
+        
     };
 
     useEffect(() => {

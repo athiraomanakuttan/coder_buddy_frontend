@@ -3,6 +3,7 @@ import React from 'react';
 import { Video, VideoOff, Mic, MicOff, PhoneOff, Monitor, StopCircle } from 'lucide-react';
 import { useVideoCall } from './useVideoCall';
 import { VideoCallProps } from './types';
+import { useRouter } from 'next/navigation';
 
 const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     const {
@@ -21,8 +22,17 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
         stopRecording,
         endCall
     } = useVideoCall(roomId, onCallEnd);
-    console.log("localVideoRef",localVideoRef)
-    console.log("remoteVideoRef",remoteVideoRef)
+    const isAdmin = localStorage.getItem("isAdmin") || ""
+    const router = useRouter()
+    const handleEndCall = ()=>{
+        endCall()
+        if(isAdmin){
+            router.push('/admin/dashboard')
+        }
+        else{
+            router.push('/expert/dashboard')
+        }
+    }
     return (
         
         <div className="flex flex-col items-center p-1 bg-gray-900 min-h-screen">
@@ -111,7 +121,7 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
                                 <StopCircle size={24} />
                             </button>
                             <button
-                                onClick={endCall}
+                                onClick={handleEndCall}
                                 className="p-3 rounded-full bg-red-600 hover:bg-red-700 text-white"
                             >
                                 <PhoneOff size={24} />

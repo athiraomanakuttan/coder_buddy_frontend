@@ -38,6 +38,7 @@ const adminLogin = () => {
           response.accessToken 
         )
         toast.success(response.message)
+        localStorage.setItem("isAdmin","1")
         router.push('/admin/dashboard')
       }
     } catch (error) {
