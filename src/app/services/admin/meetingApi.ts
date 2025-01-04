@@ -41,9 +41,9 @@ export const getMeetingDetails = async (token : string , page : number , status 
     }
 }
 
-export const approveExpert =  async (token:string, expertId:string)=>{
+export const changeExpert =  async (token:string, expertId:string , meetingId :  string ,  status :  string)=>{
     try {
-        const response =  await axios.put(`${API_URL}/api/admin/approve-expert`,{expertId},{ 
+        const response =  await axios.put(`${API_URL}/api/admin/approve-expert`,{expertId,meetingId,status},{ 
             headers:{ Authorization:`Bearer ${token}`}
         })
         return response.data;

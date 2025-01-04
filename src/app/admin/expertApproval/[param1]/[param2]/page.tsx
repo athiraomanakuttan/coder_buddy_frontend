@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import {toast} from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation';
-import { rejectExpertRequest } from '@/app/services/admin/adminApi';
-import { approveExpert } from '@/app/services/admin/meetingApi';
+import { changeExpert } from '@/app/services/admin/meetingApi';
 const Page = () => {
   
-  const {id} = useParams()
+  const {param1,param2} = useParams()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter()
   const token = localStorage.getItem("userAccessToken") as string
@@ -15,12 +14,12 @@ const Page = () => {
     setIsModalOpen(true);
   }, []);
 
-  const handleApprove = async (id: string) => {
-    if(!id){
+  const handleApprove = async (experId: string , meetingId : string) => {
+    if(!experId){
       toast.error("expert id is empty please try again");
       return;
     }
-    const response =  await approveExpert(token , id)
+    const response =  await changeExpert(token , experId , meetingId,"1")
     if(response){
       toast.success(response.message)
       router.push('/admin/dashboard')
@@ -28,12 +27,12 @@ const Page = () => {
     setIsModalOpen(false);
   };
 
-  const handleReject = async (id: string | undefined) => {
-    if(!id){
+  const handleReject = async (expertId: string | undefined, meetingId : string) => {
+    if(!expertId){
       toast.error("expert id is missing");
       return;
     }
-      const response =  await rejectExpertRequest(id, token)
+      const response =  await changeExpert(token,expertId,meetingId,"0")
       if(response){
         toast.success("Expert Rejected");
         router.push('/admin/dashboard')
@@ -60,7 +59,7 @@ const Page = () => {
           <h2>You completed the meeting with the expert. Update Expert Status</h2>
           <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
             <button
-              onClick={()=>handleApprove(id as string)}
+              onClick={()=>handleApprove(param1 as string, param2 as string)}
               style={{
                 padding: "10px 20px",
                 backgroundColor: "green",
@@ -73,7 +72,7 @@ const Page = () => {
               Approve
             </button>
             <button
-              onClick={()=>handleReject(id as string)}
+              onClick={()=>handleReject(param1 as string,param2 as string)}
               style={{
                 padding: "10px 20px",
                 backgroundColor: "red",

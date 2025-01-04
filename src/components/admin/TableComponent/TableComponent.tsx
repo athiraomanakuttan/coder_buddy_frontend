@@ -12,10 +12,13 @@ interface TableComponentProps {
 
 const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, role, functions}) => {
   const router = useRouter()
-  const handleMeetingJoin = (_id : string, meetingId: string)=>{
-    const data =  JSON.stringify({_id,meetingId} )
+  const handleMeetingJoin = (_id : string, meetingId: string,userId : string)=>{
+    
+    const data =  JSON.stringify({_id,meetingId,userId} )
     localStorage.setItem("currentMeeting",data)
-    router.push(`/videoCall/${meetingId}`)
+    setTimeout(()=>{
+      router.push(`/videoCall/${meetingId}`)
+    },1000)
 
   }
   return (
@@ -70,7 +73,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
       </td>
       <td>
       {
-          role ==="meetingList" &&  <button className='border rounded pl-2 pr-2 pt-1 pb-1 bg-adminprimary text-white ' onClick={()=> handleMeetingJoin(item['_id'],item['meetingId'])}>Join Meeting</button>
+          role ==="meetingList" &&  <button className='border rounded pl-2 pr-2 pt-1 pb-1 bg-adminprimary text-white ' onClick={()=> handleMeetingJoin(item['_id'],item['meetingId'],item["userId"])}>Join Meeting</button>
       }
       </td>
     </tr>

@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import useAuthStore from "@/store/authStore";
 
-
 const Dashboard = () => {
   const { data: session, status } = useSession();
   const setUserAuth = useAuthStore(state => state.setUserAuth);

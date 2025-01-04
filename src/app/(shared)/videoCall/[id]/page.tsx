@@ -41,7 +41,6 @@ export default function VideoCallPage() {
   }, [params]); // Add params as a dependency
     
   const handleCallEnd = () => {
-    localStorage.removeItem('currentMeeting');
     // router.push('/dashboard');
   };
 

@@ -9,16 +9,14 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const peerConnection = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
     const screenStreamRef = useRef<MediaStream | null>(null);
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const recordedChunksRef = useRef<Blob[]>([]);
+    
+    const pendingCandidatesRef = useRef<RTCIceCandidate[]>([]);
     
     const [isConnected, setIsConnected] = useState(false);
     const [isVideoEnabled, setIsVideoEnabled] = useState(true);
     const [isAudioEnabled, setIsAudioEnabled] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [participantCount, setParticipantCount] = useState(1);
-    const [isRecording, setIsRecording] = useState(false);
-    const pendingCandidatesRef = useRef<RTCIceCandidate[]>([]);
 
     const handleIceCandidate = async (candidate: RTCIceCandidate) => {
         try {
@@ -42,7 +40,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         try {
             remoteVideoRef.current.srcObject = stream;
             
-            // Wait for metadata to load before attempting to play
             await new Promise((resolve) => {
                 if (!remoteVideoRef.current) return;
                 
@@ -52,7 +49,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                 };
             });
 
-            // Attempt to play with retry logic
             const attemptPlay = async (attempts = 3) => {
                 try {
                     if (!remoteVideoRef.current) return;
@@ -62,7 +58,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                     if (error instanceof Error) {
                         console.warn(`Play attempt failed: ${error.message}`);
                         if (attempts > 0 && remoteVideoRef.current) {
-                            // Wait a bit before retrying
                             await new Promise(resolve => setTimeout(resolve, 1000));
                             await attemptPlay(attempts - 1);
                         } else {
@@ -93,6 +88,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             console.error('Error processing pending candidates:', error);
         }
     };
+
     const setupPeerConnection = async () => {
         const servers: RTCConfiguration = {
             iceServers: [
@@ -104,17 +100,14 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         peerConnection.current = new RTCPeerConnection(servers);
     
         try {
-            // Get local media stream
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: true
             });
     
-            // Set up local video
             localStreamRef.current = stream;
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = stream;
-                // Ensure local video plays
                 try {
                     await localVideoRef.current.play();
                 } catch (error) {
@@ -122,7 +115,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                 }
             }
     
-            // Add tracks to peer connection
             stream.getTracks().forEach((track) => {
                 if (peerConnection.current) {
                     console.log('Adding track:', track.kind);
@@ -130,14 +122,12 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                 }
             });
     
-            // Set up remote video handling
             peerConnection.current.ontrack = async (event) => {
                 console.log('Received remote track:', event.streams[0]);
                 if (remoteVideoRef.current && event.streams[0]) {
                     remoteVideoRef.current.srcObject = event.streams[0];
                     
                     try {
-                        // Wait for metadata to load
                         await new Promise((resolve) => {
                             if (!remoteVideoRef.current) return;
                             remoteVideoRef.current.onloadedmetadata = () => {
@@ -146,7 +136,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                             };
                         });
     
-                        // Try to play with retries
                         let attempts = 3;
                         while (attempts > 0) {
                             try {
@@ -175,63 +164,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             throw error;
         }
     };
-
-    const startRecording = () => {
-        if (!localStreamRef.current) return;
-
-        const streams = [localStreamRef.current];
-        if (remoteVideoRef.current?.srcObject) {
-            streams.push(remoteVideoRef.current.srcObject as MediaStream);
-        }
-
-        const combinedStream = new MediaStream();
-        streams.forEach(stream => {
-            stream.getTracks().forEach(track => {
-                combinedStream.addTrack(track);
-            });
-        });
-
-        try {
-            const mediaRecorder = new MediaRecorder(combinedStream, {
-                mimeType: 'video/webm;codecs=vp8,opus'
-            });
-
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    recordedChunksRef.current.push(event.data);
-                }
-            };
-
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunksRef.current, {
-                    type: 'video/webm'
-                });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                document.body.appendChild(a);
-                a.style.display = 'none';
-                a.href = url;
-                a.download = `recording-${new Date().toISOString()}.webm`;
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-                recordedChunksRef.current = [];
-            };
-
-            mediaRecorderRef.current = mediaRecorder;
-            mediaRecorder.start(1000);
-            setIsRecording(true);
-        } catch (error) {
-            console.error('Error starting recording:', error);
-        }
-    };
-
-    const stopRecording = () => {
-        if (mediaRecorderRef.current && isRecording) {
-            mediaRecorderRef.current.stop();
-            setIsRecording(false);
-        }
-    };
+    
 
     const startScreenShare = async () => {
         try {
@@ -312,9 +245,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     };
 
     const endCall = () => {
-        if (isRecording) {
-            stopRecording();
-        }
+       
         if (isScreenSharing) {
             stopScreenShare();
         }
@@ -323,7 +254,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         socketRef.current?.emit('leave-room', { roomId });
         setIsConnected(false);
         onCallEnd?.();
-        
     };
 
     useEffect(() => {
@@ -360,7 +290,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                             console.log('Setting remote video source');
                             remoteVideoRef.current.srcObject = event.streams[0];
                             
-                            // Add event listeners to the remote video element
                             remoteVideoRef.current.onloadedmetadata = () => {
                                 console.log('Remote video metadata loaded');
                             };
@@ -391,11 +320,11 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         };
 
         socket.on('connect', async () => {
-    console.log('Socket connected, initializing connection...');
-    await initializeConnection();
-    console.log('Connection initialized, joining room...');
-    socket.emit('join-room', { roomId }); 
-});
+            console.log('Socket connected, initializing connection...');
+            await initializeConnection();
+            console.log('Connection initialized, joining room...');
+            socket.emit('join-room', { roomId }); 
+        });
 
         socket.on('connect_error', (error) => {
             console.error('Socket connection error:', error);
@@ -415,12 +344,14 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         socket.on('participant-count', async (count: number) => {
             console.log('Participant count:', count);
             setParticipantCount(count);
-            if (count === 2 && !isConnected) {  // Add this check
+            if (count === 2) {
                 setIsConnected(true);
+                
+
                 try {
                     if (peerConnection.current && 
                         peerConnection.current.signalingState === 'stable' &&
-                        !peerConnection.current.currentLocalDescription) {  // Check if we haven't already created an offer
+                        !peerConnection.current.currentLocalDescription) {
                         console.log('Creating initial offer...');
                         const offer = await peerConnection.current.createOffer();
                         await peerConnection.current.setLocalDescription(offer);
@@ -442,12 +373,10 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             if (remoteVideoRef.current) {
                 remoteVideoRef.current.srcObject = null;
             }
-            if (isRecording) {
-                stopRecording();
-            }
+            
         });
 
-         socket.on('ice-candidate', async (data: IceCandidateMessage) => {
+        socket.on('ice-candidate', async (data: IceCandidateMessage) => {
             if (data.candidate && peerConnection.current && data?.from !== socket.id) {
                 await handleIceCandidate(new RTCIceCandidate(data.candidate));
             }
@@ -472,7 +401,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                     await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
                 }
                 
-                // Add this line to process pending candidates
                 await processPendingCandidates();
                 
                 const answer = await pc.createAnswer();
@@ -487,8 +415,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             } catch (error) {
                 console.error('Error handling offer:', error);
             }
-        })
-        
+        });
 
         socket.on('answer', async (data: AnswerMessage) => {
             try {
@@ -518,14 +445,11 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         isVideoEnabled,
         isAudioEnabled,
         isScreenSharing,
-        isRecording,
         participantCount,
         toggleVideo,
         toggleAudio,
         startScreenShare,
         stopScreenShare,
-        startRecording,
-        stopRecording,
         endCall
     };
 };
