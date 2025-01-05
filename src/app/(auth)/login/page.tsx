@@ -13,9 +13,14 @@ const UserLogin = () => {
   const { setUserAuth, isAuthenticated } = useAuthStore()
   const route = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  useEffect(() => {
+    if (isAuthenticated) {
+      route.push("/dashboard");
+    }
+  }, [isAuthenticated, route]);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault(); 
   
     const validate = signupValidation(formData);
     if (validate.status) {

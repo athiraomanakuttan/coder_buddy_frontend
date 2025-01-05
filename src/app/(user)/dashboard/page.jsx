@@ -12,8 +12,7 @@ const dashboard = () => {
   const setUserAuth = useAuthStore(state => state.setUserAuth);
 
   useEffect(() => {
-    if (session?.user && status === "authenticated" && session.user.provider === "google") {
-     
+    if (session?.user && status === "authenticated") {
       setUserAuth(session.user.userData, session.user.access || '');
       document.cookie = `accessToken=${session.user.access}; path=/; max-age=${60 * 60}; SameSite=Lax`;
     }

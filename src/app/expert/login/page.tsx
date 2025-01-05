@@ -15,9 +15,9 @@ const userLogin = () => {
   const route = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
-    // if (isAuthenticated) {
-    //   route.push("/expert/dashboard");
-    // }
+    if (isAuthenticated) {
+      route.push("/expert/dashboard");
+    }
   }, [isAuthenticated, route]);
 
   const [formData,steFormData]= useState<basicType>({
