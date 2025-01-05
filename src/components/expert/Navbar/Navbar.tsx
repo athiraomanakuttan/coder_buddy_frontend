@@ -6,11 +6,12 @@ import useAuthStore from '@/store/authStore'
 import { signOut } from 'next-auth/react'
 const Navbar = () => {
   const [verified, setVerified]= useState<string>("0")
+  const router = useRouter()
   useEffect(()=>{
      const isVerified =  localStorage.getItem("isVerified") as string
      setVerified(isVerified)
   },[])
-  const router = useRouter()
+  
   const logout = useAuthStore((state) => state.logout);
   
   const handleLogout = async () => {

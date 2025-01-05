@@ -22,19 +22,21 @@ const UserLogin = () => {
       const response: any = await signinPost(formData.email, formData.password);
       console.log(response)
       if (response?.success) {
+        document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=${60 * 60}; SameSite=Lax`;
         const message = response.message || "Successfully logged in";
         toast.success(message);
         setUserAuth(response.data.user, response.data.accessToken) 
         route.push('/dashboard');
       } 
     } else {
-      toast.error(validate.message);
+      toast.error(validate.message); 
     }
   };
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
     try {
+      document.cookie = `googleSignIn=true; path=/; max-age=${60 * 60}; SameSite=Lax`;
       const result = await signIn('google', { 
         redirect: false 
       })

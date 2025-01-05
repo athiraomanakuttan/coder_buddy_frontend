@@ -33,6 +33,7 @@ const userLogin = () => {
         
         if (response) {
           localStorage.setItem("isVerified",response?.data?.existExpert?.isVerified)
+          document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=${60 * 60}; SameSite=Lax`;
           toast.success("Successfully logged in");
           setUserAuth(response.data.existExpert,response.data.accessToken) 
           route.push('/expert/dashboard');
@@ -45,6 +46,8 @@ const userLogin = () => {
     const handleGoogleSignIn = async () => {
       setIsLoading(true)
       try {
+        document.cookie = `googleSignIn=true; path=/; max-age=${60 * 60}; SameSite=Lax`;
+
         const result = await signIn('google-expert', {
           redirect: false,
           callbackUrl: '/expert/dashboard'

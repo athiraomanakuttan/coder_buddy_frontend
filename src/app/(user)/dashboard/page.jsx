@@ -9,13 +9,13 @@ import { SessionProvider } from "next-auth/react";
 const dashboard = () => {
 
   const { data: session, status } = useSession();
-  console.log("session",session)
-  console.log("status",status)
   const setUserAuth = useAuthStore(state => state.setUserAuth);
 
   useEffect(() => {
     if (session?.user && status === "authenticated" && session.user.provider === "google") {
+     
       setUserAuth(session.user.userData, session.user.access || '');
+      document.cookie = `accessToken=${session.user.access}; path=/; max-age=${60 * 60}; SameSite=Lax`;
     }
   }, [session, status, setUserAuth]);
 

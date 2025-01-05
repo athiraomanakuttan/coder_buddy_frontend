@@ -44,7 +44,7 @@ const signup = ()=>{
    const handleGoogleSignUp = async () => {
     setIsLoading(true)
     try {
-
+      document.cookie = `googleSignIn=true; path=/; max-age=${60 * 60}; SameSite=Lax`;
       const result = await signIn('google', { 
         redirect: false,
         callbackUrl: '/expert/dashboard',
