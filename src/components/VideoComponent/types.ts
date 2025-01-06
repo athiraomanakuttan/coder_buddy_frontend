@@ -21,3 +21,24 @@ export interface VideoCallProps {
     roomId: string;
     onCallEnd?: () => void;
 }
+
+export interface Message {
+    text: string;
+    isSelf: boolean;
+    timestamp: number;
+    senderId: string;
+}
+
+ export interface MessageEvent {
+    text: string;
+    from: string;
+    roomId: string;
+    timestamp: number;
+}
+
+export interface ChatMessageEvent {
+    text: string;
+    from: string;
+    roomId: string;
+    timestamp: number;
+}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { IceCandidateMessage, OfferMessage, AnswerMessage } from './types';
+import { IceCandidateMessage, OfferMessage, AnswerMessage, Message, MessageEvent, ChatMessageEvent } from './types';
 
 export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const socketRef = useRef<Socket | null>(null);
@@ -9,7 +9,6 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const peerConnection = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
     const screenStreamRef = useRef<MediaStream | null>(null);
-    
     const pendingCandidatesRef = useRef<RTCIceCandidate[]>([]);
     
     const [isConnected, setIsConnected] = useState(false);
@@ -17,6 +16,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const [isAudioEnabled, setIsAudioEnabled] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [participantCount, setParticipantCount] = useState(1);
+    const [messages, setMessages] = useState<Message[]>([]);
 
     const handleIceCandidate = async (candidate: RTCIceCandidate) => {
         try {
@@ -32,6 +32,26 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         } catch (error) {
             console.error('Error handling ICE candidate:', error);
         }
+    };
+    const sendMessage = (text: string) => {
+        const socket = socketRef.current;
+        const senderId = socket?.id;
+        
+        if (!socket || !senderId || !text.trim()) {
+            return;
+        }
+        const timestamp = Date.now();
+    
+        const messageData: ChatMessageEvent = {
+            text: text.trim(),
+            roomId,
+            from: senderId,
+            timestamp
+        };
+    
+        socket.emit('chat-message', messageData);
+        // Remove the local state update since the message will be handled
+        // by the chat-message event listener
     };
 
     const handleRemoteStream = async (stream: MediaStream) => {
@@ -169,31 +189,41 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const startScreenShare = async () => {
         try {
             const screenStream = await navigator.mediaDevices.getDisplayMedia({
-                video: true,
-                audio: true
+                video: true
             });
-
+    
+            // Save the screen stream reference
             screenStreamRef.current = screenStream;
-
-            const videoTrack = screenStream.getVideoTracks()[0];
+    
+            // Get the screen video track
+            const screenVideoTrack = screenStream.getVideoTracks()[0];
+    
+            // Add track ended listener
+            screenVideoTrack.onended = () => {
+                stopScreenShare();
+            };
+    
+            // Find and replace the video sender track
             const senders = peerConnection.current?.getSenders();
             const videoSender = senders?.find(sender => 
                 sender.track?.kind === 'video'
             );
             
             if (videoSender) {
-                await videoSender.replaceTrack(videoTrack);
+                await videoSender.replaceTrack(screenVideoTrack);
             }
-
+    
+            // Update local video display
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = screenStream;
             }
-
-            videoTrack.onended = () => {
-                stopScreenShare();
-            };
-
+    
             setIsScreenSharing(true);
+    
+            // Add cleanup listener
+            screenVideoTrack.addEventListener('ended', () => {
+                stopScreenShare();
+            });
         } catch (error) {
             console.error('Error starting screen share:', error);
             alert('Failed to start screen sharing');
@@ -263,8 +293,20 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
             reconnectionAttempts: 5,
             reconnectionDelay: 1000
         });
-
+        
         const socket = socketRef.current;
+
+        socket.on('chat-message', (data: ChatMessageEvent) => {
+            console.log('Received chat message:', data);
+            // Add received message to local state
+            const receivedMessage: Message = {
+                text: data.text,
+                isSelf: false,
+                timestamp: data.timestamp,
+                senderId: data.from
+            };
+            setMessages(prev => [...prev, receivedMessage]);
+        });
 
         const initializeConnection = async () => {
             try {
@@ -428,13 +470,17 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                     await processPendingCandidates();
                 }
             } catch (error) {
-                console.error('Error handling answer:', error);
+                console.error('Error handling answer:', error); 
             }
         });
 
         return () => {
-            endCall();
-            socket.disconnect();
+            if (socket) {
+                socket.off('chat-message');
+                endCall();
+                socket.disconnect();
+            }
+
         };
     }, [roomId]);
 
@@ -446,10 +492,12 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         isAudioEnabled,
         isScreenSharing,
         participantCount,
+        messages,
         toggleVideo,
         toggleAudio,
         startScreenShare,
         stopScreenShare,
-        endCall
+        endCall,
+        sendMessage
     };
 };
