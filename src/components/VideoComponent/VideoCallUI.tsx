@@ -44,7 +44,7 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
                 router.push('/admin/meeting/meetingList');
             else {
                 const meetingDetails = JSON.parse(currentMeetingDetails);
-                router.push(`/admin/expertApproval/${meetingDetails.userId}/${meetingDetails._id}`);
+                router.push(`/admin/expertApproval/${meetingDetails.userId}/${meetingDetails.meetingId}`);
             }
         } else {
             router.push('/expert/dashboard');

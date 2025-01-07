@@ -39,9 +39,12 @@ const Page = () => {
       }
   };
   
+  const handleCancel = ()=>{
+    router.push('/admin/meeting/meetingList')
+  }
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex justify-evenly items-center">
       {isModalOpen && (
         <div
           style={{
@@ -59,6 +62,21 @@ const Page = () => {
           <h2>You completed the meeting with the expert. Update Expert Status</h2>
           <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
             <button
+              onClick={handleCancel}
+              style={{
+                padding: "10px 20px",
+                color: "black",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+              className='border'
+            >
+              Cancel
+            </button>
+
+
+            <button
               onClick={()=>handleApprove(param1 as string, param2 as string)}
               style={{
                 padding: "10px 20px",
@@ -71,6 +89,8 @@ const Page = () => {
             >
               Approve
             </button>
+
+
             <button
               onClick={()=>handleReject(param1 as string,param2 as string)}
               style={{

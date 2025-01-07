@@ -35,6 +35,12 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
               <th scope="col" className="px-6 py-3">
                 status
               </th>
+              {
+                role ==="meetingList" && <th scope="col" className="px-6 py-3"></th> 
+              }
+              {
+                role ==="meetingList" && <th scope="col" className="px-6 py-3"></th> 
+              }
             </tr>
           </thead>
           <tbody>
@@ -76,6 +82,17 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
           role ==="meetingList" &&  <button className='border rounded pl-2 pr-2 pt-1 pb-1 bg-adminprimary text-white ' onClick={()=> handleMeetingJoin(item['_id'],item['meetingId'],item["userId"])}>Join Meeting</button>
       }
       </td>
+      <td>
+      {
+          role ==="meetingList" &&  <Link 
+          href={`/admin/expertApproval/${item["userId"]}/${item["meetingId"]}`} 
+          className="border rounded pl-2 pr-2 pt-1 pb-1"
+        >
+          Update
+        </Link>
+}
+      </td>
+
     </tr>
 
               ))

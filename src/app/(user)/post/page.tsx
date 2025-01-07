@@ -59,19 +59,19 @@ const PostPage = () => {
                 All Post
               </button>
               <button 
-                className="border rounded pr-3 pl-3 pt-2 pb-2 bg-yellow-400 text-white cursor-pointer" 
+                className="border rounded pr-3 pl-3 pt-2 pb-2 bg-[#F6AD55] text-white cursor-pointer" 
                 onClick={() => getPostData(0)}
               >
                 Active
               </button>
               <button 
-                className="border rounded pr-3 pl-3 pt-2 pb-2 bg-green-400 text-white cursor-pointer" 
+                className="border rounded pr-3 pl-3 pt-2 pb-2 bg-[#68D391] text-white cursor-pointer" 
                 onClick={() => getPostData(1)}
               >
                 Resolved
               </button>
               <button 
-                className="border rounded pr-3 pl-3 pt-2 pb-2 bg-red-400 text-white cursor-pointer" 
+                className="border rounded pr-3 pl-3 pt-2 pb-2 bg-[#FC8181] text-white cursor-pointer" 
                 onClick={() => getPostData(2)}
               >
                 Closed
