@@ -25,42 +25,43 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     technologies: [""],
     uploads: "",
   })
-  useEffect(()=>{
+
+  useEffect(() => {
     const userString = localStorage.getItem("user");
     const user = userString ? JSON.parse(userString) : null;
     
-    if (user?.id ) {
+    if (user?.id) {
       setFormData(prevData => ({
         ...prevData,
         userId: user.id ? user.id : user._id
       }));
     }
-  },[])
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const validate =  postValidation(formData);
-      if(!validate.status){
+      const validate = postValidation(formData);
+      if (!validate.status) {
         toast.error(validate.message)
         return;
       }
-      setFormData({...formData,
-        'uploads':fileInput,
-      })
-      if(!formData.userId)
-      {
-        const userString = localStorage.getItem("user"); 
-      const user = userString ? JSON.parse(userString) : undefined; 
-      setFormData({...formData,
-        'userId' : user?.id ? user?.id : user?._id
-      })
-      }
-      const token = localStorage.getItem("userAccessToken") as string
-
-      const response = await addPost(token, formData);
       
-      if(response.status) {
+      const submissionData = {
+        ...formData,
+        uploads: fileInput  // Include the file directly here
+      };
+
+      if (!submissionData.userId) {
+        const userString = localStorage.getItem("user"); 
+        const user = userString ? JSON.parse(userString) : undefined; 
+        submissionData.userId = user?.id ? user.id : user?._id;
+      }
+
+      const token = localStorage.getItem("userAccessToken") as string;
+      const response = await addPost(token, submissionData);
+      
+      if (response.status) {
         toast.success(response.message);
         setFormData({
           title: "",
@@ -97,9 +98,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         toast.error("File size should not exceed 5MB.");
         return;
       }
-
-      // Set file and create preview
       setFileInput(file);
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
@@ -112,10 +112,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     setFileInput(null);
     setPreviewUrl(null);
   };
-const handleTechnologies = (e: ChangeEvent<HTMLInputElement>)=>{
-  setTechnologies(e.target.value)
-  setFormData({...formData,'technologies':parseSkills(e.target.value)})
-}
+
+  const handleTechnologies = (e: ChangeEvent<HTMLInputElement>) => {
+    setTechnologies(e.target.value)
+    setFormData({...formData, 'technologies': parseSkills(e.target.value)})
+  }
 
   if (!isOpen) return null;
 
