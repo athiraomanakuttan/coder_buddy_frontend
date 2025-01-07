@@ -46,10 +46,10 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         toast.error(validate.message)
         return;
       }
-      
+
       const submissionData = {
         ...formData,
-        uploads: fileInput  // Include the file directly here
+        uploads: fileInput
       };
 
       if (!submissionData.userId) {
