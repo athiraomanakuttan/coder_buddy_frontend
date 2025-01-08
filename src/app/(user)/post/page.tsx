@@ -56,7 +56,6 @@ const PostPage = () => {
       console.log("inside of this function")
       if(debouncingQuery){
         const response =  await searchPost(token,debouncingQuery ,currentStatus)
-        console.log("response",response)
         if(response)
         {
           setPostData(response.data)
