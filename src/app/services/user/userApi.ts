@@ -235,3 +235,15 @@ export const postStatus  = async (token : string, params:{ postId: string, statu
   }
 }
 
+export const searchPost = async (token: string , query : string , currentStatus:number | null = 1)=>{
+  try {
+    const response = await axios.get(`${API_URI}/api/search-post/${query}/${currentStatus}`,{
+      headers:{ Authorization:`Bearer ${token}`}
+    })
+    return response.data
+  } catch (error:any) {
+    console.log("error while searching post",error)
+  }
+
+}
+

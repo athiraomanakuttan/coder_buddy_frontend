@@ -5,7 +5,7 @@ import { PlusCircle } from 'lucide-react'
 import { PostType } from "@/types/types";
 import CreatePostModal from '@/components/user/CreatePost/CreatePostComponent'
 import { useEffect, useState } from "react";
-import { getPostDetails } from "@/app/services/user/userApi";
+import { getPostDetails, searchPost } from "@/app/services/user/userApi";
 
 const PostPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,10 +13,12 @@ const PostPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [currentStatus, setCurrentStatus] = useState<number | null>(null);
+  const [query,setQuery] = useState<string>('')
+  const [debouncingQuery,setDebouncingQuery] = useState<string>(query)
+  const token = localStorage.getItem('userAccessToken') as string
 
   const getPostData = async (postStatus: number | null = null, page: number = 1) => {
     try {
-      const token = localStorage.getItem('userAccessToken') as string
       const response = await getPostDetails(token, {
         status: postStatus,
         page: page,
@@ -42,6 +44,28 @@ const PostPage = () => {
     getPostData(currentStatus, newPage);
   }
 
+  useEffect(()=>{
+    const timer = setTimeout(()=>{
+      setDebouncingQuery(query);
+    },3000)
+    return()=> clearTimeout(timer)
+  },[query])
+
+  useEffect(()=>{
+    (async ()=>{
+      console.log("inside of this function")
+      if(debouncingQuery){
+        const response =  await searchPost(token,debouncingQuery ,currentStatus)
+        console.log("response",response)
+        if(response)
+        {
+          setPostData(response.data)
+        }
+      }
+    })()
+    
+  },[debouncingQuery])
+
   return (
     <div>
       <div className="m-0 p-0 flex">
@@ -52,6 +76,7 @@ const PostPage = () => {
           <div className="container p-5">
             <h1 className="text-3xl">Post</h1>
             <div className="flex justify-end gap-2 mb-2">
+              <input type="text" placeholder="Search" className="border rounded pl-3 pr-3 " value={query} onChange={(e)=>setQuery(e.target.value)} />
               <button 
                 className="border rounded pr-3 pl-3 pt-2 pb-2 cursor-pointer" 
                 onClick={() => getPostData()}
