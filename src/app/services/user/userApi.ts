@@ -247,3 +247,19 @@ export const searchPost = async (token: string , query : string , currentStatus:
 
 }
 
+
+export const getExpertProfile = async (token : string , expertId:string)=>{
+  try {
+    if(!token || !expertId)
+    {
+      console.log("token or expert id is empty");
+      return
+    }
+    const response =  await axios.get(`${API_URI}/api/expert-profile/${expertId}`,{
+      headers:{Authorization : `Bearer ${token}`}
+    })
+    return response.data
+  } catch (error) {
+      console.log("error while getting profile details",error)
+  }
+}

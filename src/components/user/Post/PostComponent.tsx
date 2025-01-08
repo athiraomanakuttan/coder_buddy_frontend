@@ -1,6 +1,7 @@
 import { postStatus } from "@/app/services/user/userApi";
 import { CommentType, PostType } from "@/types/types";
 import { Paperclip , Trash } from "lucide-react";
+import Link from "next/link";
 import { toast } from "react-toastify";
 
 interface PostComponentProps {
@@ -10,6 +11,7 @@ interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
+  console.log("postdata",postdata)
   const { _id, title, description, uploads, technologies, comments, status } =
     postdata;
   const token = localStorage.getItem("userAccessToken") as string;
@@ -78,18 +80,20 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
             <div className="p-4">
               {comments && comments.length ? (
                 comments.map((comment: CommentType, index: number) => (
+                  
                   <div key={index} className="mb-2">
+                    
                     <div className="border rounded p-2">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <img
-                            src={comment.expert_image_url}
+                          <Link href={`/expertprofile/${comment.expertId}`} ><img
+                            src={comment.expert_image_url || 'https://res.cloudinary.com/dicelwy0k/image/upload/v1734162966/k1hkdcipfx9ywadit4lr.png'}
                             alt={comment.expert_name}
                             className="w-10 h-10 rounded-full"
                           />
                           <h1 className="font-semibold">
                             {comment.expert_name}
-                          </h1>
+                          </h1></Link>
                         </div>
                         <>
                           {" "}
