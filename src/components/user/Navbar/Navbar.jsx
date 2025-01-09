@@ -11,7 +11,6 @@ const Navbar = () => {
   
   const handleLogout = async () => {
     const cookies = document.cookie.split(";");
-    console.log("cookies",cookies)
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i];
       const eqPos = cookie.indexOf("=");
@@ -34,8 +33,8 @@ const Navbar = () => {
   return (
     <div className="navbar m-0 p-0">
       
-      <div className="w-52 bg-primarys h-100 flex-row pb-2">
-        <img src="/images/profile_pic.png" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3"/>
+      <div className="w-52 bg-primarys h-full min-h-screen flex-row pb-2">
+        <img src="/images/profile_pic.png" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3 border-white border-3"/>
         <ul className=" flex-row text-white space-y-7 pl-8 ">
           <li><Link href=''className="menu_link">Chats</Link> </li>
           <li><Link href='/post' className="menu_link">View post</Link> </li>

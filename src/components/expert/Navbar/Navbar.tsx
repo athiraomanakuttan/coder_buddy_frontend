@@ -39,7 +39,7 @@ const Navbar = () => {
   return (
     <div className="navbar m-0 p-0">
       
-      <div className="w-52 bg-secondarys h-[100vh] flex-row ">
+      <div className="w-52 bg-secondarys h-full min-h-screen flex-row ">
         <img src="/images/expert_profile_pic.jpg" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3"/>
         <ul className=" flex-row text-white space-y-7 ml-8">
         <li><Link href='/expert/profile' className="menu_link">Your profile</Link></li>

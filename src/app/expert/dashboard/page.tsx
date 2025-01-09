@@ -29,7 +29,7 @@ const Dashboard = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (isVarified === '0') {
+    if (isVarified === '0' ) {
       getMeetingDetails();
     }
   }, []);
@@ -63,7 +63,7 @@ const Dashboard = () => {
         <Navbar />
       </div>
       <div className="border w-100">
-        {varified === "1" ? (
+        {varified === "1" || varified === 1 ? (
           <div className="container mt-5 flex justify-evenly">
             <div className="border pl-10 pr-10 pt-3 pb-3 text-center">
               <h5>total post</h5>

@@ -43,6 +43,10 @@ export const config = {
   matcher: [
     '/expert/dashboard', 
     '/expert/profile/:path*',
-    '/dashboard'
+    '/dashboard',
+    '/post',
+    '/expertprofile/:path*',
+    '/expert/profile',
+    '/expert/post'
   ]
 }

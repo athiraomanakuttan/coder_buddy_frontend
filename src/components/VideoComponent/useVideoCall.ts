@@ -338,7 +338,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                             remoteVideoRef.current.onplay = () => {
                                 console.log('Remote video started playing');
                             };
-                            remoteVideoRef.current?.play().catch(e => console.error('Error auto-playing:', e));
+                            remoteVideoRef.current?.play().catch(e => console.log('Error auto-playing:', e));
                         }
                     };
 
