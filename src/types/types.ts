@@ -106,3 +106,32 @@ export interface ProfileType extends Profile {
     userId: string,
     _id : string
   }
+
+  export type Message = {
+    id: string;
+    text: string;
+    senderId: string;
+    timestamp: Date;
+  };
+  
+  export type ChatType = {
+    _id: string;
+    participents: {
+      id: string;
+      name: string;
+      role: string;
+      profile_pic: string;
+    }[];
+    messages: Message[];
+  };
+
+  export type ChatListItem = {
+      chatId: string;
+      participant: {
+          id: string;
+          name: string;
+          role: string;
+          profile_pic: string;
+      };
+      lastMessageAt: Date;
+  }

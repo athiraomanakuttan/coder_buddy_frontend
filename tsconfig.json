@@ -34,7 +34,7 @@
     "frontend/.next/types/**/*.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts"
-, "src/app/api/auth/[...nextauth]/route.ts", "src/app/(shared)/Chat/page.jsx"  ],
+, "src/app/api/auth/[...nextauth]/route.ts", "src/app/(shared)/Chat/page.tsx", "src/store/conversationStore.js"  ],
   "exclude": [
     "node_modules"
   ]
