@@ -44,3 +44,14 @@ export const newMessage = async (token : string | null, receiverId:string,messag
         toast.error("error while adding new chat. Try Again!")
     }
 }
+
+export const createExpertChat = async (token : string , expertId : string)=>{
+    try {
+        const response =  await axios.post(`${API_URI}/api/chat/expert-chat`,{expertId},{
+            headers:{Authorization:`Bearer ${token}`}
+        })
+        return response.data
+    } catch (error) {
+        toast.error("Something went wrong. Try again")
+    }
+}

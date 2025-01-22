@@ -1,14 +1,16 @@
 'use client'
 import { getExpertProfile } from '@/app/services/user/userApi'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { ExpertType } from '@/types/types'
 import Navbar from '@/components/user/Navbar/Navbar'
 import Link from 'next/link'
 import { ArrowLeft, Mail, Briefcase,GraduationCap } from 'lucide-react'
+import {createExpertChat} from '@/app/services/shared/ChatApi'
 const profilePage = () => {
     const {id} = useParams()
+    const router = useRouter()
     const token = localStorage.getItem("userAccessToken") as string
     const [expertData, setExpertData] = useState<ExpertType>({
         _id: String(id),
@@ -31,6 +33,12 @@ const profilePage = () => {
                 setExpertData(response.data)
         })()
     },[])
+    const createNewChat = async ()=>{
+      const response =  await createExpertChat(token,String(id)) 
+     if(response){
+      router.push(`/Chat`)
+     }
+    }
   return (
     <div>
        <div className=" m-0 p-0 flex bg-gray">
@@ -67,7 +75,7 @@ const profilePage = () => {
                   </div>
                 </div>
               </div>
-              <Link href={`/Chat`} ><button className='border rounded bg-green-400 p-2 text-white'>Chat With Expert</button></Link>
+              <button className='border rounded bg-green-400 p-2 text-white' onClick={createNewChat}>Chat With Expert</button>
             </div>
           </div>
 

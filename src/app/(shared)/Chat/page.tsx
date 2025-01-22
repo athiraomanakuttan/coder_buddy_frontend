@@ -5,8 +5,8 @@ import { getConversationList, getUserChat, newMessage } from '@/app/services/sha
 import {ChatListItem, Message} from '@/types/types'
 import conversationStore from '@/store/conversationStore'
 import MesssageComponent from '@/components/shared/MessageComponent'
-const ChatInterface = () => {
 
+const ChatInterface = () => {
   const { selectedConversation, setSelectedConversation } = conversationStore();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
@@ -50,8 +50,6 @@ const ChatInterface = () => {
   useEffect(() => {
     scrollToBottom();
   }, [chatMessages]);
-
-
 
   const handleSend = async () => {
     if (!message.trim() || !selectedChatId) return;
