@@ -1,23 +1,30 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, Send } from 'lucide-react';
-import { getConversationList } from '@/app/services/shared/ChatApi';
-import {ChatListItem} from '@/types/types'
+import { getConversationList, getUserChat, newMessage } from '@/app/services/shared/ChatApi';
+import {ChatListItem, Message} from '@/types/types'
 import conversationStore from '@/store/conversationStore'
+import MesssageComponent from '@/components/shared/MessageComponent'
 const ChatInterface = () => {
 
-  const { selectedConversation, setSelectedConversation} = conversationStore()
+  const { selectedConversation, setSelectedConversation } = conversationStore();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
   const [chats, setChats] = useState<ChatListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const messageEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const token = localStorage.getItem("userAccessToken") as string;
+  const userString = localStorage.getItem("user") as string;
+  const user = JSON.parse(userString);
+
 
   useEffect(() => {
     const fetchChats = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("userAccessToken");
         if (!token) {
           throw new Error("No access token found");
         }
@@ -29,15 +36,43 @@ const ChatInterface = () => {
       } finally {
         setLoading(false);
       }
+
     };
 
     fetchChats();
+    return ()=> setSelectedConversation(null)
   }, []);
 
-  const handleSend = () => {
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
+
+
+
+  const handleSend = async () => {
     if (!message.trim() || !selectedChatId) return;
-    // TODO: Implement sending message functionality
-    setMessage('');
+
+    // Find the selected chat to get receiver information
+    const selectedChat = chats.find(chat => chat.chatId === selectedChatId);
+    if (!selectedChat) {
+      console.error("Selected chat not found");
+      return;
+    }
+
+    const messageData = {
+      chatId: selectedChatId,
+      receiverId: selectedChat.participant.id,
+      message: message,
+    };
+      const response = await newMessage(token,selectedChat.participant.id,message,selectedChatId)
+      if(response)
+      {  setMessage('');
+        selectedChatFn(selectedChatId)
+      }
   };
 
   const selectedChat = chats.find(chat => chat.chatId === selectedChatId);
@@ -60,6 +95,13 @@ const ChatInterface = () => {
   const selectedChatFn = async (chatId : string)=>{
     setSelectedChatId(chatId),
     setSelectedConversation(chatId)
+    const response =  await getUserChat(chatId,token);
+    if(response?.data?.messages){
+      {setChatMessages(response?.data?.messages)
+        console.log(response)
+      }
+    }
+     
   }
   
 
@@ -113,13 +155,13 @@ const ChatInterface = () => {
 
         {/* Chat Area */}
         {selectedChatId ? (
+         
+
           <div className="flex-1 flex flex-col">
             {/* Messages */}
-            <div className="flex-1 p-4 overflow-y-auto">
-              {/* TODO: Implement message display logic */}
-              <div className="text-center text-gray-500">
-                Messages will appear here
-              </div>
+            <div className="flex-1 p-4 overflow-y-auto" ref={chatContainerRef} >
+               <MesssageComponent  messages={chatMessages} currentUserId={user?.id || user?._id} /> 
+               <div ref={messageEndRef} />
             </div>
 
             {/* Input Area */}
@@ -142,6 +184,8 @@ const ChatInterface = () => {
               </div>
             </div>
           </div>
+
+
         ) : (
           <div className="hidden md:flex flex-1 items-center justify-center text-gray-500">
             Select a chat to start messaging

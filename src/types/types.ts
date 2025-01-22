@@ -106,13 +106,6 @@ export interface ProfileType extends Profile {
     userId: string,
     _id : string
   }
-
-  export type Message = {
-    id: string;
-    text: string;
-    senderId: string;
-    timestamp: Date;
-  };
   
   export type ChatType = {
     _id: string;
@@ -135,3 +128,27 @@ export interface ProfileType extends Profile {
       };
       lastMessageAt: Date;
   }
+
+  // types.ts
+export interface Message {
+  _id: string;
+  message: string;
+  senderId: string;
+  receiverId: string;
+  createdAt: string;
+  updatedAt: string;
+  _v: number;
+}
+
+export interface ChatResponse {
+  status: boolean;
+  message: string;
+  data: {
+    createdAt: string;
+    messages: Message[];
+    participants: Array<{ _id: string }>;
+    updatedAt: string;
+    _v: number;
+    _id: string;
+  };
+}
