@@ -2,10 +2,14 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, Send ,Link } from 'lucide-react';
 import { getConversationList, getUserChat, newMessage } from '@/app/services/shared/ChatApi';
-import {ChatListItem, Message} from '@/types/types'
+import {ChatListItem, formDataType, Message} from '@/types/types'
 import conversationStore from '@/store/conversationStore'
 import MesssageComponent from '@/components/shared/MessageComponent'
 import { SocketContext } from '@/Context/SocketContext';
+import PaymentLinkComponent from '@/components/expert/paymentLink/paymentLinkComponent';
+import { paymentValidation } from '@/app/utils/validation';
+import { toast } from 'react-toastify';
+import {paymentCreation} from '@/app/services/expert/paymentApi'
 
 const ChatInterface = () => {
   const { socket } = useContext(SocketContext);
@@ -17,6 +21,7 @@ const ChatInterface = () => {
   const [error, setError] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [participentId,setParticipentId]=useState<string | null>(null)
+  const [showModal,setShowModal]=useState<boolean>(false)
   const messageEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const token = localStorage.getItem("userAccessToken") as string;
@@ -79,6 +84,9 @@ const ChatInterface = () => {
   }, [chatMessages]);
 
   const handleSend = async () => {
+    console.log("function called",message)
+    console.log("function called sucess",selectedChatId)
+
     if (!message.trim() || !selectedChatId) return;
   
     const selectedChat = chats.find(chat => chat.chatId === selectedChatId);
@@ -99,16 +107,21 @@ const ChatInterface = () => {
       socket.emit('chat-message', messageData);
       setMessage('');
     }
-  
     // Call newMessage API
     const response = await newMessage(token, selectedChat.participant.id, message, selectedChatId);
     if (response) {
+      console.log("messageSent",response)
       selectedChatFn(selectedChatId);
     }
   };
   const selectedChat = chats.find(chat => chat.chatId === selectedChatId);
-  if(selectedChat)
-  setParticipentId(selectedChat?.participant?.id)
+
+  useEffect(() => {
+    if (selectedChat) {
+      setParticipentId(selectedChat.participant.id);
+    }
+  }, [selectedChatId, chats]);
+  
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -136,8 +149,23 @@ const ChatInterface = () => {
      
   }
 
-  const handleCreateMeetingLink = async ()=>{
-    
+  const handleCreateMeetingLink = async (formData:formDataType)=>{
+    const isValidated = paymentValidation(formData)
+    if(!isValidated.status){
+      toast.error(isValidated.message)
+      return
+    }if(!participentId){
+      toast.error("participent id is empty")
+      return
+    }
+    const response =  await paymentCreation(token,formData.title,formData.amount,participentId)
+    if(response)
+    {
+      console.log(response.data)
+      setMessage(`I have created a payment link \n  Amount  : ${response?.data?.amount} \n Payment Id : ${response?.data?._id} \n Payment Link : ${process.env.NEXT_PUBLIC_API_URI}/payment/${response?.data?._id}/`)
+      
+      setShowModal(false)
+    }
   }
   
 
@@ -196,7 +224,7 @@ const ChatInterface = () => {
           <div className="flex-1 flex flex-col">
             {/* Messages */}
             <div className="flex-1 p-4 overflow-y-auto" ref={chatContainerRef} >
-               <MesssageComponent  messages={chatMessages} currentUserId={user?.id || user?._id} /> 
+               <MesssageComponent  messages={chatMessages} currentUserId={user?.id || user?._id}  /> 
                <div ref={messageEndRef} />
             </div>
 
@@ -217,7 +245,7 @@ const ChatInterface = () => {
                 >
                   <Send className="w-5 h-5" />
                 </button>
-                <button className='border p-2' onClick={handleCreateMeetingLink}><Link/></button>
+                <button className='border p-2' onClick={()=>setShowModal(true)}><Link/></button>
               </div>
             </div>
           </div>
@@ -228,6 +256,7 @@ const ChatInterface = () => {
             Select a chat to start messaging
           </div>
         )}
+        ({showModal  && <PaymentLinkComponent  showModal={showModal} setShowModal={setShowModal} handleCreateMeetingLink={handleCreateMeetingLink} /> })
       </div>
     </div>
   );

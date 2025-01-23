@@ -1,4 +1,4 @@
-import { basicType, experienceType, ExpertType, NewMeetingType, PostType, QualificationType, UserProfileType } from "@/types/types";
+import { basicType, experienceType, ExpertType, formDataType, NewMeetingType, PostType, QualificationType, UserProfileType } from "@/types/types";
 import {parseSkills} from '@/app/utils/skillUtils'
 const emailPattern = /^(?!.\.\d)(?=[a-zA-Z0-9._%+-][a-zA-Z]{3,}\d*@)[a-zA-Z0-9._%+-]+@[a-z]{3,}\.[a-z]{2,}$/i
 const passwordPattern = /^(?=(.*[A-Za-z]){3,})(?=.*\d).{6,}$/
@@ -193,4 +193,18 @@ export const expertProfileValidation = (
       return { status: false, message :  "The date should be a future date"} 
     else
     return { status :  true , message : "validation successfull"}
+  }
+
+  export const paymentValidation = ({title,amount}:formDataType)=>{
+      if(!title || title.length < 3)
+        return {status:false,message:"title is empty or too short"}
+
+      const isNumeric = !isNaN(Number(amount)) && Number(amount) > 0 && Number(amount) < 10000;
+
+  if (!isNumeric) {
+    return { status: false, message: "Amount must be a valid number between 1 and 9999" };
+  }
+
+  return { status : true}
+      
   }

@@ -154,3 +154,8 @@ export interface ChatResponse {
     _id: string;
   };
 }
+
+export interface formDataType {
+  title:string,
+  amount:string | number
+}
