@@ -31,6 +31,7 @@ const signup = ()=>{
         toast.success(data.message)
         localStorage.setItem('email', data.data.email)
         localStorage.setItem('otp', data.data.otp)
+        localStorage.setItem("isAdmin","1")
         router.push('/expert/otp')
       }
       else

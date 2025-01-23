@@ -159,3 +159,14 @@ export interface formDataType {
   title:string,
   amount:string | number
 }
+
+export interface PaymentType {
+  _id: string;
+  title: string;
+  amount: number;
+  userId: string;
+  expertId: string;
+  createdAt:Date;
+  updatedAt:Date
+  status: number;
+}

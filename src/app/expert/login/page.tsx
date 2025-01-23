@@ -36,6 +36,7 @@ const userLogin = () => {
           document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=${60 * 60}; SameSite=Lax`;
           toast.success("Successfully logged in");
           setUserAuth(response.data.existExpert,response.data.accessToken) 
+          localStorage.setItem("isExpert","1")
           route.push('/expert/dashboard');
         } 
       

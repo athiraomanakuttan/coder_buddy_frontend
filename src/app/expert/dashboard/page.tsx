@@ -17,6 +17,7 @@ const Dashboard = () => {
       console.log("session.user",session?.user?.userData)
       setUserAuth(session?.user?.userData, session?.user?.access || '');
       localStorage.setItem("isVerified",session.user?.userData?.isVerified || 0)
+      localStorage.setItem("isExpert","1")
       document.cookie = `accessToken=${session?.user?.access}; path=/; max-age=${60 * 60}; SameSite=Lax`;
       setVarified(session?.user?.userData?.isVerified || 0)
     }
