@@ -138,6 +138,8 @@ export interface Message {
   createdAt: string;
   updatedAt: string;
   _v: number;
+  text?:string;
+  chatId?:string;
 }
 
 export interface ChatResponse {

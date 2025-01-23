@@ -44,7 +44,7 @@ const Navbar = () => {
         <ul className=" flex-row text-white space-y-7 ml-8">
         <li><Link href='/expert/profile' className="menu_link">Your profile</Link></li>
           {
-            verified=='1' &&  (<><li><Link href=''className="menu_link">Chats</Link> </li>
+            verified=='1' &&  (<><li><Link href='/Chat'className="menu_link">Chats</Link> </li>
               <li><Link href='/expert/post' className="menu_link">View post</Link> </li>
               <li><Link href='' className="menu_link">Scheduled calls</Link></li>
               <li><Link href='' className="menu_link">Payment history</Link></li>

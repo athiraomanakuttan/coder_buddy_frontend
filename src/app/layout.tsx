@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Providers from './providers'
 import ToastComponent from "@/components/ToastComponent";
 import AuthProvider from "./auth-provider";
+import { SocketContextProvider } from "@/Context/SocketContext";
 
 
 const geistSans = localFont({
@@ -34,7 +35,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <Providers>
-            {children}
+            <SocketContextProvider>
+                  {children}
+            </SocketContextProvider>
             <ToastComponent/>
           </Providers>
         </AuthProvider>

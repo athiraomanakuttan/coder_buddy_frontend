@@ -1,12 +1,14 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, Send } from 'lucide-react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { ChevronLeft, Send ,Link } from 'lucide-react';
 import { getConversationList, getUserChat, newMessage } from '@/app/services/shared/ChatApi';
 import {ChatListItem, Message} from '@/types/types'
 import conversationStore from '@/store/conversationStore'
 import MesssageComponent from '@/components/shared/MessageComponent'
+import { SocketContext } from '@/Context/SocketContext';
 
 const ChatInterface = () => {
+  const { socket } = useContext(SocketContext);
   const { selectedConversation, setSelectedConversation } = conversationStore();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
@@ -14,10 +16,12 @@ const ChatInterface = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [participentId,setParticipentId]=useState<string | null>(null)
   const messageEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const token = localStorage.getItem("userAccessToken") as string;
   const userString = localStorage.getItem("user") as string;
+  
   const user = JSON.parse(userString);
 
 
@@ -43,38 +47,68 @@ const ChatInterface = () => {
     return ()=> setSelectedConversation(null)
   }, []);
 
+  useEffect(() => {
+    if (socket && selectedChatId) {
+      // Join the chat room
+      socket.emit('join-chat', selectedChatId);
+  
+      const handleNewMessage = (newMessage: any) => {
+        console.log('Frontend received socket message:', newMessage);
+        if (newMessage.chatId === selectedChatId) {
+          setChatMessages(prev => [...prev, newMessage]);
+        }
+      };
+  
+      socket.on('chat-message', handleNewMessage);
+  
+      return () => {
+        socket.off('chat-message', handleNewMessage);
+        socket.emit('leave-chat', selectedChatId);
+      };
+    }
+  }, [socket, selectedChatId]);
+
+
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  
+ 
+
   useEffect(() => {
     scrollToBottom();
   }, [chatMessages]);
 
   const handleSend = async () => {
     if (!message.trim() || !selectedChatId) return;
-
-    // Find the selected chat to get receiver information
+  
     const selectedChat = chats.find(chat => chat.chatId === selectedChatId);
     if (!selectedChat) {
       console.error("Selected chat not found");
       return;
     }
-
-    const messageData = {
-      chatId: selectedChatId,
-      receiverId: selectedChat.participant.id,
-      message: message,
-    };
-      const response = await newMessage(token,selectedChat.participant.id,message,selectedChatId)
-      if(response)
-      {  setMessage('');
-        selectedChatFn(selectedChatId)
-      }
+  
+    if (socket) {
+      const messageData = {
+        chatId: selectedChatId,
+        receiverId: selectedChat.participant.id,
+        senderId: user.id,
+        text: message,
+        timestamp: new Date()
+      };
+      console.log('Emitting message:', messageData);
+      socket.emit('chat-message', messageData);
+      setMessage('');
+    }
+  
+    // Call newMessage API
+    const response = await newMessage(token, selectedChat.participant.id, message, selectedChatId);
+    if (response) {
+      selectedChatFn(selectedChatId);
+    }
   };
-
   const selectedChat = chats.find(chat => chat.chatId === selectedChatId);
-
+  if(selectedChat)
+  setParticipentId(selectedChat?.participant?.id)
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -100,6 +134,10 @@ const ChatInterface = () => {
       }
     }
      
+  }
+
+  const handleCreateMeetingLink = async ()=>{
+    
   }
   
 
@@ -179,6 +217,7 @@ const ChatInterface = () => {
                 >
                   <Send className="w-5 h-5" />
                 </button>
+                <button className='border p-2' onClick={handleCreateMeetingLink}><Link/></button>
               </div>
             </div>
           </div>

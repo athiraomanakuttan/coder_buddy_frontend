@@ -36,7 +36,7 @@ const Navbar = () => {
       <div className="w-52 bg-primarys h-full min-h-screen flex-row pb-2">
         <img src="/images/profile_pic.png" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3 border-white border-3"/>
         <ul className=" flex-row text-white space-y-7 pl-8 ">
-          <li><Link href=''className="menu_link">Chats</Link> </li>
+          <li><Link href='/Chat'className="menu_link">Chats</Link> </li>
           <li><Link href='/post' className="menu_link">View post</Link> </li>
           <li><Link href='' className="menu_link">Scheduled calls</Link></li>
           <li><Link href='' className="menu_link">Payment history</Link></li>
