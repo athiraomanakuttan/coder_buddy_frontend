@@ -160,6 +160,11 @@ export interface formDataType {
   amount:string | number
 }
 
+export interface MeetingDataType {
+  title:string,
+  meetingDate:Date | string
+}
+
 export interface PaymentType {
   _id: string;
   title: string;

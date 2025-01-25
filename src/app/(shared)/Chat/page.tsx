@@ -1,8 +1,8 @@
 'use client'
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { ChevronLeft, Send ,Link } from 'lucide-react';
+import { ChevronLeft, Send ,Link, FileVideo2  } from 'lucide-react';
 import { getConversationList, getUserChat, newMessage } from '@/app/services/shared/ChatApi';
-import {ChatListItem, formDataType, Message} from '@/types/types'
+import {ChatListItem, formDataType, MeetingDataType, Message} from '@/types/types'
 import conversationStore from '@/store/conversationStore'
 import MesssageComponent from '@/components/shared/MessageComponent'
 import { SocketContext } from '@/Context/SocketContext';
@@ -10,6 +10,9 @@ import PaymentLinkComponent from '@/components/expert/paymentLink/paymentLinkCom
 import { paymentValidation } from '@/app/utils/validation';
 import { toast } from 'react-toastify';
 import {paymentCreation} from '@/app/services/expert/paymentApi'
+import MeetingLinkComponent from '@/components/expert/meetingLink/meetingLinkComponent';
+import { createMeeting } from '@/app/services/shared/meetingApi';
+import {formatDate, formatTime} from '@/app/utils/dateUtils'
 
 const ChatInterface = () => {
   const { socket } = useContext(SocketContext);
@@ -22,9 +25,11 @@ const ChatInterface = () => {
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [participentId,setParticipentId]=useState<string | null>(null)
   const [showModal,setShowModal]=useState<boolean>(false)
+  const [showMeetingModel, setShowMeetingModel]= useState<boolean>(false)
   const messageEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const token = localStorage.getItem("userAccessToken") as string;
+  const isExpert = localStorage.getItem("isExpert") as string || false;
   const userString = localStorage.getItem("user") as string;
   
   const user = JSON.parse(userString);
@@ -83,9 +88,23 @@ const ChatInterface = () => {
     scrollToBottom();
   }, [chatMessages]);
 
+  const handleCreateMeeting = async (formData:MeetingDataType)=>{
+    console.log("participentId",participentId)
+    if(!participentId){
+      toast.error("participents id is empty try again")
+      return
+    }
+    const response = await createMeeting(token, formData, participentId)
+    if(response.data){
+      const meetingDate = formatDate(response.data.meetingDate)
+      const meetingTime =  formatTime(response.data.meetingDate)
+      setMessage(`I have created a meeting On ${meetingDate} at ${meetingTime}. See you there!`);
+      setShowMeetingModel(false)
+    }
+  }
+
   const handleSend = async () => {
-    console.log("function called",message)
-    console.log("function called sucess",selectedChatId)
+    
 
     if (!message.trim() || !selectedChatId) return;
   
@@ -245,7 +264,11 @@ const ChatInterface = () => {
                 >
                   <Send className="w-5 h-5" />
                 </button>
-                <button className='border p-2' onClick={()=>setShowModal(true)}><Link/></button>
+                {
+                  isExpert && 
+               ( <><button className='border p-2' onClick={()=>setShowModal(true)}><Link/></button>
+               <button className='border p-2' onClick={()=>setShowMeetingModel(true)}><FileVideo2/></button></>
+                )}
               </div>
             </div>
           </div>
@@ -257,6 +280,7 @@ const ChatInterface = () => {
           </div>
         )}
         ({showModal  && <PaymentLinkComponent  showModal={showModal} setShowModal={setShowModal} handleCreateMeetingLink={handleCreateMeetingLink} /> })
+        ({showMeetingModel  && <MeetingLinkComponent  showMeetingModel={showMeetingModel} setShowMeetingModel={setShowMeetingModel} handleCreateMeeting={handleCreateMeeting} /> })
       </div>
     </div>
   );
