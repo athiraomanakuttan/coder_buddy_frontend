@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import React from 'react'
 import { useRouter } from 'next/navigation';
+import { formatDate } from '@/app/utils/dateUtils';
 
 interface TableComponentProps {
   headings: string[];
@@ -51,15 +52,18 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
                   {headings.map((heading, headingIndex) => (
-                    <td 
-                      key={headingIndex} 
-                      className="px-6 py-4"
-                    >
-                      {Array.isArray(item[heading])
-                        ? item[heading].join(', ')
-                        : item[heading] || 'N/A'}
-                    </td>
-                  ))}
+  <td
+    key={headingIndex}
+    className="px-6 py-4"
+  >
+    {heading === "createdAt" || heading === "updatedAt" 
+      ? formatDate(item[heading])
+      : Array.isArray(item[heading])
+        ? item[heading].join(', ')
+        : item[heading] || 'N/A'
+    }
+  </td>
+))}
                   <td>
         {role==="user" && <label className="relative inline-flex items-center cursor-pointer">
           <input 

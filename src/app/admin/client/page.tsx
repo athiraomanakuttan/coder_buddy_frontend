@@ -33,7 +33,6 @@ const ClientListPage = () => {
             const response = await getUserDetails(token, page)
             
             if (response.status) {
-              console.log("==============",response.data.users)
                 setUserData(response.data.users)
                 setPagination({
                     currentPage: response.pagination.currentPage,
