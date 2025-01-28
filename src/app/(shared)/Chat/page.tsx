@@ -26,6 +26,7 @@ const ChatInterface = () => {
   const [participentId,setParticipentId]=useState<string | null>(null)
   const [showModal,setShowModal]=useState<boolean>(false)
   const [showMeetingModel, setShowMeetingModel]= useState<boolean>(false)
+  const [selectedPostId, setSelectedPostId]= useState<string | null>(null)
   const messageEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const token = localStorage.getItem("userAccessToken") as string;
@@ -43,6 +44,7 @@ const ChatInterface = () => {
           throw new Error("No access token found");
         }
         const response = await getConversationList(token);
+        console.log("response at get", response)
         setChats(response.data || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch chats");
@@ -89,12 +91,17 @@ const ChatInterface = () => {
   }, [chatMessages]);
 
   const handleCreateMeeting = async (formData:MeetingDataType)=>{
-    console.log("participentId",participentId)
+    
     if(!participentId){
       toast.error("participents id is empty try again")
       return
     }
-    const response = await createMeeting(token, formData, participentId)
+    if(!selectedPostId){
+      toast.error("post id is empty try again")
+      return
+    }
+    
+    const response = await createMeeting(token, formData, participentId,selectedPostId)
     if(response.data){
       const meetingDate = formatDate(response.data.meetingDate)
       const meetingTime =  formatTime(response.data.meetingDate)
@@ -177,7 +184,11 @@ const ChatInterface = () => {
       toast.error("participent id is empty")
       return
     }
-    const response =  await paymentCreation(token,formData.title,formData.amount,participentId)
+    if(!selectedPostId){
+      toast.error("No selected post")
+      return
+    }
+    const response =  await paymentCreation(token,formData.title,formData.amount,participentId,selectedPostId)
     if(response)
     {
       console.log(response.data)
@@ -185,6 +196,10 @@ const ChatInterface = () => {
       
       setShowModal(false)
     }
+  }
+  const changeSelectedChat = (chatId: string, postId: string)=>{
+    selectedChatFn(chatId)
+    setSelectedPostId(postId)
   }
   
 
@@ -213,10 +228,11 @@ const ChatInterface = () => {
             <div className="p-4 text-gray-500 text-center">No chats found</div>
           ) : (
             chats.map(chat => (
+              
               <div
                 key={chat.chatId}
                 className={`p-4  cursor-pointer border-b  ${selectedChatId ? "bg-sky-200" : "" } hover:bg-sky-200`}
-                onClick={()=>selectedChatFn(chat.chatId)}
+                onClick={()=>changeSelectedChat(chat.chatId, chat.postId)}
               >
                 <div className="flex items-center">
                   {chat.participant.profile_pic && (
@@ -229,6 +245,8 @@ const ChatInterface = () => {
                   <div>
                     <h3 className="font-medium">{chat.participant.name}</h3>
                     <p className="text-sm text-gray-500">{chat.participant.role}</p>
+                    <p className="text-sm text-gray-500">{chat.postId}</p>
+                    
                   </div>
                 </div>
               </div>

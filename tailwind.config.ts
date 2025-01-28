@@ -12,7 +12,8 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primarys: {
-          DEFAULT: "#DF7521", // Correct format for colors
+          // DEFAULT: "#DF7521", 
+          DEFAULT : "#6A80B9"
         },
         secondarys:{
           DEFAULT : "#4B6E8B",

@@ -126,6 +126,7 @@ export interface ProfileType extends Profile {
           role: string;
           profile_pic: string;
       };
+      postId:string,
       lastMessageAt: Date;
   }
 

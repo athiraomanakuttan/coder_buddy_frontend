@@ -45,9 +45,9 @@ export const newMessage = async (token : string | null, receiverId:string,messag
     }
 }
 
-export const createExpertChat = async (token : string , expertId : string)=>{
+export const createExpertChat = async (token : string , expertId : string, postId: string)=>{
     try {
-        const response =  await axios.post(`${API_URI}/api/chat/expert-chat`,{expertId},{
+        const response =  await axios.post(`${API_URI}/api/chat/expert-chat`,{expertId,postId},{
             headers:{Authorization:`Bearer ${token}`}
         })
         return response.data
