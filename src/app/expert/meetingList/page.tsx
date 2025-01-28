@@ -2,7 +2,7 @@
 
 import { getMeetingDatas } from "@/app/services/shared/meetingApi"
 import ListComponent from "@/components/shared/ListComponent"
-import Navbar from "@/components/user/Navbar/Navbar"
+import Navbar from "@/components/expert/Navbar/Navbar"
 import { MeetingDataType } from "@/types/types"
 import { useEffect, useState } from "react"
 
@@ -26,7 +26,7 @@ const meetingPage = () => {
         <Navbar />
       </div>
       <div className="border w-100 p-3">
-    {meetingDetails.length === 0 ?(status === 0 ?<> No Scheduled Meetings </> :<> No Meeting history </>):<><ListComponent headings={heading} listData={meetingDetails} role="user" /></>}
+    {meetingDetails.length === 0 ?(status === 0 ?<> No Scheduled Meetings </> :<> No Meeting history </>):<><ListComponent headings={heading} listData={meetingDetails} role="expert" /></>}
 
         </div>
         </div>

@@ -48,7 +48,7 @@ const Navbar = () => {
               <li><Link href='/expert/post' className="menu_link">View post</Link> </li>
               <li><Link href='' className="menu_link">Scheduled calls</Link></li>
               <li><Link href='' className="menu_link">Payment history</Link></li>
-              <li><Link href='' className="menu_link">Meeting history</Link></li>
+              <li><Link href='/expert/meetingList' className="menu_link">Meeting history</Link></li>
               <li><Link href='' className="menu_link">Feedbacks</Link></li>
               <li><Link href='' className="menu_link">Community</Link></li>
               </>)

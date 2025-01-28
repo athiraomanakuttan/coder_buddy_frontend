@@ -1,20 +1,22 @@
 import { formatDate, formatDateAndTime } from "@/app/utils/dateUtils"
 import { MeetingDataType } from "@/types/types"
+import Link from "next/link";
 
 interface ListDataType {
     headings: string[],
     listData: MeetingDataType[],
+    role: string
 }
 
-const ListComponent = ({ headings, listData}: ListDataType) => {
+const ListComponent = ({ headings, listData , role}: ListDataType) => {
   const renderCellContent = (item: MeetingDataType, heading: string) => {
     const value = item[heading as keyof MeetingDataType];
     
-    if (heading === "createdAt" || heading === "updatedAt" || heading === "meetingDate") {
+    if(heading === "createdAt" || heading === "updatedAt" || heading === "meetingDate") {
       return formatDateAndTime(value as string);
     }
     
-    if (Array.isArray(value)) {
+    if(Array.isArray(value)) {
       return value.join(', ');
     }
     
@@ -35,7 +37,11 @@ const ListComponent = ({ headings, listData}: ListDataType) => {
                 >
                   {title}
                 </th>
+                
               ))}
+              <th>Action</th>
+              <th>Action</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -53,8 +59,12 @@ const ListComponent = ({ headings, listData}: ListDataType) => {
                       {renderCellContent(item, heading)}
                     </td>
                   ))}
+                  <td><Link href={`/post/${item.postId}`}><label htmlFor="" className="hover:text-sky-300 hover:underline">View Post Details</label></Link></td>
+                  <td> {role === "user" ? <Link href={`/expertprofile/${item.expertId}`} > <label htmlFor="" className="hover:text-sky-300 hover:underline">View Expert</label></Link>:  <Link href={`/expert/userProfile/${item.userId}`}>View User</Link>} </td>
+                  <td><Link href={`/userVideoCall/${item._id}`}><button className="p-2 bg-primarys text-white hover:bg-sky-300">Join Meeting</button></Link></td>
                 </tr>
               ))
+              
             ) : (
               <tr>
                 <td colSpan={headings.length} className="text-center py-4">

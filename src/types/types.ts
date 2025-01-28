@@ -162,8 +162,12 @@ export interface formDataType {
 }
 
 export interface MeetingDataType {
+  _id:string,
   title:string,
-  meetingDate:Date | string
+  meetingDate:Date | string,
+  postId: string,
+  userId: string,
+  expertId :  string
 }
 
 export interface PaymentType {
@@ -173,6 +177,7 @@ export interface PaymentType {
   userId: string;
   expertId: string;
   createdAt:Date;
+  postId:string;
   updatedAt:Date
   status: number;
 }

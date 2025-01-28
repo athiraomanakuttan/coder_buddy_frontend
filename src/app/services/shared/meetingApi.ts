@@ -30,3 +30,19 @@ export const getMeetingDatas = async (token: string, status : number = 0)=>{
         console.log("error while getting meeting data",error)
     }
 }
+
+export const meetingVerification = async (token: string, meetingId :  string)=>{
+    if(!meetingId || !token){
+        toast.error("Invalid meeting Id or token")
+        return
+    }
+    try {
+        const response =  await axios.get(`${API_URI}/api/meeting/get-meeting/${meetingId}`,{
+            headers : { Authorization: ` Bearer ${ token }`}
+        })
+        return response.data
+    } catch (error) {
+        toast.error("Invalid meeting. Try again !")
+    }
+
+}
