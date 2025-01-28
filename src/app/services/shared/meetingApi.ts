@@ -13,3 +13,20 @@ export const createMeeting = async (token: string, formData:MeetingDataType, par
         toast.error("unable to create meeting link. Try again")
     }
 }
+
+export const getMeetingDatas = async (token: string, status : number = 0)=>{
+    try {
+        const response = await axios.get(`${API_URI}/api/meeting/get-meeting-data`, {
+            params: { status },
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log(response)
+        return response.data
+    } catch (error) {
+        console.log("error while getting meeting data",error)
+    }
+}

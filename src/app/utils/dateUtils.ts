@@ -15,3 +15,14 @@ export const formatDate = (dateString: string | Date): string => {
       second:'numeric'
     }).format(date)
   }
+
+  export const formatDateAndTime = (dateString : string | Date):string =>{
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US',{
+      year:'numeric',
+      month:'numeric',
+      day:'numeric',
+      hour: 'numeric',
+      minute : 'numeric',
+    }).format(date)
+  }
