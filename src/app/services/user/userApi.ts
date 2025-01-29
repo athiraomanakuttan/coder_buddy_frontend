@@ -263,3 +263,14 @@ export const getExpertProfile = async (token : string , expertId:string)=>{
       console.log("error while getting profile details",error)
   }
 }
+
+export const updatePost = async (token: string, postData : PostType)=>{
+  try {
+    const response = await axios.put(`${API_URI}/api/update-post`,{...postData},{
+      headers:{Authorization: `Bearer ${token}`}
+    })
+    return response.data
+  } catch (error) {
+    toast.error("unable to update post. Try again")
+  }
+}

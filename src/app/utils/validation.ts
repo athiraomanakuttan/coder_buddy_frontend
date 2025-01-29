@@ -62,30 +62,7 @@ export const expertProfileValidation = (
     skills: string
   ) => {
     const today = new Date();
-    if (!formData.first_name?.trim()) {
-      return { status: false, message: "First name is required" };
-    }
-  
-    if (!formData.last_name?.trim()) {
-      return { status: false, message: "Last name is required" };
-    }
-  
-    if (!formData.primary_contact) {
-      return { status: false, message: "Primary contact number is required" };
-    } 
     
-    if (!/^\d{10}$/.test(formData.primary_contact.toString())) {
-      return { status: false, message: "Primary contact must be a 10-digit number" };
-    }
-  
-    if (formData.secondary_contact && !/^\d{10}$/.test(formData.secondary_contact.toString())) {
-      return { status: false, message: "Secondary contact must be a 10-digit number" };
-    }
-  
-    if (!formData.address?.trim()) {
-      return { status: false, message: "Address is required" };
-    }
-  
     if (!qualifications || qualifications.length === 0) {
       return { status: false, message: "At least one qualification is required" };
     }
@@ -155,6 +132,7 @@ export const expertProfileValidation = (
         return { status: false, message: `Start date cannot be after end date for experience ${index + 1}` };
       }
     }
+
   
     const parsedSkills = parseSkills(skills);
     if (!parsedSkills || parsedSkills.length === 0) {
@@ -168,12 +146,43 @@ export const expertProfileValidation = (
   
     return { status: true };
   };
+  export const expertProfileValidationFirstHalf = (formData:ExpertType)=>{
+    if (!formData.first_name?.trim() || !namePattern.test(formData.first_name?.trim())) {
+      return { status: false, message: "First name is required" };
+    }
   
+    if (!formData.last_name?.trim() || !namePattern.test(formData.last_name?.trim())) {
+      return { status: false, message: "Last name is required" };
+    }
+  
+    if (!formData.primary_contact) {
+      return { status: false, message: "Primary contact number is required" };
+    } 
+    
+    if (!/^\d{10}$/.test(formData.primary_contact.toString())) {
+      return { status: false, message: "Primary contact must be a 10-digit number" };
+    }
+  
+    if (formData.secondary_contact && !/^\d{10}$/.test(formData.secondary_contact.toString())) {
+      return { status: false, message: "Secondary contact must be a 10-digit number" };
+    }
+  
+    if (!formData.address?.trim()) {
+      return { status: false, message: "Address is required" };
+    }
+  return { status : true, message:"sucess"}
+  }
+  
+
+
   export const postValidation = (data: PostType)=>{
+    console.log("data", data)
     if(!data.title || data.title===""){
       return {status: false , message : "post title is requied"}
     }
-    else if(!data.description || data.description===""){
+    if(!namePattern.test(data.title))
+      return {status: false , message : "post title is not in requied format"}
+    if(!data.description || data.description===""){
       return {status: false , message : "post description is requied"}
     }
     else if(!data.technologies || data.technologies.length<1){

@@ -6,7 +6,7 @@ import { ExpertType } from "@/types/types";
 import { toast } from "react-toastify";
 import { getProfile, updateProfile } from "@/app/services/expert/expertApi";
 import {parseSkills} from '@/app/utils/skillUtils'
-import  {expertProfileValidation} from '@/app/utils/validation'
+import  {expertProfileValidation, expertProfileValidationFirstHalf} from '@/app/utils/validation'
 
 const ProfilePage = () => {
   const [currentPart, setCurrentPart] = useState<number>(1);
@@ -149,7 +149,12 @@ const ProfilePage = () => {
   };
 
   const handleNextPage = () => {
+    const isValid = expertProfileValidationFirstHalf(formData)
+    console.log("isValid", isValid)
+    if(isValid.status)
     setCurrentPart(2);
+  else
+  toast.error(isValid.message)
   };
 
   const handlePreviousPage = () => {

@@ -1,8 +1,11 @@
+'use client'
 import { postStatus } from "@/app/services/user/userApi";
 import { CommentType, PostType } from "@/types/types";
-import { Paperclip , Trash } from "lucide-react";
+import { Paperclip , PenLine, Trash } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import EditPostModal from "../editPost/editPostComponent";
 
 interface PostComponentProps {
   postdata: PostType;
@@ -11,7 +14,7 @@ interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
-  console.log("postdata",postdata)
+  const [editPostStatus, setEditPostStatus] =  useState(false)
   const { _id, title, description, uploads, technologies, comments, status } =
     postdata;
   const token = localStorage.getItem("userAccessToken") as string;
@@ -27,12 +30,13 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
 
   
   return (
+    <>
     <div className="border-gray-300 rounded-md mb-2">
       <div className="container">
         <div className="flex gap-1">
           <div className="w-1/2 border rounded p-4 h-[200px]">
             <div className="h-full overflow-auto">
-
+              {status === 0  && <button className="float-end" onClick={()=>setEditPostStatus(true)}><PenLine/></button>}
               <h1 className="text-2xl text-primarys mb-1">{title}</h1>
               <p className="mb-1">{description}</p>
               <div className="flex gap-3 text-secondarys">
@@ -115,6 +119,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
         </div>
       </div>
     </div>
+    {editPostStatus && <EditPostModal postdata={postdata} setEditPostStatus={setEditPostStatus} getPostData={getPostData}/>}
+    </>
+    
   );
 };
 
