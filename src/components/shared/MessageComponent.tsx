@@ -19,7 +19,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, currentUserId }) 
     <div className="flex-1 p-4 space-y-4 overflow-y-auto">
       {messages.map((msg: Message) => (
         <div
-          key={ msg._id ? `${msg._id}`: `${msg.chatId}` }
+          key={ msg._id ? `${msg._id}`: crypto.randomUUID() }
           className={`flex ${msg.senderId === currentUserId ? 'justify-end' : 'justify-start'}`}
         >
           <div

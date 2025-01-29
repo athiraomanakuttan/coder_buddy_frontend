@@ -192,7 +192,7 @@ const ChatInterface = () => {
     if(response)
     {
       console.log(response.data)
-      setMessage(`I have created a payment link \n  Amount  : ${response?.data?.amount} \n Payment Id : ${response?.data?._id} \n Payment Link : ${process.env.NEXT_PUBLIC_API_URI}/payment/${response?.data?._id}/`)
+      setMessage(`I have created a payment link \n  Amount  : ₹ ${response?.data?.amount} \n Payment Id : ${response?.data?._id} \n Payment Link : ${process.env.NEXT_PUBLIC_API_URI}/payment/${response?.data?._id}/`)
       
       setShowModal(false)
     }

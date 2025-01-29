@@ -3,13 +3,14 @@ import { headers } from "next/headers";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
-export const  getPaymentsList = async (token: string)=>{
+export const  getPaymentsList = async (token: string, page: number = 1, count: number = 5)=>{
     if(!token){
         toast.error("session expired. Please login")
         return
     }
     try {
         const response =  await axios.get(`${API_URI}/api/payment/get-payments`,{
+            params:{ page , count},
             headers:{Authorization:`Bearer ${token}`}
         })
         return response.data

@@ -11,28 +11,49 @@ const PaymentList = () => {
     const [payments, setPayments] = useState<PaymentType[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [isExpert,setIsExprt]= useState("")
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 0,
+        totalRecords: 0,
+        limit: 5
+    })
+    
+    const fetchPayments = async (page = 1) => {
+        try {
+            const token = localStorage.getItem("userAccessToken")
+            const expert = localStorage.getItem("isExpert") as string 
+            setIsExprt(expert)
+            if (token) {
+                const response = await getPaymentsList(token,page, 5 )
+                console.log("response", response)
+if (response?.data) {
+    const { paymentDetails, totalRecord } = response.data;
+    setPayments(paymentDetails);
+    
+    setPagination({
+        ...pagination,
+        currentPage: page,
+        totalPages: Math.ceil(totalRecord / pagination.limit),
+        totalRecords: totalRecord
+    });
+}
+            }
+        } catch (error) {
+            console.error('Failed to fetch payments', error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
 
     useEffect(() => {
-        const fetchPayments = async () => {
-            try {
-                const token = localStorage.getItem("userAccessToken")
-                const expert = localStorage.getItem("isExpert") as string 
-                setIsExprt(expert)
-                if (token) {
-                    const response = await getPaymentsList(token)
-                    if (response?.data) {
-                        setPayments(response.data)
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to fetch payments', error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
         fetchPayments()
     }, [])
+
+    const  handlePageChange = (newPage: number) => {
+        console.log("new page", newPage)
+        fetchPayments(newPage)
+    }
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -70,7 +91,7 @@ const PaymentList = () => {
                         payments.map(payment => (
                             <tr key={payment._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <td className="px-6 py-4">{payment.title}</td>
-                                <td className="px-6 py-4">${payment.amount.toFixed(2)}</td>
+                                <td className="px-6 py-4">₹{payment.amount.toFixed(2)}</td>
                                 <td className="px-6 py-4">{formatDate(payment.createdAt)}</td>
                                 <td className="px-6 py-4">
                                     {payment.status === 0 ? <label className='bg-yellow-400 text-black rounded p-1'>Pending</label> : <label className='bg-green-400 text-white rounded p-1'>Completed</label>}
@@ -97,6 +118,26 @@ const PaymentList = () => {
                     )}
                 </tbody>
             </table>
+
+            <div className="flex justify-end items-end mt-4 space-x-4 mb-2">
+                    <button 
+                        onClick={() => handlePageChange(pagination.currentPage - 1)}
+                        disabled={pagination.currentPage === 1}
+                        className="px-4 py-2 bg-primarys text-white rounded disabled:opacity-50"
+                    >
+                        Previous
+                    </button>
+                    <span>
+                        Page {pagination.currentPage} of {pagination.totalPages}
+                    </span>
+                    <button 
+                        onClick={() => handlePageChange(pagination.currentPage + 1)}
+                        disabled={pagination.currentPage === pagination.totalPages}
+                        className="px-4 py-2 bg-primarys text-white rounded disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
         </div>
         </div>
         </div>

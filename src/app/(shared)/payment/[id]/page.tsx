@@ -1,6 +1,7 @@
 'use client'
 
 import { createOrder, getPaymentById, verifyPayment } from "@/app/services/shared/paymentApi"
+import Navbar from "@/components/user/Navbar/Navbar"
 import { PaymentType } from "@/types/types"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -88,7 +89,14 @@ const paymentCompnent = () => {
         
     },[id])
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6 space-y-4">
+
+    <div className=" m-0 p-0 flex">
+      <div className=" p-0 m-0">
+        {  <Navbar />}
+      </div>
+      <div className="border w-100">
+        <div className="container pt-5">
+        <div className="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6 space-y-4">
     <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Details</h2>
         <p className="text-gray-600 mb-4">Complete your transaction</p>
@@ -105,11 +113,15 @@ const paymentCompnent = () => {
 
     <button 
         onClick={initiateRazorpayPayment} 
-        className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md"
+        className="w-full bg-primarys text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md"
     >
         Continue Payment
     </button>
-</div>
+            </div>
+            </div>
+            </div>
+        </div>
+    
   )
 }
 
