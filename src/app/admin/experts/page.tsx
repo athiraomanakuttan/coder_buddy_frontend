@@ -1,38 +1,43 @@
 'use client'
 import { useState, useEffect } from "react"
-import { getexpertDetails } from "@/app/services/admin/adminApi"
+import { changeExpertStatus, getexpertDetails } from "@/app/services/admin/adminApi"
 import Navbar from "@/components/admin/navbar/Navbar"
 import TableComponent from "@/components/admin/TableComponent/TableComponent"
 import { UserProfileType } from "@/types/types"
+import { toast } from "react-toastify"
 
 const ExpertListPage = () => {
     const [userData, setUserData] = useState<UserProfileType[]>([])
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
+    const [expertState, setExpertState] = useState(0)
+    const token = localStorage.getItem('userAccessToken') || ""
     const getUserData = async (page: number = 1) => {
-       
             setIsLoading(true)
-            const token = localStorage.getItem('userAccessToken') || ""
-            const response = await getexpertDetails(token, page)
             
+            const response = await getexpertDetails(token,expertState, page)
             if (response.status) {
-              console.log(response.data)
                 setUserData(response.data?.experts)
-                setTotalPages(response.data?.pagination?.totalPages)
-            }
+                setTotalPages(response.data?.pagination?.totalPages) }
             setIsLoading(false)
-        
     }
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page)
         getUserData(page)
     }
+    const handleChangeExpertStatus = async (expertId : string, status : number)=>{
+        const response =  await changeExpertStatus(token, expertId, status)
+        if(response)
+         {   toast.success("expert status changed") 
+            getUserData()
+         }
+    }
 
     useEffect(() => {
         getUserData()
-    }, [])
+    }, [expertState])
 
     return (
         <div className="m-0 p-0 flex">
@@ -40,13 +45,18 @@ const ExpertListPage = () => {
                 <Navbar />
             </div>
             <div className="w-100 border p-8">
+                <div className="flex gap-3 justify-end mb-2"> 
+                    <button className={`${expertState? "bg-adminprimary"  : "bg-sky-100" } p-2 rounded border`} onClick={()=>setExpertState(1)}>Active </button>
+                    <button className={`${expertState ?"bg-sky-50" : "bg-adminprimary"} p-3 rounded border `} onClick={()=>setExpertState(0)}>Pending</button>
+                </div>
                 <TableComponent 
                     headings={['first_name', 'last_name', 'email', 'skills', 'primary_contact', 'createdAt']} 
                     valueList={userData} 
                     role="admin"
-                    functions={getexpertDetails}
+                    functions={handleChangeExpertStatus}
+                    expertState={expertState}
                 />
-                
+
                 <div className="flex justify-center items-center mt-4 space-x-2">
                     <button 
                         onClick={() => handlePageChange(currentPage - 1)} 

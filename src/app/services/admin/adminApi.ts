@@ -1,6 +1,5 @@
 import { basicType, ExpertType } from "@/types/types";
 import axios from "axios";
-import { Stats } from "fs";
 import { toast } from "react-toastify";
 const API_URL = process.env.NEXT_PUBLIC_API_URI
 
@@ -31,13 +30,15 @@ export const getUserDetails = async (token: string, page: number = 1, limit: num
 }
 
 
-export const getexpertDetails = async (token: string, page: number = 1, limit: number = 10) => {
+export const getexpertDetails = async (token: string,expertState: number , page: number = 1, limit: number = 10 ) => {
     try {
         const response = await axios.get(`${API_URL}/api/admin/expert-details`, {
+            
             headers: {
                 Authorization: `Bearer ${token}`,
             },
             params: {
+                status: expertState ,
                 page,
                 limit
             },
@@ -101,5 +102,18 @@ export const rejectExpertRequest =  async (expertId:string , token: string) =>{
     } catch (error:any) {
         if(error.status)
             toast.error(error.response.data.message)
+    }
+}
+
+// enable and desible expert
+
+export const changeExpertStatus = async (token: string, expertId: string, status: number) => {
+    try {
+            const response = await axios.put(`${API_URL}/api/admin/change-expert-status`,{expertId, status},
+                { headers : {Authorization : `Bearer ${token}`}}
+            )
+            return response.data;
+    } catch (error) {
+        toast.error("unable to change the expert status.")
     }
 }
