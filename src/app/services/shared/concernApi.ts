@@ -44,3 +44,15 @@ export const createConcern = async (token: string, data: concernFormDataType)=>{
         toast.error("something went wrong")
     }
 }
+
+export const getUserConcernData = async (token: string, status:number)=>{
+    try {
+        const response = await axios.get(`${API_URI}/api/concern/get-user-concern`,{
+            params:{ status },
+            headers:{Authorization:`Bearer ${token}`}
+        })
+        return response.data
+    } catch (error) {
+        console.log("unable to fetch data")
+    }
+}

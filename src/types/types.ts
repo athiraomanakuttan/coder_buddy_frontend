@@ -215,3 +215,15 @@ export interface ParticipantInfo {
   id: string;
   name: string;
 }
+
+export interface ConcernDataType {
+  _id: string ;
+  title: string;
+  description: string;
+  concernMeetingId?: string;
+  concernUserId?: string;
+  userId: string;
+  status: number;
+  createdAt?: Date,
+  updatedAt?:Date
+}

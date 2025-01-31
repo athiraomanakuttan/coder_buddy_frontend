@@ -26,8 +26,6 @@ const ConcernComponent = ({ setConcernModel, isExpert }: ConcernType) => {
         if(response){
             setUserData(response)
         }
-            
-        
     }
 
 const getMeetingDetails =  async ()=>{
