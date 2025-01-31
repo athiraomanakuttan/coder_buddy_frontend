@@ -9,8 +9,12 @@ interface modelInterface {
 const MeetingLinkComponent = ({showMeetingModel,setShowMeetingModel,handleCreateMeeting}:modelInterface) => {
   
     const [formData,setFormData]= useState<MeetingDataType>({
-        title:"",
-        meetingDate:""
+      _id:"",
+      title:"",
+      meetingDate:"",
+      postId: "",
+      userId: "",
+      expertId :  ""
     })
 
   const closeModal = () => {

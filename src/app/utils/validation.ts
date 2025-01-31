@@ -1,4 +1,4 @@
-import { basicType, experienceType, ExpertType, formDataType, NewMeetingType, PostType, QualificationType, UserProfileType } from "@/types/types";
+import { basicType, concernFormDataType, experienceType, ExpertType, formDataType, NewMeetingType, PostType, QualificationType, UserProfileType } from "@/types/types";
 import {parseSkills} from '@/app/utils/skillUtils'
 const emailPattern = /^(?!.\.\d)(?=[a-zA-Z0-9._%+-][a-zA-Z]{3,}\d*@)[a-zA-Z0-9._%+-]+@[a-z]{3,}\.[a-z]{2,}$/i
 const passwordPattern = /^(?=(.*[A-Za-z]){3,})(?=.*\d).{6,}$/
@@ -216,4 +216,13 @@ export const expertProfileValidation = (
 
   return { status : true}
       
+  }
+
+  export const concernValidation = (data : concernFormDataType)=>{
+      if(!data.title.trim())
+        return { status: false, message:"title is required"}
+      if(!data.description.trim() || data.description.trim().length < 30)
+        return { status: false, message:"description should be minimum of 30 charactor"}
+
+      return { status: true}
   }

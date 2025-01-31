@@ -4,7 +4,7 @@ import { PaymentType } from '@/types/types'
 import { getPaymentsList } from '@/app/services/shared/paymentApi'
 import Navbar from '@/components/user/Navbar/Navbar'
 import ExpertNavbar from '@/components/expert/Navbar/Navbar'
-import { formatDate } from '@/app/utils/dateUtils' // Assume you have a date formatting utility
+import { formatDate } from '@/app/utils/dateUtils' 
 import Link from 'next/link'
 
 const PaymentList = () => {

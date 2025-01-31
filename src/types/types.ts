@@ -181,3 +181,37 @@ export interface PaymentType {
   updatedAt:Date
   status: number;
 }
+
+
+export interface concernFormDataType{
+    title: string,
+    description:string,
+    userId?: string,
+    meetingId?: string,
+}
+export interface concernUserType{
+    _id: string,
+    name:string,
+}
+export interface concernMeetingType{
+    _id: string,
+    title: string
+}
+
+export interface Chat {
+  chatId: string;
+  lastMessageAt: string;
+  participant: {
+    id: string;
+    name: string;
+    profile_pic: string;
+    role: string;
+    _id: string;
+  };
+  postId: string;
+}
+
+export interface ParticipantInfo {
+  id: string;
+  name: string;
+}

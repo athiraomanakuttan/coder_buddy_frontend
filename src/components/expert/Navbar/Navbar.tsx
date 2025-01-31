@@ -50,7 +50,7 @@ const Navbar = () => {
               <li><Link href='' className="menu_link">Payment history</Link></li>
               <li><Link href='/expert/meetingList' className="menu_link">Meeting history</Link></li>
               <li><Link href='' className="menu_link">Feedbacks</Link></li>
-              <li><Link href='' className="menu_link">Community</Link></li>
+              <li><Link href='/complaintRegistration' className="menu_link">Concerns</Link></li>
               </>)
           }
           <li><Link href='' className="menu_link" onClick={(e)=>{e.preventDefault(); handleLogout();}}>Logout</Link></li>
