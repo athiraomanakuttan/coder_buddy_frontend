@@ -274,3 +274,5 @@ export const updatePost = async (token: string, postData : PostType)=>{
     toast.error("unable to update post. Try again")
   }
 }
+
+

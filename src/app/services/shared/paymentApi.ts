@@ -56,3 +56,13 @@ export const verifyPayment = async (token: string, razorpay_payment_id: string, 
         return null
     }
 }
+
+
+export const getUserById  =  async (token: string,userId: string)=>{
+    try {
+      const responce =  await axios.get(`${API_URI}/api/expert/get-user-profile/${userId}`,{headers:{Authorization:`Bearer ${token}`}})
+      return responce.data
+    } catch (error) {
+      toast.error("unable to fetch user data")
+    }
+  }

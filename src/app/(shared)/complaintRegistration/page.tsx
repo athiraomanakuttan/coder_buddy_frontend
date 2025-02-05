@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import ConcernComponent from "@/components/shared/concernComponent";
 import { ConcernDataType } from "@/types/types";
 import { getUserConcernData } from "@/app/services/shared/concernApi";
+import Link from "next/link";
 
 const ComplaintRegistration = () => {
   const isExpert = localStorage.getItem("isExpert") || "";
@@ -27,8 +28,8 @@ const ComplaintRegistration = () => {
 
   const getConcernData = async () => {
     const response = await getUserConcernData(token, status);
-    console.log("concern data", response);
     if (response) setConcernData(response.data);
+    console.log("response.data",response.data)
   };
   useEffect(() => {
     getConcernData();
@@ -67,6 +68,7 @@ const ComplaintRegistration = () => {
               <tr>
                 <th className="py-2 px-4 border-b">Title</th>
                 <th className="py-2 px-4 border-b">Description</th>
+                <th className="py-2 px-4 border-b">Attchements</th>
                 <th className="py-2 px-4 border-b">Status</th>
                 <th className="py-2 px-4 border-b">Created At</th>
                 <th className="py-2 px-4 border-b">Updated At</th>
@@ -106,6 +108,7 @@ const ComplaintRegistration = () => {
                           </button>
                         )}
                       </td>
+                      <td className="py-2 px-4 border-b" >{concern?.video ? <Link href={concern?.video} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Attachment</Link> : <p>No Attachemts</p>}</td>
                       <td className="py-2 px-4 border-b">
                         {concern.status === 0 ? "Open" : "Closed"}
                       </td>

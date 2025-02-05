@@ -75,10 +75,10 @@ if (response?.data) {
                         <th className="px-6 py-3">Amount</th>
                         <th className="px-6 py-3">Date</th>
                         <th className="px-6 py-3">Status</th>
-                        {!isExpert && (
+                        {!isExpert ? (
                             <><th className="px-6 py-3">Actions</th>
                             <th className="px-6 py-3">Actions</th></>
-                        )}
+                        ) :  <th className="px-6 py-3">Actions</th> }
                         
                     </tr>
                 </thead>
@@ -96,7 +96,7 @@ if (response?.data) {
                                 <td className="px-6 py-4">
                                     {payment.status === 0 ? <label className='bg-yellow-400 text-black rounded p-1'>Pending</label> : <label className='bg-green-400 text-white rounded p-1'>Completed</label>}
                                 </td>
-                                {!isExpert && (
+                                {!isExpert ? (
   <>
     {payment.status === 0 && (
       <td className="px-6 py-4">
@@ -111,7 +111,10 @@ if (response?.data) {
       <Link href={`/expertprofile/${payment.expertId}`}>View Profile</Link>
     </td>
   </>
-)}
+) : (<td>
+    <Link href={`/userProfile/${payment.userId}`} className='text-sky-400'>View User</Link>
+  </td>)
+  }
 
                             </tr>
                         ))

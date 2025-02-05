@@ -186,8 +186,9 @@ export interface PaymentType {
 export interface concernFormDataType{
     title: string,
     description:string,
-    userId?: string,
-    meetingId?: string,
+    userId?: string | null,
+    meetingId?: string | null,
+    video?:File | null
 }
 export interface concernUserType{
     _id: string,
@@ -199,16 +200,13 @@ export interface concernMeetingType{
 }
 
 export interface Chat {
-  chatId: string;
-  lastMessageAt: string;
-  participant: {
+ 
     id: string;
     name: string;
     profile_pic: string;
     role: string;
     _id: string;
-  };
-  postId: string;
+  
 }
 
 export interface ParticipantInfo {
@@ -224,6 +222,45 @@ export interface ConcernDataType {
   concernUserId?: string;
   userId: string;
   status: number;
+  video ?: string;
   createdAt?: Date,
   updatedAt?:Date
+}
+
+interface Qualification {
+  qualification: string;
+  college: string;
+  _id: string;
+  year_of_passout: string
+}
+interface ExperinaceType{
+  job_role: string
+employer: string
+start_date: string
+end_date : string
+}
+
+export interface UserProfileDataType {
+  address: string;
+  email: string;
+  employer: string;
+  end_date: string;
+  experience: ExperinaceType[];
+  first_name: string;
+  job_title: string;
+  last_name: string;
+  occupation: string;
+  password: string;
+  profilePicture: string;
+  qualification: Qualification[];
+  skills: string[];
+  start_date: string;
+  status: number;
+  __v: number;
+  _id: string;
+}
+
+export interface ConcernType {
+  setConcernModel: React.Dispatch<React.SetStateAction<boolean>>;
+  isExpert: string;
 }
