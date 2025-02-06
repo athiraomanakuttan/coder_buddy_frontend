@@ -11,8 +11,7 @@ const Navbar = () => {
           <li><Link href='/admin/experts' className="menu_link">Experts</Link> </li>
           <li><Link href='' className="menu_link">Payments</Link></li>
           <li><Link href='/admin/meeting/meetingList' className="menu_link">Meeting history</Link></li>
-          <li><Link href='' className="menu_link">Support request</Link></li>
-          <li><Link href='' className="menu_link">Apporoval</Link></li>
+          <li><Link href='/admin/concerns' className="menu_link">Support request</Link></li>
           <li><Link href='' className="menu_link">Recordings</Link></li>
           <li><Link href='' className="menu_link">Settings</Link></li>
           <li><Link href='' className="menu_link">Logout</Link></li>

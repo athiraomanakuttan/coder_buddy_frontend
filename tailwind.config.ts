@@ -19,7 +19,8 @@ const config: Config = {
           DEFAULT : "#4B6E8B",
         },
         adminprimary:{
-          DEFAULT : '#C1CCA3'
+          // DEFAULT : '#C1CCA3'
+          DEFAULT : "#889E73"
         },
       },
     },

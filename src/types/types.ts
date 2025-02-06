@@ -222,6 +222,7 @@ export interface ConcernDataType {
   concernUserId?: string;
   userId: string;
   status: number;
+  role: string;
   video ?: string;
   createdAt?: Date,
   updatedAt?:Date

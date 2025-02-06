@@ -22,6 +22,7 @@ const ConcernComponent = ({ setConcernModel, isExpert }: ConcernType) => {
     const [videoFile, setVideoFile] = useState<File | null>(null); // State to store the video file
 
     const token = localStorage.getItem("userAccessToken") ?? "";
+    const userType = localStorage.getItem("isExpert") ? "expert" : "user"
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
@@ -77,6 +78,7 @@ formDataToSend.append("description", concernData.description);
 formDataToSend.append("userId", concernData.userId ?? "");
 formDataToSend.append("meetingId", concernData.meetingId ?? "");
 formDataToSend.append("video", videoFile ?? ""); 
+formDataToSend.append("role",userType)
             console.log("formDataToSend",formDataToSend)
             const response = await createConcern(token, formDataToSend);
             if (response) {
