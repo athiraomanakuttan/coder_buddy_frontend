@@ -1,7 +1,7 @@
 'use client'
 import Navbar from "@/components/user/Navbar/Navbar"
 import Post from '@/components/user/Post/PostComponent'
-import { PlusCircle, PenLine} from 'lucide-react'
+import { PlusCircle} from 'lucide-react'
 import { PostType } from "@/types/types";
 import CreatePostModal from '@/components/user/CreatePost/CreatePostComponent'
 import { useEffect, useState } from "react";
@@ -63,7 +63,7 @@ const PostPage = () => {
       }
     })()
     
-  },[debouncingQuery])
+  },[debouncingQuery,currentStatus,token])
 
   return (
     <div>

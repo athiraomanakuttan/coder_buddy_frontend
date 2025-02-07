@@ -6,7 +6,7 @@ import {
   getUserChat,
   newMessage,
 } from "@/app/services/shared/ChatApi";
-import { Message, ChatListItem, formDataType, MeetingDataType } from "@/types/types";
+import { Message, formDataType, MeetingDataType } from "@/types/types";
 import conversationStore from "@/store/conversationStore";
 import MesssageComponent from "@/components/shared/MessageComponent";
 import { SocketContext } from "@/Context/SocketContext";
@@ -20,7 +20,7 @@ import { formatDate, formatTime } from "@/app/utils/dateUtils";
 
 const ChatInterface = () => {
   const { socket } = useContext(SocketContext);
-  const { selectedConversation, setSelectedConversation } = conversationStore();
+  const {  setSelectedConversation } = conversationStore();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState<any[]>([]);

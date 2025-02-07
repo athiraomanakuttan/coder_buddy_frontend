@@ -42,7 +42,7 @@ const ClientListPage = () => {
                 })
             }
         } catch (error) {
-            console.log("Error fetching userData")
+            console.log("Error fetching userData", error)
             toast.error("Failed to fetch user data")
         }
     }

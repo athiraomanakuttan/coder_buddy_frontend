@@ -1,5 +1,5 @@
 'use client'
-import { googleSignup, signinPost } from "@/app/services/user/userApi";
+import {  signinPost } from "@/app/services/user/userApi";
 import { signupValidation } from "@/app/utils/validation";
 import { basicType } from "@/types/types";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 import { getSession, signIn } from "next-auth/react"
+import Image from "next/image";
 
 const UserLogin = () => {
   const { setUserAuth, isAuthenticated } = useAuthStore()
@@ -24,7 +25,7 @@ const UserLogin = () => {
   
     const validate = signupValidation(formData);
     if (validate.status) {
-      const response: any = await signinPost(formData.email, formData.password);
+      const response = await signinPost(formData.email, formData.password);
       console.log(response)
       if (response?.success) {
         document.cookie = `accessToken=${response.data.accessToken}; path=/; max-age=${60 * 60}; SameSite=Lax`;
@@ -97,7 +98,7 @@ const UserLogin = () => {
                   disabled={isLoading}
                   className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
                 >
-                  <img 
+                  <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
                     className="d-inline m-1 mr-2"
@@ -108,14 +109,14 @@ const UserLogin = () => {
               <div className="flex justify-between">
                 <Link href='/forgot' className="custom-link">forgot password</Link>
                 <p className="custom-link">
-                  Don't have an account yet ? 
+                  Don &apos; t have an account yet ? 
                   <Link href='/signup' className="custom-link">Register Now</Link>
                 </p>
               </div>
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <img src="/images/user-login.png" alt="" className="mx-auto" />
+            <Image src="/images/user-login.png" alt="" className="mx-auto" />
           </div>
         </div>
       </div>

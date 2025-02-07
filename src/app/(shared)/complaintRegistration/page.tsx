@@ -26,12 +26,14 @@ const ComplaintRegistration = () => {
     }));
   };
 
-  const getConcernData = async () => {
-    const response = await getUserConcernData(token, status);
-    if (response) setConcernData(response.data);
-    console.log("response.data",response.data)
-  };
+  
   useEffect(() => {
+    const getConcernData = async () => {
+      const response = await getUserConcernData(token, status);
+      if (response) setConcernData(response.data);
+      console.log("response.data",response.data)
+    };
+    
     getConcernData();
   }, [concernModel, status]);
   return (

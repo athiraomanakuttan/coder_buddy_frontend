@@ -30,7 +30,7 @@ const ClientListPage = () => {
     }
     useEffect(()=>{
         getMeetingData(1,meetingStatus)
-    },[])
+    },[meetingStatus,meetingData])
 
     const handlePageChange = (newPage: number) => {
         const status = meetingStatus

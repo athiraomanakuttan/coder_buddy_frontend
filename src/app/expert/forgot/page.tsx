@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-const forgotPassword = ()=>{
+const ForgotPassword = ()=>{
     const router =  useRouter()
     const [email,setEmal]= useState<string>("")
     const handleFormSubmit =  async (e:React.FormEvent<HTMLElement>)=>{
@@ -48,4 +48,4 @@ const forgotPassword = ()=>{
     )
 }
 
-export default forgotPassword;
+export default ForgotPassword;

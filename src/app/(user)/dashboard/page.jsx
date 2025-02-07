@@ -1,12 +1,11 @@
 'use client'
 import { useEffect } from "react";
 import Navbar from "../../../components/user/Navbar/Navbar";
-import { getSession, useSession } from "next-auth/react";
+import {  useSession } from "next-auth/react";
 import useAuthStore from "@/store/authStore";
-import { SessionProvider } from "next-auth/react";
 
 
-const dashboard = () => {
+const Dashboard = () => {
 
   const { data: session, status } = useSession();
   const setUserAuth = useAuthStore(state => state.setUserAuth);
@@ -53,4 +52,4 @@ const dashboard = () => {
   );
 };
 
-export default dashboard;
+export default Dashboard;

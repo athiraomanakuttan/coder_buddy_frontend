@@ -78,7 +78,7 @@ export const authOptions: AuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async signIn({ account, profile }): Promise<boolean> {
+    async signIn(): Promise<boolean> {
       return true;
     },
     async redirect({ url, baseUrl }) {

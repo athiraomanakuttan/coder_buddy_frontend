@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
 
-const paymentCompnent = () => {
+const PaymentCompnent = () => {
     const {id} = useParams()
     const router = useRouter()
     const [paymentDetails,setPaymentDetails] =  useState<PaymentType>()
@@ -64,21 +64,23 @@ const paymentCompnent = () => {
     }
 
 
-    const getPayementDetails = async ()=>{
-        const response =  await getPaymentById(token,id as string)
-        if(!response.data){
-            toast.error("invalid paymentId")
-            return
-        }
-        setPaymentDetails(response.data)
-        const script = document.createElement('script')
-            script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-            script.async = true
-            document.body.appendChild(script)
-
-    } 
+     
 
     useEffect(()=>{
+        const getPayementDetails = async ()=>{
+            const response =  await getPaymentById(token,id as string)
+            if(!response.data){
+                toast.error("invalid paymentId")
+                return
+            }
+            setPaymentDetails(response.data)
+            const script = document.createElement('script')
+                script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+                script.async = true
+                document.body.appendChild(script)
+    
+        }
+        
         if(!id){
             toast.error("payment is empty")
             return
@@ -125,4 +127,4 @@ const paymentCompnent = () => {
   )
 }
 
-export default paymentCompnent
+export default PaymentCompnent

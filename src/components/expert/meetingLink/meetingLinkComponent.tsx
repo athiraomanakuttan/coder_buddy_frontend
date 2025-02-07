@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { formDataType, MeetingDataType } from "@/types/types";
+import {  MeetingDataType } from "@/types/types";
 interface modelInterface {
     showMeetingModel:boolean,
     setShowMeetingModel:React.Dispatch<React.SetStateAction<boolean>>,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import useAuthStore from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 const Navbar = () => {
   const router = useRouter()
@@ -34,7 +35,7 @@ const Navbar = () => {
     <div className="navbar m-0 p-0">
       
       <div className="w-52 bg-primarys h-full min-h-screen flex-row pb-2">
-        <img src="/images/profile_pic.png" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3 border-white border-3"/>
+        <Image src="/images/profile_pic.png" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3 border-white border-3"/>
         <ul className=" flex-row text-white space-y-7 pl-8 ">
           <li><Link href='/Chat'className="menu_link">Chats</Link> </li>
           <li><Link href='/post' className="menu_link">View post</Link> </li>

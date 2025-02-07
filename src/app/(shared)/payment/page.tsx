@@ -44,16 +44,19 @@ if (response?.data) {
             setIsLoading(false)
         }
     }
-
-
-    useEffect(() => {
-        fetchPayments()
-    }, [])
-
     const  handlePageChange = (newPage: number) => {
         console.log("new page", newPage)
         fetchPayments(newPage)
     }
+
+    useEffect(() => {
+        
+
+        fetchPayments()
+
+    }, [])
+
+    
 
     if (isLoading) {
         return <div>Loading...</div>

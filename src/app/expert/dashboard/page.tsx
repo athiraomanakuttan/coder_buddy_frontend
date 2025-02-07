@@ -1,7 +1,7 @@
 'use client'
-import { getadminexpertMeeting, verificationMeeting } from "@/app/services/expert/meetingApi";
+import { getadminexpertMeeting, } from "@/app/services/expert/meetingApi";
 import Navbar from "@/components/expert/Navbar/Navbar";
-import { ExpertMeetingType, NewMeetingType } from "@/types/types";
+import { ExpertMeetingType,  } from "@/types/types";
 import { useEffect, useState } from "react";
 import { Video } from 'lucide-react';
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ const Dashboard = () => {
     if (isVarified === '0' ) {
       getMeetingDetails();
     }
-  }, []);
+  }, [isVarified]);
 
   // To get the verification meeting details with admin
   const getMeetingDetails = async () => {

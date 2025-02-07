@@ -8,7 +8,7 @@ import Navbar from '@/components/user/Navbar/Navbar'
 import Link from 'next/link'
 import { ArrowLeft, Mail, Briefcase,GraduationCap } from 'lucide-react'
 import {createExpertChat} from '@/app/services/shared/ChatApi'
-const profilePage = () => {
+const ProfilePage = () => {
     const {id,postId} = useParams()
     const router = useRouter()
     const token = localStorage.getItem("userAccessToken") as string
@@ -147,4 +147,4 @@ const profilePage = () => {
   )
 }
 
-export default profilePage
+export default ProfilePage

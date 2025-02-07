@@ -29,6 +29,7 @@ const ConcernComponent = ({ setConcernModel, isExpert }: ConcernType) => {
                 const response = await getUserData(token);
                 if (response) setUserData(response);
             } catch (error) {
+                console.log(error)
                 toast.error("Failed to fetch users");
             }
         };
@@ -48,7 +49,7 @@ const ConcernComponent = ({ setConcernModel, isExpert }: ConcernType) => {
         };
 
         fetchMeetingDetails();
-    }, [selectedUser]);
+    }, [selectedUser, token]);
 
     const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {

@@ -7,8 +7,9 @@ import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 import { signupValidation } from "@/app/utils/validation";
 import { signupPost } from "@/app/services/admin/adminApi";
+import Image from "next/image";
 
-const adminLogin = () => {
+const AdminLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const router = useRouter()
   useEffect(() => {
@@ -78,7 +79,7 @@ const adminLogin = () => {
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <img src="/images/admin-login.jpg" alt="" className="mx-auto border" />
+            <Image src="/images/admin-login.jpg" alt="" className="mx-auto border" />
           </div>
           
         </div>
@@ -87,4 +88,4 @@ const adminLogin = () => {
   );
 };
 
-export default adminLogin;
+export default AdminLogin;

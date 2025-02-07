@@ -7,7 +7,7 @@ import { meetingValidation } from '@/app/utils/validation'
 import { toast } from 'react-toastify'
 import { createMeetingLink } from '@/app/services/admin/meetingApi'
 
-const meetingLink = () => {
+const MeetingLink = () => {
   const router = useRouter()
 const params =  useParams<{id: string}>()
 const [formData , setFormData] = useState<NewMeetingType>({
@@ -62,4 +62,4 @@ return (
   );
 }
 
-export default meetingLink
+export default MeetingLink

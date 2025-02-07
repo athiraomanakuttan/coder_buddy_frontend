@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
-const resetPassword = () => {
+const ResetPassword = () => {
   const router =  useRouter()
     const [formData, setFormData]= useState<{password:string, confirm_password:string}>({
         password:"",
@@ -56,4 +56,4 @@ const resetPassword = () => {
   )
 }
 
-export default resetPassword
+export default ResetPassword

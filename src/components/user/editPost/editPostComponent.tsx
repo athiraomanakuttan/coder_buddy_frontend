@@ -6,6 +6,7 @@ import { parseSkills } from '@/app/utils/skillUtils'
 import { toast } from 'react-toastify';
 import { addPost, updatePost } from '@/app/services/user/userApi';
 import { postValidation } from '@/app/utils/validation';
+import Image from 'next/image';
 
 interface CreatePostModalProps {
   postdata: PostType
@@ -158,7 +159,7 @@ const EditPostModal: React.FC<CreatePostModalProps> = ({
             />
             {previewUrl && (
               <div className="mt-2 flex items-center">
-                <img 
+                <Image 
                   src={previewUrl} 
                   alt="Preview" 
                   className="w-20 h-20 object-cover rounded mr-2" 

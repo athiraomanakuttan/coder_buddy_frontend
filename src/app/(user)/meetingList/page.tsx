@@ -6,7 +6,7 @@ import Navbar from "@/components/user/Navbar/Navbar"
 import { MeetingDataType } from "@/types/types"
 import { useEffect, useState } from "react"
 
-const meetingPage = () => {
+const MeetingPage = () => {
     const [meetingDetails,setMeetingDetails] = useState<MeetingDataType[]>([])
     const [status,setStatus]= useState(0)
     const heading = ["title", "meetingDate","postId"]
@@ -35,4 +35,4 @@ const meetingPage = () => {
   )
 }
 
-export default meetingPage
+export default MeetingPage

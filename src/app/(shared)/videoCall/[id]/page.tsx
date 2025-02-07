@@ -1,7 +1,6 @@
 'use client'
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import VideoCall from '@/components/VideoComponent/VideoCall';
 import { verificationMeeting } from '@/app/services/expert/meetingApi';
 import VideoCallUI from '@/components/VideoComponent/VideoCallUI';
 

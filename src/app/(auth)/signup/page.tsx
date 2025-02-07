@@ -4,12 +4,11 @@ import { basicType } from "@/types/types";
 import { useState } from "react";
 import { signupValidation } from "@/app/utils/validation";
 import { userSignup } from "@/app/services/user/userApi";
-import {toast, ToastContainer} from 'react-toastify'
+import {toast} from 'react-toastify'
 import { useRouter } from "next/navigation";
-import { getSession, signIn } from "next-auth/react"
-import { googleSignup } from "@/app/services/user/userApi";
+import Image from "next/image";
 
-const signup = ()=>{
+const Signup = ()=>{
   const [formData,setFormData]= useState<basicType>({
     email:"",
     password:"" 
@@ -27,8 +26,12 @@ const signup = ()=>{
         localStorage.setItem('otp',response.otp)
         toast.success(response.message);
         router.push('/otp')
-      } catch (error: any) {
-        toast.error(error.message); 
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error("An unexpected error occurred");
+        }
       }
 
     }
@@ -89,7 +92,7 @@ return (
                   disabled={isLoading}
                   className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
                 >
-                  <img 
+                  <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
                     className="d-inline m-1 mr-2"
@@ -103,7 +106,7 @@ return (
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <img src="/images/user-login.png" alt="" className="mx-auto" />
+            <Image src="/images/user-login.png" alt="" className="mx-auto" />
           </div>
           
         </div>
@@ -114,4 +117,4 @@ return (
 )
 }
 
-export default signup;
+export default Signup;

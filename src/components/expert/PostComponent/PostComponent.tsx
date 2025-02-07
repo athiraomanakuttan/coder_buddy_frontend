@@ -7,13 +7,13 @@ import {toast} from 'react-toastify'
 
 interface PostComponentProps {
   postdata: PostType;
-  role: string;
+  role?: string;
   getPostData:(page?: number) => Promise<void>
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
+const PostComponent: React.FC<PostComponentProps> = ({ postdata, getPostData }) => {
   const [comment, setComment] = useState<string>("");
-  const { _id, title, description, uploads, technologies, comments, status } =
+  const { _id, title, description, uploads, technologies, comments } =
     postdata;
   const token = localStorage.getItem("userAccessToken") as string;
   const expertString= localStorage.getItem("user") 

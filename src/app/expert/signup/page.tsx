@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import {  signIn } from "next-auth/react"
+import Image from "next/image";
 
 const signup = ()=>{
   const router = useRouter()
@@ -93,7 +94,7 @@ return (
                   disabled={isLoading}
                   className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
                 >
-                  <img 
+                  <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
                     className="d-inline m-1 mr-2"
@@ -108,7 +109,7 @@ return (
           </div>
           <div className="col-5 d-none d-md-inline pt-5 ">
             <div className="inner-div border rounded ">
-              <img src="/images/expert_login.png" alt="" className="mx-auto" />
+              <Image src="/images/expert_login.png" alt="" className="mx-auto" />
             </div>
           </div>
           

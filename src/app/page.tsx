@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import {  useState,useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
+import Image from "next/image";
 
 const userLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
@@ -64,7 +65,7 @@ const userLogin = () => {
                 />
                 <input type="submit" value="Login"  className="w-100 bg-primarys p-2 mb-3 text-white"  />
                 <button className="border-black border rounded w-100 p-2 mb-3" >
-                    <img src="/icons/g-icon.png" alt=""  className="d-inline m-1"/>
+                    <Image src="/icons/g-icon.png" alt=""  className="d-inline m-1"/>
                      Sign in with google </button>
               </form>
               <div className="flex justify-between">
@@ -74,7 +75,7 @@ const userLogin = () => {
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <img src="/images/user-login.png" alt="" className="mx-auto" />
+            <Image src="/images/user-login.png" alt="" className="mx-auto" />
           </div>
           
         </div>

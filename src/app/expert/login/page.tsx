@@ -8,9 +8,10 @@ import {  useState,useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 import {  signIn } from "next-auth/react"
+import Image from "next/image";
 
 
-const userLogin = () => {
+const UserLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const route = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -97,7 +98,7 @@ const userLogin = () => {
                   disabled={isLoading}
                   className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
                 >
-                  <img 
+                  <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
                     className="d-inline m-1 mr-2"
@@ -112,7 +113,7 @@ const userLogin = () => {
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <img src="/images/expert_login.png" alt="" className="mx-auto border" />
+            <Image src="/images/expert_login.png" alt="" className="mx-auto border" />
           </div>
           
         </div>
@@ -121,4 +122,4 @@ const userLogin = () => {
   );
 };
 
-export default userLogin;
+export default UserLogin;

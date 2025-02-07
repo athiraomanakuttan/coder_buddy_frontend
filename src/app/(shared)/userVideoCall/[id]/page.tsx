@@ -1,11 +1,10 @@
 'use client'
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import VideoCallUI from '@/components/VideoComponent/VideoCallUI';
 import { meetingVerification } from '@/app/services/shared/meetingApi';
 
 export default function VideoCallPage() {
-  const router = useRouter();
   const params = useParams(); 
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [meetingData, setMeetingData] = useState<{

@@ -3,7 +3,7 @@ import { userForgotPassword } from "@/app/services/user/userApi"
  import { useState } from "react"
  import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
- const forgotPassword = ()=>{
+ const ForgotPassword = ()=>{
     const router = useRouter()
     const [email, setEmail] =  useState<string>("")
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement> )=>{
@@ -44,4 +44,4 @@ import { toast } from "react-toastify"
     )
 }
 
-export default forgotPassword;
+export default ForgotPassword;

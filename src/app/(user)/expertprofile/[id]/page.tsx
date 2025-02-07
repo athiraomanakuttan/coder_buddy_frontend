@@ -7,7 +7,7 @@ import { ExpertType } from '@/types/types'
 import Navbar from '@/components/user/Navbar/Navbar'
 import Link from 'next/link'
 import { ArrowLeft, Mail, Briefcase,GraduationCap } from 'lucide-react'
-const profilePage = () => {
+const ProfilePage = () => {
     const {id} = useParams()
     const token = localStorage.getItem("userAccessToken") as string
     const [expertData, setExpertData] = useState<ExpertType>({
@@ -30,7 +30,7 @@ const profilePage = () => {
             if(response)
                 setExpertData(response.data)
         })()
-    },[])
+    },[id,token])
     
   return (
     <div>
@@ -140,4 +140,4 @@ const profilePage = () => {
   )
 }
 
-export default profilePage
+export default ProfilePage
