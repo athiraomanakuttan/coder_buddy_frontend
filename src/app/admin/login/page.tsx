@@ -79,7 +79,7 @@ const AdminLogin = () => {
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <Image src="/images/admin-login.jpg" alt="" className="mx-auto border" />
+            <Image src="/images/admin-login.jpg" alt="" className="mx-auto border" width={100} height={100} />
           </div>
           
         </div>

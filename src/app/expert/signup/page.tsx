@@ -97,7 +97,7 @@ return (
                   <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
-                    className="d-inline m-1 mr-2"
+                    className="d-inline m-1 mr-2" width={100} height={100}
                   />
                   {isLoading ? 'Signing in...' : 'Sign in with Google'}
                 </button>
@@ -109,7 +109,7 @@ return (
           </div>
           <div className="col-5 d-none d-md-inline pt-5 ">
             <div className="inner-div border rounded ">
-              <Image src="/images/expert_login.png" alt="" className="mx-auto" />
+              <Image src="/images/expert_login.png" alt="" className="mx-auto" width={100} height={100} />
             </div>
           </div>
           

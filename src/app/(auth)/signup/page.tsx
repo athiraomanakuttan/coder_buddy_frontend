@@ -7,6 +7,7 @@ import { userSignup } from "@/app/services/user/userApi";
 import {toast} from 'react-toastify'
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 const Signup = ()=>{
   const [formData,setFormData]= useState<basicType>({
@@ -95,7 +96,7 @@ return (
                   <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
-                    className="d-inline m-1 mr-2"
+                    className="d-inline m-1 mr-2" width={100} height={100}
                   />
                   {isLoading ? 'Signing in...' : 'Sign in with Google'}
                 </button>
@@ -106,7 +107,7 @@ return (
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <Image src="/images/user-login.png" alt="" className="mx-auto" />
+            <Image src="/images/user-login.png" alt="" className="mx-auto" width={100} height={100} />
           </div>
           
         </div>

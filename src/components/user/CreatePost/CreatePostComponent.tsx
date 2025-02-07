@@ -180,7 +180,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 <Image 
                   src={previewUrl} 
                   alt="Preview" 
-                  className="w-20 h-20 object-cover rounded mr-2" 
+                  className="w-20 h-20 object-cover rounded mr-2"  width={100} height={100}
                 />
                 <button 
                   type="button"

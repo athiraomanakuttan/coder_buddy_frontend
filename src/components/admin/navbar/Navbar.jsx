@@ -6,7 +6,7 @@ const Navbar = () => {
     <div className="navbar m-0 p-0">
       
       <div className="w-52 bg-adminprimary h-full min-h-screen flex-row text-black">
-        <Image src="/images/expert_profile_pic.jpg" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3"/>
+        <Image src="/images/expert_profile_pic.jpg" alt=""  className="w-[60%] mx-auto rounded-full mb-3 mt-3" width={100} height={100}/>
         <ul className=" flex-row text-black space-y-7 ml-8">
           <li><Link href='/admin/client'className="menu_link"> Clients</Link> </li>
           <li><Link href='/admin/experts' className="menu_link">Experts</Link> </li>

@@ -101,7 +101,7 @@ const UserLogin = () => {
                   <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
-                    className="d-inline m-1 mr-2"
+                    className="d-inline m-1 mr-2" width={100} height={100}
                   />
                   {isLoading ? 'Signing in...' : 'Sign in with Google'}
                 </button>
@@ -113,7 +113,7 @@ const UserLogin = () => {
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <Image src="/images/expert_login.png" alt="" className="mx-auto border" />
+            <Image src="/images/expert_login.png" alt="" className="mx-auto border" width={100} height={100} />
           </div>
           
         </div>
