@@ -14,3 +14,15 @@ export const getConcerns =  async (token: string, status: number = 0,page: numbe
         toast.error("unable to get the tickets. Try again")
     }
 }
+
+export const getUserProfile = async (token: string, userId: string)=>{
+    try {
+        const response = await axios.get(`${API_URL}/api/admin/get-user-profile/${userId}`,
+            { headers : {Authorization : `Bearer ${token}`}}
+        )
+        return response.data;
+    } catch (error) {
+        console.log("error while fetching data")
+        toast.error("Error fetching  profile")
+    }
+}

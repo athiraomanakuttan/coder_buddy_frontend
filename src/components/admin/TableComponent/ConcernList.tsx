@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ConcernDataType } from "@/types/types";
 import Link from "next/link";
+import ProfileView from "../profile/page";
 
 interface ConcernType {
   concernData: ConcernDataType[];
@@ -17,6 +18,10 @@ const ConcernList = ({ concernData }: ConcernType) => {
       [id]: !prev[id],
     }));
   };
+  const [selectedRole,setSelectedRole]= useState("")
+  const [selectedUserId,setSelectedUserId]= useState("")
+  const [profileView,setProfileView] = useState(false)
+
 
   return (
     <div>
@@ -78,31 +83,45 @@ const ConcernList = ({ concernData }: ConcernType) => {
                           View Attachment
                         </Link>
                       ) : (
-                        <p>No Attachemts</p>
+                        <p className="text-red-500" >No Attachemts</p>
                       )}
                     </td>
 
                     <td className="py-2 px-4 border-b">
-                      {concern.role === "user" ? (
-                        <Link href={""} className="text-blue-500">
+                       
+                        <button className="text-blue-500" onClick={()=>{ setProfileView(true); setSelectedRole(concern.role); setSelectedUserId(concern.userId)}}>
                           View Profile
-                        </Link>
-                      ) : (
-                        <Link href={""} className="text-blue-500">
-                          View Profile
-                        </Link>
-                      )}
+                        </button>
+                      
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {concern.role === "user" ? (
-                        <Link href={""} className="text-blue-500">
-                          View Profile
-                        </Link>
-                      ) : (
-                        <Link href={""} className="text-blue-500">
-                          View Profile
-                        </Link>
-                      )}
+                    {concern.concernUserId ? (
+  concern.role === "user" ? (
+    <button 
+      className="text-blue-500" 
+      onClick={() => { 
+        setProfileView(true); 
+        setSelectedRole("expert"); 
+        setSelectedUserId(concern?.concernUserId!);
+      }}
+    >
+      View Profile
+    </button>
+  ) : (
+    <button 
+      className="text-blue-500" 
+      onClick={() => { 
+        setProfileView(true); 
+        setSelectedRole("user"); 
+        setSelectedUserId(concern?.concernUserId!);
+      }}
+    >
+      View Profile
+    </button>
+  )
+) : (
+  <p className="text-red-500">None</p>
+)}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {" "}
@@ -128,6 +147,7 @@ const ConcernList = ({ concernData }: ConcernType) => {
           </tbody>
         </table>
       </div>
+      {profileView && <ProfileView role={selectedRole} userId={selectedUserId} setProfileView={setProfileView}  />}
     </div>
   );
 };

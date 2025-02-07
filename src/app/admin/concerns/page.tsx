@@ -13,6 +13,7 @@ const ConcernPage = () => {
         totalData: 0,
         limit: 10
     })
+    
     const [concernData,setConcernData] = useState<ConcernDataType[]>([])
 
     const token = localStorage.getItem("userAccessToken") as string || ""
