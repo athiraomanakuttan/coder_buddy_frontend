@@ -265,3 +265,14 @@ export interface ConcernType {
   setConcernModel: React.Dispatch<React.SetStateAction<boolean>>;
   isExpert: string;
 }
+
+interface TransactionType {
+  paymentId: string,
+  amount: number
+  dateTime : string | Date
+}
+export interface WalletDataType {
+  expertId: string,
+  amount: number,
+  transaction:TransactionType[]
+}

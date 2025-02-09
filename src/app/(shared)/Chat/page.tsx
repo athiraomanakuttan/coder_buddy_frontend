@@ -37,7 +37,8 @@ const ChatInterface = () => {
 
   // Local Storage Data
   const token = localStorage.getItem("userAccessToken") as string;
-  const isExpert = localStorage.getItem("isExpert") === "true";
+  const isExpert = localStorage.getItem("isExpert") ;
+  console.log("isExpert",isExpert)
   const userString = localStorage.getItem("user") as string;
   const user = JSON.parse(userString);
 

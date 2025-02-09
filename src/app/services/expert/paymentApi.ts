@@ -13,3 +13,14 @@ export const paymentCreation = async (token:string,title:string,amount:string|nu
         toast.error("Unable to create payment link. Try again")
     }
 }
+
+export const getExpertWalletData = async (token: string)=>{
+    try {
+        const responce = await axios.get(`${API_URL}/api/wallet/get-wallet`,{
+            headers:{Authorization : `Bearer ${token}`}
+        })
+        return responce.data
+    } catch (error) {
+        toast.error("unable to fetch the wallet");
+    }
+}
