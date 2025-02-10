@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import EditPostModal from "../editPost/editPostComponent";
+import { formatDate } from "@/app/utils/dateUtils";
 
 interface PostComponentProps {
   postdata: PostType;
@@ -102,7 +103,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
                         <>
                           {" "}
                           <p className="text-gray-400">
-                            {comment.uploaded_time}
+                            {comment?.uploaded_time && formatDate(comment?.uploaded_time)}
                           </p>
                         </>
                       </div>

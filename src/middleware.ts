@@ -26,7 +26,6 @@ export function middleware(request: NextRequest) {
     }
   }
   else if (pathname.startsWith('/')) {
-    console.log("inside of this")
     // Skip protection for dashboard if googleSignIn is true
     if (pathname === '/dashboard' && googleSignIn) {
       return NextResponse.next();

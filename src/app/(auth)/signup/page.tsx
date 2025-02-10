@@ -18,6 +18,7 @@ const Signup = ()=>{
   const router = useRouter()
   const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
+    setIsLoading(true)
     const valiation = signupValidation(formData)
     if(valiation.status)
     {
@@ -34,6 +35,7 @@ const Signup = ()=>{
           toast.error("An unexpected error occurred");
         }
       }
+      setIsLoading(false)
 
     }
     else{
@@ -86,7 +88,7 @@ return (
                   name="password"
                   onChange={(e)=>setFormData({...formData,password:e.target.value})}
                 />
-                <input type="submit" value="Register"  className="w-100 bg-primarys p-2 mb-3 text-white"  />
+                <input type="submit" value={isLoading ? "Signing In" : "Register"}  className="w-100 bg-primarys p-2 mb-3 text-white" disabled={isLoading} />
                 <button 
                   type="button"
                   onClick={handleGoogleSignUp}
@@ -96,7 +98,7 @@ return (
                   <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
-                    className="d-inline m-1 mr-2" width={100} height={100}
+                    className="d-inline m-1 mr-2 "  width={30} height={30}
                   />
                   {isLoading ? 'Signing in...' : 'Sign in with Google'}
                 </button>
@@ -107,7 +109,7 @@ return (
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <Image src="/images/user-login.png" alt="" className="mx-auto" width={100} height={100} />
+            <Image src="/images/user-login.png" alt="" className="mx-auto" width={450} height={450} />
           </div>
           
         </div>

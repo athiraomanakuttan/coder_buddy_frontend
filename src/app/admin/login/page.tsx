@@ -7,26 +7,24 @@ import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 import { signupValidation } from "@/app/utils/validation";
 import { signupPost } from "@/app/services/admin/adminApi";
+import Image from "next/image";
 
 const AdminLogin = () => {
   const {setUserAuth, isAuthenticated} = useAuthStore()
   const router = useRouter()
-  useEffect(() => {
-    // if (isAuthenticated) {
-    //   route.push("/expert/dashboard");
-    // }
-  }, [isAuthenticated, router]);
-
+  const [isLoading,setIsLoading] = useState(false)
   const [formData,steFormData]= useState<basicType>({
     email:"",
     password:""
   })
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true)
     const validation = signupValidation(formData)
     if(!validation.status)
     {
       toast.error(validation.message)
+      setIsLoading(false)
       return;
     }
     try { 
@@ -43,7 +41,9 @@ const AdminLogin = () => {
       }
     } catch (error) {
       console.log("error occured when fetching data", error);
-      
+    }
+    finally{
+      setIsLoading(false)
     }
   };
   
@@ -70,7 +70,7 @@ const AdminLogin = () => {
                   value={formData.password}
                   onChange={(e)=>steFormData({...formData,password : e.target.value})}
                 />
-                <input type="submit" value="Login"  className="w-100 bg-adminprimary p-2 mb-7  text-black"  />
+                <input type="submit" value={isLoading ? "Logining in" : "Login"}  className="w-100 bg-adminprimary p-2 mb-7 text-white" disabled={isLoading} />
                 
               </form>
               <div className="flex justify-between mb-7">
@@ -78,7 +78,7 @@ const AdminLogin = () => {
             </div>
           </div>
           <div className="col-5 d-none d-md-inline pt-5">
-            <img src="/images/admin-login.jpg" alt="" className="mx-auto border"   />
+            <Image src="/images/admin-login.jpg" alt="" className="mx-auto border" width={400} height={400}  />
           </div>
           
         </div>

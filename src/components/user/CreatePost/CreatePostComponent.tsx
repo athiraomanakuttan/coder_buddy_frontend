@@ -20,6 +20,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const [technologies, setTechnologies] = useState('');
   const [fileInput, setFileInput] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<PostType>({
     title: "",
     description: "",
@@ -41,6 +42,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true)
     try {
       const validate = postValidation(formData);
       if (!validate.status) {
@@ -80,6 +82,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     } catch (error) {
       console.error("Post submission error:", error);
       toast.error("An error occurred while creating the post");
+    }
+    finally{
+    setIsLoading(false)
     }
   };
   
@@ -204,8 +209,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <button 
               type="submit" 
               className="bg-primarys text-white rounded px-4 py-2 hover:bg-green-600"
+              disabled={isLoading}
             >
-              Create Post
+              {isLoading ? "Uploading" : "Create Post"}
             </button>
           </div>
         </form>
