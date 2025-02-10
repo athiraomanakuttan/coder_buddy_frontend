@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
-import { getSession, signIn } from "next-auth/react"
+import {  signIn } from "next-auth/react"
 
 const UserLogin = () => {
   const { setUserAuth, isAuthenticated } = useAuthStore()
@@ -21,7 +21,7 @@ const UserLogin = () => {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
-  
+    setIsLoading(true)
     const validate = signupValidation(formData);
     if (validate.status) {
       const response = await signinPost(formData.email, formData.password);
@@ -31,10 +31,12 @@ const UserLogin = () => {
         const message = response.message || "Successfully logged in";
         toast.success(message);
         setUserAuth(response.data.user, response.data.accessToken) 
+        setIsLoading(false)
         route.push('/dashboard');
       } 
     } else {
       toast.error(validate.message); 
+      setIsLoading(false)
     }
   };
 
@@ -88,8 +90,9 @@ const UserLogin = () => {
                 />
                 <input 
                   type="submit" 
-                  value="Login"  
+                  value={isLoading ? 'Signing in...' : 'Sign in'}  
                   className="w-100 bg-primarys p-2 mb-3 text-white"  
+                  disabled={isLoading} 
                 />
                 <button 
                   type="button"
