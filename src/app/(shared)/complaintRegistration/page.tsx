@@ -20,11 +20,8 @@ const ComplaintRegistration = () => {
   >({});
 
   const toggleDescription = (id: string) => {
-    setExpandedDescriptions((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+    setExpandedDescriptions((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
 
   
   useEffect(() => {

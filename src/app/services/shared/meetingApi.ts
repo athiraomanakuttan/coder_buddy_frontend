@@ -14,10 +14,10 @@ export const createMeeting = async (token: string, formData:MeetingDataType, par
     }
 }
 
-export const getMeetingDatas = async (token: string, status : number = 0)=>{
+export const getMeetingDatas = async (token: string, status : number = 0, page:number = 1, limit:number = 5)=>{
     try {
         const response = await axios.get(`${API_URI}/api/meeting/get-meeting-data`, {
-            params: { status },
+            params: { status, page, limit },
             headers: { 
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'

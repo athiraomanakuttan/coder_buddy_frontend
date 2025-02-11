@@ -47,7 +47,7 @@ const Navbar = () => {
           {
             verified=='1' &&  (<><li><Link href='/Chat'className="menu_link">Chats</Link> </li>
               <li><Link href='/expert/post' className="menu_link">View post</Link> </li>
-              <li><Link href='' className="menu_link">View Wallet</Link></li>
+              <li><Link href='/expert/wallet' className="menu_link">View Wallet</Link></li>
               <li><Link href='/payment' className="menu_link">Payment history</Link></li>
               <li><Link href='/expert/meetingList' className="menu_link">Meeting history</Link></li>
               <li><Link href='' className="menu_link">Feedbacks</Link></li>

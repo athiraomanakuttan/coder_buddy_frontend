@@ -23,7 +23,6 @@ const PaymentCompnent = () => {
             }
 
             const response = await createOrder(token,paymentDetails.amount,id as string)
-            console.log("response",response)
 
             const options = {
                 key: response.key,

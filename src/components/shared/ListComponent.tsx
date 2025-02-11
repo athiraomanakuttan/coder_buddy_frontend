@@ -37,7 +37,6 @@ const ListComponent = ({ headings, listData , role}: ListDataType) => {
                 >
                   {title}
                 </th>
-                
               ))}
               <th>Action</th>
               <th>Action</th>
