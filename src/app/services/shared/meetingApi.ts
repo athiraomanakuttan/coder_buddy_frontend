@@ -46,3 +46,15 @@ export const meetingVerification = async (token: string, meetingId :  string)=>{
     }
 
 }
+
+export const getMeetingReport = async (token: string, year:number = new Date().getFullYear())=>{
+    try {
+        const response =  await axios.get(`${API_URI}/api/meeting/get-meeting-report`,{
+            params:{year},
+            headers:{Authorization:`Bearer ${token}`}
+        })
+        return response.data
+    } catch (error) {
+        console.log("error ", error)
+    }
+}

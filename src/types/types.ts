@@ -294,3 +294,7 @@ export interface ChartData {
     resolved: number;
     closed: number;
 }
+export interface MonthlyReport {
+  month: number;
+  totalMeetings: number;
+}
