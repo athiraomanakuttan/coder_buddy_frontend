@@ -5,9 +5,11 @@ import { WalletDataType } from "@/types/types";
 import { useEffect, useState } from "react"; 
 import { Wallet, ArrowDownCircle } from "lucide-react"; 
 import { formatDate } from "@/app/utils/dateUtils"; 
+import PayoutModal from "@/components/expert/Payout/page";
 
 const WalletPage = () => { 
   const [walletData, setWalletData] = useState<WalletDataType>(); 
+  const [payoutModel , setPayoutModel] = useState(false)
   const token = localStorage.getItem("userAccessToken") || ""; 
 
   const getWalletData = async () => { 
@@ -30,7 +32,7 @@ const WalletPage = () => {
           <div className="bg-white rounded-lg border shadow-sm p-6"> 
             <div className="flex items-center justify-between mb-4"> 
               <h3 className="text-xl font-semibold">Wallet Balance</h3> 
-              <button><Wallet className="h-6 w-6 text-blue-500" /></button> 
+              <button onClick={()=> setPayoutModel(true)}><Wallet className="h-6 w-6 text-blue-500" /></button> 
             </div> 
             <div className="text-3xl font-bold text-blue-600"> 
               ₹ {walletData?.amount.toFixed(2) || '0.00'} 
@@ -76,6 +78,7 @@ const WalletPage = () => {
           </div> 
         </div> 
       </div> 
+      {payoutModel && <PayoutModal setIsModalOpen={setPayoutModel} balance={walletData?.amount ?? 0}/>}
     </div> 
   ); 
 }; 

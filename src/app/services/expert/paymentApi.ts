@@ -24,3 +24,13 @@ export const getExpertWalletData = async (token: string)=>{
         toast.error("unable to fetch the wallet");
     }
 }
+
+export const expertPayOut = async (token: string , amount: string, UPIid: string)=>{
+    try {
+        const responce = await axios.post(`${API_URL}/api/wallet/expert-payout`,{amount, UPIid},{headers:{Authorization:`Bearer ${token}`}})
+        return responce.data
+    } catch (error) {
+        console.log(error)
+        toast.error("unable to withdrow the amount. Try again")
+    }
+}

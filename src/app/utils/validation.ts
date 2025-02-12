@@ -3,6 +3,7 @@ import {parseSkills} from '@/app/utils/skillUtils'
 const emailPattern = /^(?!.\.\d)(?=[a-zA-Z0-9._%+-][a-zA-Z]{3,}\d*@)[a-zA-Z0-9._%+-]+@[a-z]{3,}\.[a-z]{2,}$/i
 const passwordPattern = /^(?=(.*[A-Za-z]){3,})(?=.*\d).{6,}$/
 const namePattern = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/
+const UPIPattern = /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/
 
 export const signupValidation = (data: basicType) => {
     const { email, password } = data
@@ -225,4 +226,18 @@ export const expertProfileValidation = (
         return { status: false, message:"description should be minimum of 30 charactor"}
 
       return { status: true}
+  }
+
+  export const payoutValidation = (upi:string, balance: number = 0,amountOfWithdraw: number) =>{
+    if(!upi.trim())
+      return {status: false, message:"UPI ID is empty"}
+    else if(!UPIPattern.test(upi))
+      return {status: false, message:"UPI ID is not in required format"}
+
+    else if(!amountOfWithdraw || amountOfWithdraw <0 || amountOfWithdraw > balance)
+      return {status: false, message:"Please enter a valid amount"}
+   
+    return {status: true}
+
+
   }
