@@ -276,3 +276,13 @@ export const updatePost = async (token: string, postData : PostType)=>{
 }
 
 
+export const getUserPostReport = async (token: string)=>{
+try {
+  const responce =  await axios.get(`${API_URI}/api/get-post-report`,{ headers : {Authorization : `Bearer ${token}`}})
+  return responce;
+} catch (error) {
+  console.log(error)
+}
+}
+
+

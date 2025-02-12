@@ -276,3 +276,21 @@ export interface WalletDataType {
   amount: number,
   transaction:TransactionType[]
 }
+
+
+export interface StatusCount {
+    status: number;
+    count: number;
+}
+
+export interface ApiResponseItem {
+    _id: { year: number; month: number };
+    statuses: StatusCount[];
+}
+
+export interface ChartData {
+    month: string;
+    pending: number;
+    resolved: number;
+    closed: number;
+}
