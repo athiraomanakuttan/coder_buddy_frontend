@@ -27,6 +27,7 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     const chatRef = useRef<HTMLDivElement>(null);
 
     const isAdmin = localStorage.getItem("isAdmin") || "";
+    const isExpert = localStorage.getItem("isExpert") || ""
     const currentMeetingDetails = localStorage.getItem("currentMeeting") || "";
     const router = useRouter();
 
@@ -38,6 +39,7 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     }, [messages]);
 
     const handleEndCall = () => {
+        
         endCall();
         if (isAdmin) {
             if (!currentMeetingDetails)
@@ -46,8 +48,11 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
                 const meetingDetails = JSON.parse(currentMeetingDetails);
                 router.push(`/admin/expertApproval/${meetingDetails.userId}/${meetingDetails.meetingId}`);
             }
-        } else {
+        } else if(isExpert) {
             router.push('/expert/dashboard');
+        }
+        else{
+            router.push('/dashboard');
         }
     };
 
