@@ -298,3 +298,8 @@ export interface MonthlyReport {
   month: number;
   totalMeetings: number;
 }
+
+export interface MonthlyAdminProfitReport {
+  month: number;  
+  profit: number;
+}

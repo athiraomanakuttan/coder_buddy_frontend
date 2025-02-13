@@ -117,3 +117,15 @@ export const changeExpertStatus = async (token: string, expertId: string, status
         toast.error("unable to change the expert status.")
     }
 }
+
+export const getProfitData = async (token: string, year: number)=>{
+    try {
+        const response = await axios.get(`${API_URL}/api/admin/get-profit-report`,{
+            params:{year},
+            headers:{Authorization : `Bearer ${token}`}
+        })
+        return response.data;
+    } catch (error) {
+        console.log("error while getting report", error)
+    }
+}

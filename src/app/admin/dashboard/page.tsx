@@ -1,4 +1,5 @@
 import Navbar from "@/components/admin/navbar/Navbar";
+import ProfitReportComponent from "@/components/admin/ProfitReport/ProfitComponent";
 
 
 const dashboard = () => {
@@ -32,6 +33,7 @@ const dashboard = () => {
           </div>
 
         </div>
+        <ProfitReportComponent />
       </div>
     </div>
   );

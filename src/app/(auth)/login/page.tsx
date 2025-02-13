@@ -32,9 +32,10 @@ const UserLogin = () => {
         const message = response.message || "Successfully logged in";
         toast.success(message);
         setUserAuth(response.data.user, response.data.accessToken) 
-        setIsLoading(false)
+        
         route.push('/dashboard');
       } 
+      setIsLoading(false)
     } else {
       toast.error(validate.message); 
       setIsLoading(false)
