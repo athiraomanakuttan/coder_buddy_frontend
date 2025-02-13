@@ -22,12 +22,13 @@ interface AnswerMessage {
 
 interface VideoCallProps {
     roomId: string;
+    meetingId?:string;
     onCallEnd?: () => void;
 }
 
 const socket: Socket = io(process.env.NEXT_PUBLIC_API_URI as string);
 
-const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
+const VideoCall: React.FC<VideoCallProps> = ({ roomId, meetingId , onCallEnd }) => {
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
     const peerConnection = useRef<RTCPeerConnection | null>(null);
@@ -42,6 +43,8 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [participantCount, setParticipantCount] = useState(1);
     const [isRecording, setIsRecording] = useState(false);
+
+    
 
     const toggleVideo = () => {
         if (localStreamRef.current) {

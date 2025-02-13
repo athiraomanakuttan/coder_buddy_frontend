@@ -3,8 +3,9 @@ import { Video, VideoOff, Mic, MicOff, PhoneOff, Monitor, MessageSquare, X } fro
 import { useVideoCall } from './useVideoCall';
 import { VideoCallProps } from './types';
 import { useRouter } from 'next/navigation';
+import { updateMeetingStatus } from '@/app/services/shared/meetingApi';
 
-const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
+const VideoCallUI: React.FC<VideoCallProps> = ({ roomId,meetingId, onCallEnd }) => {
     const {
         localVideoRef,
         remoteVideoRef,
@@ -24,35 +25,43 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
     const [isLocalVideoLarge, setIsLocalVideoLarge] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [newMessage, setNewMessage] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const chatRef = useRef<HTMLDivElement>(null);
 
     const isAdmin = localStorage.getItem("isAdmin") || "";
     const isExpert = localStorage.getItem("isExpert") || ""
     const currentMeetingDetails = localStorage.getItem("currentMeeting") || "";
+    const token = localStorage.getItem("userAccessToken") || ""
     const router = useRouter();
 
     useEffect(() => {
-        // Auto-scroll to bottom when new messages arrive
         if (chatRef.current) {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
         }
     }, [messages]);
 
-    const handleEndCall = () => {
+    const handleEndCall = async (endMeeting: boolean) => {
+        setIsModalOpen(false);
         
+        if (endMeeting && meetingId) {
+            await updateMeetingStatus(token,1,meetingId);
+        }
+
         endCall();
+
         if (isAdmin) {
-            if (!currentMeetingDetails)
-                router.push('/admin/meeting/meetingList');
-            else {
-                const meetingDetails = JSON.parse(currentMeetingDetails);
+
+            if (!currentMeetingDetails) {
+                router.push("/admin/meeting/meetingList");
+            } else {
+        const meetingDetails = JSON.parse(currentMeetingDetails);
+
                 router.push(`/admin/expertApproval/${meetingDetails.userId}/${meetingDetails.meetingId}`);
             }
-        } else if(isExpert) {
-            router.push('/expert/dashboard');
-        }
-        else{
-            router.push('/dashboard');
+        } else if (isExpert) {
+            router.push("/expert/dashboard");
+        } else {
+            router.push("/dashboard");
         }
     };
 
@@ -69,9 +78,33 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
             setNewMessage('');
         }
     };
-
+console.log("isModalOpen",isModalOpen)
     return (
         <div className="flex h-screen bg-gray-900">
+
+{isModalOpen && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg text-center transform scale-95 animate-fadeIn">
+            <h2 className="text-lg font-semibold mb-4">Do you want to end or leave the meeting?</h2>
+            <div className="flex justify-center gap-4">
+                <button
+                    onClick={() => handleEndCall(true)}
+                    className="bg-red-600 text-white px-4 py-2 rounded"
+                >
+                    End Meeting
+                </button>
+                <button
+                    onClick={() => handleEndCall(false)}
+                    className="bg-gray-500 text-white px-4 py-2 rounded"
+                >
+                    Leave Meeting
+                </button>
+            </div>
+        </div>
+    </div>
+)}
+
+        
             {/* Main Video Container */}
             <div className={`${isChatOpen ? 'flex-1' : 'w-full'} relative`}>
                 {/* Primary Video */}
@@ -150,7 +183,7 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
                         <MessageSquare size={24} />
                     </button>
                     <button
-                        onClick={handleEndCall}
+                        onClick={()=>setIsModalOpen(true)}
                         className="p-3 rounded-full bg-red-600 hover:bg-red-700 text-white"
                         title="End call"
                     >
@@ -222,8 +255,11 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId, onCallEnd }) => {
                             </button>
                         </div>
                     </form>
+                    
                 </div>
             )}
+
+            
         </div>
     );
 };

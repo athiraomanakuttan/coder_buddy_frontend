@@ -1,5 +1,6 @@
 import { MeetingDataType } from "@/types/types";
 import axios from "axios";
+import { headers } from "next/headers";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
@@ -56,5 +57,16 @@ export const getMeetingReport = async (token: string, year:number = new Date().g
         return response.data
     } catch (error) {
         console.log("error ", error)
+    }
+}
+
+export const updateMeetingStatus = async (token: string, status:number, meetingId: string)=>{
+    try {
+        const response = await axios.post(`${API_URI}/api/meeting/update-meeting/${status}`,{meetingId},{
+            headers:{ Authorization : `Bearer ${token}`}
+        })
+        return response.data
+    } catch (error) {
+        console.log(error)
     }
 }

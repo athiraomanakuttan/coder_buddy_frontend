@@ -19,6 +19,7 @@ export interface AnswerMessage {
 
 export interface VideoCallProps {
     roomId: string;
+    meetingId?:string;
     onCallEnd?: () => void;
 }
 

@@ -54,6 +54,7 @@ export default function VideoCallPage() {
       /> */}
       <VideoCallUI 
       roomId={`${meetingData._id}-${meetingData.meetingId}`}
+      meetingId={`${meetingData.meetingId}`}
       onCallEnd={handleCallEnd}
       />
     </div>

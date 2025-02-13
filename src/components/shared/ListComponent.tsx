@@ -5,10 +5,11 @@ import Link from "next/link";
 interface ListDataType {
     headings: string[],
     listData: MeetingDataType[],
-    role: string
+    role: string,
+    meetingStatus : number
 }
 
-const ListComponent = ({ headings, listData , role}: ListDataType) => {
+const ListComponent = ({ headings, listData , role, meetingStatus}: ListDataType) => {
   const renderCellContent = (item: MeetingDataType, heading: string) => {
     const value = item[heading as keyof MeetingDataType];
     
@@ -60,7 +61,7 @@ const ListComponent = ({ headings, listData , role}: ListDataType) => {
                   ))}
                   <td><Link href={`/post/${item.postId}`}><label htmlFor="" className="hover:text-sky-300 hover:underline">View Post Details</label></Link></td>
                   <td> {role === "user" ? <Link href={`/expertprofile/${item.expertId}`} > <label htmlFor="" className="hover:text-sky-300 hover:underline">View Expert</label></Link>:  <Link href={`/expert/userProfile/${item.userId}`}>View User</Link>} </td>
-                  <td><Link href={`/userVideoCall/${item._id}`}><button className="p-2 bg-primarys text-white hover:bg-sky-300">Join Meeting</button></Link></td>
+                  <td>{meetingStatus=== 0 && <Link href={`/userVideoCall/${item._id}`}><button className="p-2 bg-primarys text-white hover:bg-sky-300">Join Meeting</button></Link>}</td>
                 </tr>
               ))
               

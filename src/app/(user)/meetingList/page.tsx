@@ -48,7 +48,7 @@ const MeetingPage = () => {
         </div>
 
     {meetingDetails.length === 0 ?(meetingStatus === 0 ?<> No Scheduled Meetings </> :<> No Meeting history </>):
-    <><ListComponent headings={heading} listData={meetingDetails} role="user" /></>}
+    <><ListComponent headings={heading} listData={meetingDetails} role="user" meetingStatus={meetingStatus} /></>}
 
 <div className="flex justify-end items-end mt-4 space-x-4 mb-2">
                             <button

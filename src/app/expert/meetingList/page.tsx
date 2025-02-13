@@ -44,7 +44,7 @@ const meetingPage = () => {
               <button className={`${status ? "bg-transparent" : "bg-sky-300 "} pl-4 pr-4 pt-2 pb-2 border rounded`}  onClick={() =>setStatus(0)}>Scheduled</button>
               <button className={`${status ? "bg-sky-300" : "bg-transparent "} pl-4 pr-4 pt-2 pb-2 border rounded`} onClick={() =>setStatus(1)}>History</button>
       </div>  
-    {meetingDetails.length === 0 ?(status === 0 ?<> No Scheduled Meetings </> :<> No Meeting history </>):<><ListComponent headings={heading} listData={meetingDetails} role="expert" /></>}
+    {meetingDetails.length === 0 ?(status === 0 ?<> No Scheduled Meetings </> :<> No Meeting history </>):<><ListComponent headings={heading} listData={meetingDetails} role="expert" meetingStatus={status} /></>}
     <div className="flex justify-end items-end mt-4 space-x-4 mb-2">
                             <button
                                 onClick={() => handlePageChange(pagination.currentPage - 1)}
