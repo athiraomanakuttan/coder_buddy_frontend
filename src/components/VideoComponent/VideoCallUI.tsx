@@ -45,24 +45,26 @@ const VideoCallUI: React.FC<VideoCallProps> = ({ roomId,meetingId, onCallEnd }) 
         
         if (endMeeting && meetingId) {
             await updateMeetingStatus(token,1,meetingId);
+            router.push(`/Rating/${meetingId}`);
+        }else {
+            if (isAdmin) {
+
+                if (!currentMeetingDetails) {
+                    router.push("/admin/meeting/meetingList");
+                } else {
+                    const meetingDetails = JSON.parse(currentMeetingDetails);
+                    router.push(`/admin/expertApproval/${meetingDetails.userId}/${meetingDetails.meetingId}`);
+                }
+            } else if (isExpert) {
+                router.push("/expert/dashboard");
+            } else {
+                router.push("/dashboard");
+            }
         }
 
         endCall();
 
-        if (isAdmin) {
-
-            if (!currentMeetingDetails) {
-                router.push("/admin/meeting/meetingList");
-            } else {
-        const meetingDetails = JSON.parse(currentMeetingDetails);
-
-                router.push(`/admin/expertApproval/${meetingDetails.userId}/${meetingDetails.meetingId}`);
-            }
-        } else if (isExpert) {
-            router.push("/expert/dashboard");
-        } else {
-            router.push("/dashboard");
-        }
+        
     };
 
     const toggleVideoSize = () => {

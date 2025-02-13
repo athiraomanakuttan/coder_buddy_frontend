@@ -303,3 +303,10 @@ export interface MonthlyAdminProfitReport {
   month: number;  
   profit: number;
 }
+
+export interface RatingData {
+  id: string;
+  meetingRating: number;
+  participantBehavior: number;
+  feedback: string;
+}
