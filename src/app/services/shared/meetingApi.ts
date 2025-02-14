@@ -70,3 +70,15 @@ export const updateMeetingStatus = async (token: string, status:number, meetingI
         console.log(error)
     }
 }
+
+export const getMeetingFeedback = async (token: string, meetingId: string)=>{
+    try {
+        const response =  await axios.get(`${API_URI}/api/meeting/get-meeting-feedback`,{
+            params:{meetingId},
+            headers:{Authorization: `Bearer ${token}`}
+        })
+        return response.data
+    } catch (error) {
+        toast.error("unable to fetch th meeting feedback")
+    }
+}
