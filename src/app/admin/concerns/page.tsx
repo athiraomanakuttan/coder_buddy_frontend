@@ -1,9 +1,10 @@
 'use client';
-import { getConcerns } from '@/app/services/admin/concernApi';
+import { getConcerns, updateUserConcern } from '@/app/services/admin/concernApi';
 import { addConernComment } from '@/app/services/shared/concernApi';
 import Navbar from '@/components/admin/navbar/Navbar';
 import { ConcernDataType, MessageType } from '@/types/types';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const ConcernPage = () => {
     const [status, setStatus] = useState(0);
@@ -58,6 +59,16 @@ const ConcernPage = () => {
         }
     };
 
+    const updateConcernStatus = async (concernId:string, status:number)=>{
+        console.log("function called")
+        const response = await updateUserConcern(token, concernId,status)
+        console.log("response",response)
+        if(response)
+        {    toast.success("status updated sucessfully")
+             getConcernData()
+        }
+    }
+
     return (
         <div className="m-0 p-0 flex">
             <Navbar />
@@ -85,8 +96,10 @@ const ConcernPage = () => {
                             className="p-4 border rounded cursor-pointer bg-gray-100 hover:bg-gray-200"
                             onClick={() => setSelectedConcern(concern)}
                         >
-                            <h3 className="text-lg font-semibold">{concern.title}</h3>
+                            <h3 className="text-lg font-semibold text-sky-500">{concern.title}</h3>
                             <p className="text-sm text-gray-600">{concern.description.slice(0, 50)}...</p>
+
+                            {concern.status === 0 && (<div className='flex gap-3 mt-5'> <button className='p-2 border rounded bg- bg-sky-300 z-10' onClick={()=>updateConcernStatus(concern._id,1)}> Close </button></div>)}
                         </div>
                     ))}
                 </div>

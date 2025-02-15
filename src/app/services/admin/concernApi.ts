@@ -26,3 +26,12 @@ export const getUserProfile = async (token: string, userId: string)=>{
         toast.error("Error fetching  profile")
     }
 }
+
+export const updateUserConcern = async (token: string, concernId: string, status:number)=>{
+    try {
+        const response = await axios.put(`${API_URL}/api/admin/update-concern-status`,{concernId,status},{headers:{Authorization: `Bearer ${token}`}})
+        return response.data
+    } catch (error) {
+        console.log("unable to update the status. Try again")
+    }
+}
