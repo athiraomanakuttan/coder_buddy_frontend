@@ -5,8 +5,8 @@ import ExpertNavbar from "@/components/expert/Navbar/Navbar";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import ConcernComponent from "@/components/shared/concernComponent";
-import { ConcernDataType } from "@/types/types";
-import { getUserConcernData } from "@/app/services/shared/concernApi";
+import { ConcernDataType, MessageType } from "@/types/types";
+import { addConernComment, getUserConcernData } from "@/app/services/shared/concernApi";
 import Link from "next/link";
 
 const ComplaintRegistration = () => {
@@ -15,126 +15,139 @@ const ComplaintRegistration = () => {
   const [status, setStatus] = useState(0);
   const [concernModel, setConcernModel] = useState(false);
   const [concernData, setConcernData] = useState<ConcernDataType[]>([]);
-  const [expandedDescriptions, setExpandedDescriptions] = useState<
-    Record<string, boolean>
-  >({});
+  const [selectedConcern, setSelectedConcern] = useState<ConcernDataType | null>(null);
+  const [comment, setComment] = useState("");
 
-  const toggleDescription = (id: string) => {
-    setExpandedDescriptions((prev) => ({ ...prev, [id]: !prev[id] }));
-  }
+  const getConcernData = async () => {
+    const response = await getUserConcernData(token, status);
+    if (response) setConcernData(response.data);
+  };
 
-  
   useEffect(() => {
-    const getConcernData = async () => {
-      const response = await getUserConcernData(token, status);
-      if (response) setConcernData(response.data);
-      console.log("response.data",response.data)
-    };
-    
     getConcernData();
   }, [concernModel, status]);
-  return (
-    <div className="m-0 p-0 flex">
-      <div className="p-0 m-0">{isExpert ? <ExpertNavbar /> : <Navbar />}</div>
-      <div className="border w-100">
-        <div className="flex justify-end gap-3 m-5">
-          <button
-            className={`${
-              status === 0 ? "bg-sky-300" : "bg-yellow-50"
-            } border p-2 rounded`}
-            onClick={() => setStatus(0)}
-          >
-            Open
-          </button>
-          <button
-            className={`${
-              status === 1 ? "bg-sky-300" : "bg-yellow-50"
-            } border p-2 rounded`}
-            onClick={() => setStatus(1)}
-          >
-            Closed
-          </button>
-          <button
-            className="border p-2 rounded"
-            onClick={() => setConcernModel(true)}
-          >
-            <Plus />
-          </button>
-        </div>
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg m-4">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-sky-200 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th className="py-2 px-4 border-b">Title</th>
-                <th className="py-2 px-4 border-b">Description</th>
-                <th className="py-2 px-4 border-b">Attchements</th>
-                <th className="py-2 px-4 border-b">Status</th>
-                <th className="py-2 px-4 border-b">Created At</th>
-                <th className="py-2 px-4 border-b">Updated At</th>
-              </tr>
-            </thead>
-            <tbody>
-              {concernData.length === 0 ? (
-                <tr className="">
-                  <td
-                    colSpan={5}
-                    className="py-4 px-4 text-center text-gray-500"
-                  >
-                    No records found
-                  </td>
-                </tr>
-              ) : (
-                concernData.map((concern) => {
-                  const isExpanded = expandedDescriptions[concern._id];
-                  const truncatedDescription =
-                    concern.description.length > 20
-                      ? concern.description.slice(0, 20) + "..."
-                      : concern.description;
 
-                  return (
-                    <tr key={concern._id}>
-                      <td className="py-2 px-4 border-b">{concern.title}</td>
-                      <td className="py-2 px-4 border-b">
-                        {isExpanded
-                          ? concern.description
-                          : truncatedDescription}
-                        {concern.description.length > 20 && (
-                          <button
-                            className="text-blue-500 ml-2 focus:outline-none"
-                            onClick={() => toggleDescription(concern._id)}
-                          >
-                            {isExpanded ? "Read less" : "More"}
-                          </button>
-                        )}
-                      </td>
-                      <td className="py-2 px-4 border-b" >{concern?.video ? <Link href={concern?.video} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Attachment</Link> : <p>No Attachemts</p>}</td>
-                      <td className="py-2 px-4 border-b">
-                        {concern.status === 0 ? "Open" : "Closed"}
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        {concern.createdAt
-                          ? new Date(concern.createdAt).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        {concern.updatedAt
-                          ? new Date(concern.updatedAt).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+  const handleCommentSend = async () => {
+    if (selectedConcern && comment.trim()) {
+      const meetingId = selectedConcern.concernMeetingId;
+      const userType = isExpert ? "expert" : "user";
+      const response = await addConernComment(token, comment, meetingId as string, userType);
+
+      if (response) {
+        const newMessage: MessageType = {
+          message: comment,
+          userType,
+          dateAndTime: new Date(),
+        };
+
+        // Update state immediately to show the new message
+        setSelectedConcern({
+          ...selectedConcern,
+          message: [...(selectedConcern.message || []), newMessage],
+        });
+
+        setComment("");
+      }
+    }
+  };
+
+  return (
+    <div className="flex h-screen">
+      <div className="p-0 m-0">{isExpert ? <ExpertNavbar /> : <Navbar />}</div>
+      <div className="flex flex-1">
+        {/* Left Side: Concern List */}
+        <div className={`p-4 border-r overflow-y-auto ${selectedConcern ? "w-1/2" : "w-full"}`}>
+          <div className="flex justify-end gap-3 mb-4">
+            <button
+              className={`border p-2 rounded ${status === 0 ? "bg-sky-300" : "bg-yellow-50"}`}
+              onClick={() => setStatus(0)}
+            >
+              Open
+            </button>
+            <button
+              className={`border p-2 rounded ${status === 1 ? "bg-sky-300" : "bg-yellow-50"}`}
+              onClick={() => setStatus(1)}
+            >
+              Closed
+            </button>
+            <button className="border p-2 rounded" onClick={() => setConcernModel(true)}>
+              <Plus />
+            </button>
+          </div>
+
+          {concernData.length === 0 ? (
+            <p className="text-gray-500 text-center">No records found</p>
+          ) : (
+            concernData.map((concern) => (
+              <div
+                key={concern._id}
+                className="p-4 border rounded-lg shadow mb-4 cursor-pointer hover:bg-gray-100"
+                onClick={() => setSelectedConcern(concern)}
+              >
+                <h3 className="font-semibold text-lg">{concern.title}</h3>
+                <p className="text-gray-600">
+                  {concern.description.length > 50
+                    ? concern.description.slice(0, 50) + "..."
+                    : concern.description}
+                </p>
+                <p className="text-sm text-gray-500">Status: {concern.status === 0 ? "Open" : "Closed"}</p>
+              </div>
+            ))
+          )}
         </div>
+
+        {/* Right Side: Chat Section (Visible only when a concern is selected) */}
+        {selectedConcern && (
+          <div className="w-1/2 p-4 flex flex-col">
+            <h2 className="text-xl font-semibold">{selectedConcern.title}</h2>
+            <p className="text-gray-600 mb-4">{selectedConcern.description}</p>
+            {selectedConcern.video && (
+              <Link href={selectedConcern.video} target="_blank" className="text-blue-500 mb-4">
+                View Attachment
+              </Link>
+            )}
+            {/* Chat Messages */}
+            <div className="flex flex-col flex-grow overflow-y-auto border p-4 rounded-lg bg-gray-100">
+              {selectedConcern.message && selectedConcern.message.length > 0 ? (
+                selectedConcern.message.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 my-1 rounded-lg ${
+                      msg.userType === "expert"
+                        ? "bg-blue-300 self-end"
+                        : msg.userType === "admin"
+                        ? "bg-white"
+                        : "bg-gray-200"
+                    }`}
+                  >
+                    <p>{msg.message}</p>
+                    <span className="text-xs text-gray-500">{new Date(msg.dateAndTime).toLocaleString()}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">No messages yet.</p>
+              )}
+            </div>
+
+            {/* Show Input Box only when status === 0 */}
+            {selectedConcern.status === 0 && (
+              <div className="mt-4 flex">
+                <input
+                  type="text"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg"
+                  placeholder="Type your message..."
+                />
+                <button onClick={handleCommentSend} className="ml-2 bg-blue-500 text-white p-2 rounded-lg">
+                  Send
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      {concernModel && (
-        <ConcernComponent
-          setConcernModel={setConcernModel}
-          isExpert={isExpert}
-        />
-      )}
+      {concernModel && <ConcernComponent setConcernModel={setConcernModel} isExpert={isExpert} />}
     </div>
   );
 };

@@ -76,3 +76,12 @@ export const getUserConcernData = async (token: string, status:number)=>{
         console.log("unable to fetch data")
     }
 }
+
+export const addConernComment = async (token: string, comment: string, meetingId: string, userType: string)=>{
+try {
+  const response = await axios.post(`${API_URI}/api/concern/add-concern-replay`,{comment,userType,meetingId},{headers:{Authorization:`Bearer ${token}`}})
+  return response.data
+} catch (error) {
+  toast.error("error while adding replay")
+}
+}

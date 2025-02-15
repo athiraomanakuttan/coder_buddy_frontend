@@ -222,6 +222,7 @@ export interface ConcernDataType {
   concernUserId?: string;
   userId: string;
   status: number;
+  message: MessageType[];
   role: string;
   video ?: string;
   createdAt?: Date,
@@ -310,3 +311,10 @@ export interface RatingData {
   participantBehavior: number;
   feedback: string;
 }
+
+export interface MessageType{
+  message:string,
+  userType: string,
+  dateAndTime:Date
+}
+
