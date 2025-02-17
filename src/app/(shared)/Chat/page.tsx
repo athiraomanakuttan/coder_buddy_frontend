@@ -226,7 +226,7 @@ const ChatInterface = () => {
                     src={chat.participant.profile_pic || "/images/default-avatar.png"}
                     alt={chat.participant.name}
                     className="w-10 h-10 rounded-full mr-3"
-                  />
+                  /> 
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium truncate">{chat.participant.name}</h3>
                     <p className="text-sm text-gray-500 truncate">{chat.postTitle}</p>
@@ -264,7 +264,7 @@ const ChatInterface = () => {
                 >
                   <Send className="w-5 h-5" />
                 </button>
-                {isExpert && (
+                {isExpert ? (
                   <>
                     <button className="border p-2" onClick={() => setShowModal(true)}>
                       <Link />
@@ -273,7 +273,7 @@ const ChatInterface = () => {
                       <FileVideo2 />
                     </button>
                   </>
-                )}
+                ) : <div></div>}
               </div>
             </div>
           </div>
