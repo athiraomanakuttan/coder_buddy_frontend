@@ -268,7 +268,9 @@ export interface ConcernType {
 }
 
 interface TransactionType {
+  _id ?: string,
   paymentId: string,
+  transactionType ?:  string,
   amount: number
   dateTime : string | Date
 }

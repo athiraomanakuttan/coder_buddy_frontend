@@ -20,7 +20,8 @@ const PayoutModal = ({setIsModalOpen,balance}: PayoutModalType) => {
         }
         const response = await expertPayOut(token , payoutAmount, payoutUPI)
         if(response){
-            console.log(response)
+           toast.success("payment initiated sucessfully")
+           setIsModalOpen(false)
         }
     }
   return (
