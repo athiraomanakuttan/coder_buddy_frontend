@@ -33,7 +33,6 @@ const MeetingMonthlyReport = () => {
         "July", "Aug", "Sept", "Oct", "Nov", "Dec"
     ];
 
-    // Convert API response to match chart format
     const chartData = months.map((month, index) => ({
         month,
         totalMeetings: meetingReport.find((m) => m.month === index + 1)?.totalMeetings || 0,
