@@ -1,38 +1,52 @@
-'use client'
+"use client";
 
-import { getadminexpertMeeting, } from "@/app/services/expert/meetingApi";
+import { getadminexpertMeeting } from "@/app/services/expert/meetingApi";
 import Navbar from "@/components/expert/Navbar/Navbar";
-import { ExpertMeetingType,  } from "@/types/types";
+import { ExpertDashbordType, ExpertMeetingType } from "@/types/types";
 import { useEffect, useState } from "react";
-import { Video } from 'lucide-react';
+import { BookOpen, Star, Video, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import useAuthStore from "@/store/authStore";
 import MeetingMonthlyReport from "@/components/shared/MeetingMonthlyReport";
+import { getExpertDashboardData } from "@/app/services/expert/expertApi";
 
 const Dashboard = () => {
   const { data: session, status } = useSession();
-  const setUserAuth = useAuthStore(state => state.setUserAuth);
+  const setUserAuth = useAuthStore((state) => state.setUserAuth);
+  const [dashbordStatus, setDashbordStatus] = useState<ExpertDashbordType>({
+    meetingRating:0,
+    scheduledMeeting:0,
+    totalMeetings:0,
+    walletBalance:0
+  })
 
   useEffect(() => {
-    if ( session?.user && status === "authenticated") {
-      console.log("session.user",session?.user?.userData)
-      setUserAuth(session?.user?.userData, session?.user?.access || '');
-      localStorage.setItem("isVerified",session.user?.userData?.isVerified || 0)
-      localStorage.setItem("isExpert","1")
-      document.cookie = `accessToken=${session?.user?.access}; path=/; max-age=${60 * 60}; SameSite=Lax`;
-      setVarified(session?.user?.userData?.isVerified || 0)
+    if (session?.user && status === "authenticated") {
+      console.log("session.user", session?.user?.userData);
+      setUserAuth(session?.user?.userData, session?.user?.access || "");
+      localStorage.setItem(
+        "isVerified",
+        session.user?.userData?.isVerified || 0
+      );
+      localStorage.setItem("isExpert", "1");
+      document.cookie = `accessToken=${
+        session?.user?.access
+      }; path=/; max-age=${60 * 60}; SameSite=Lax`;
+      setVarified(session?.user?.userData?.isVerified || 0);
     }
   }, [session, status, setUserAuth]);
   const isVarified = localStorage.getItem("isVerified");
   const token = localStorage.getItem("userAccessToken") as string;
   const [varified, setVarified] = useState<string | number | null>(isVarified);
-  const [meetingData, setMeetingData] = useState<ExpertMeetingType | null>(null);
+  const [meetingData, setMeetingData] = useState<ExpertMeetingType | null>(
+    null
+  );
   const [isJoining, setIsJoining] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    if (isVarified === '0' ) {
+    if (isVarified === "0") {
       getMeetingDetails();
     }
   }, [isVarified]);
@@ -40,7 +54,7 @@ const Dashboard = () => {
   // To get the verification meeting details with admin
   const getMeetingDetails = async () => {
     const response = await getadminexpertMeeting(token);
-    console.log("response")
+    console.log("response");
     if (response) {
       setMeetingData(response.data);
     }
@@ -49,16 +63,24 @@ const Dashboard = () => {
   // Handle joining the meeting
   const handleJoinMeeting = async () => {
     if (!meetingData?._id) {
-      console.error('Meeting ID not found');
+      console.error("Meeting ID not found");
       return;
-    } 
-      
-        // localStorage.setItem("currentMeeting",meetingsData)
-        router.push(`/videoCall/${meetingData?.meetingId}`)
-      
-      setIsJoining(false);
-     
+    }
+
+    // localStorage.setItem("currentMeeting",meetingsData)
+    router.push(`/videoCall/${meetingData?.meetingId}`);
+
+    setIsJoining(false);
   };
+
+  useEffect(()=>{
+    const getExpertStatus = async ()=>{
+      const response = await getExpertDashboardData(token)
+      if(response)
+        setDashbordStatus(response.data) 
+    }
+    getExpertStatus()
+  },[])
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -71,20 +93,75 @@ const Dashboard = () => {
       <div className="flex-1 overflow-y-auto p-6">
         {varified === "1" || varified === 1 ? (
           <div>
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
-              {[1, 2, 3, 4, 5].map((item) => (
-                <div
-                  key={item}
-                  className="bg-white rounded-lg shadow-md border p-6 text-center"
-                >
-                  <h5 className="text-gray-500 text-sm font-medium mb-2">
-                    Total Posts
-                  </h5>
-                  <h1 className="text-3xl font-bold text-gray-800">10</h1>
-                </div>
-              ))}
-            </div>
+             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full mb-8">
+      {/* Total Meetings */}
+      <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
+        <div className="space-y-1">
+          <div className="flex gap-4">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {dashbordStatus.totalMeetings}
+            </h3>
+            <Video className="h-5 w-5 text-gray-400" />
+          </div>
+          <p className="text-xs text-gray-500">
+            <span className="text-xl text-primarys">
+              Total meetings
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Scheduled Meetings */}
+      <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
+        <div className="space-y-1">
+          <div className="flex gap-4">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {dashbordStatus.scheduledMeeting}
+            </h3>
+            <Video className="h-5 w-5 text-gray-400" />
+          </div>
+          <p className="text-xs text-gray-500">
+            <span className="text-xl text-primarys">
+              Scheduled Meetings
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Wallet Balance */}
+      <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
+        <div className="space-y-1">
+          <div className="flex gap-4">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {dashbordStatus.walletBalance}
+            </h3>
+            <Wallet className="h-5 w-5 text-gray-400" />
+          </div>
+          <p className="text-xs text-gray-500">
+            <span className="text-xl text-primarys">
+              Wallet Balance
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Rating */}
+      <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
+        <div className="space-y-1">
+          <div className="flex gap-4">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {dashbordStatus.meetingRating}
+            </h3>
+            <Star className="h-5 w-5 text-gray-400" />
+          </div>
+          <p className="text-xs text-gray-500">
+            <span className="text-xl text-primarys">
+              Rating
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
 
             {/* Monthly Report Section */}
             <MeetingMonthlyReport />

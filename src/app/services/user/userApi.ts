@@ -285,4 +285,13 @@ try {
 }
 }
 
+export const getUserDashboardStatus = async (token: string)=>{
+  try {
+    const response = await axios.get(`${API_URI}/api/get-dashboard-report`,{headers:{Authorization:`Bearer ${token}`}})
+    return response.data
+  } catch (error) {
+    console.log("error while getting report")
+  }
+}
+
 

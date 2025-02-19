@@ -206,3 +206,12 @@ export const deleteComment =  async (token:string , data:{commentId : string, ex
     toast.error(error.response.data.message)
   }
 }
+
+export const getExpertDashboardData = async (token : string)=>{
+  try {
+    const response = await axios.get(`${API_URL}/api/expert/get-dashbord-data`,{headers: {Authorization : `Bearer ${token}`}})
+    return response.data
+  } catch (error) {
+    console.log("error", error)
+  }
+}
