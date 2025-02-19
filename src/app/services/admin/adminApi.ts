@@ -129,3 +129,12 @@ export const getProfitData = async (token: string, year: number)=>{
         console.log("error while getting report", error)
     }
 }
+
+export const getAdminDashboardData = async (token: string)=>{
+    try {
+        const response = await axios.get(`${API_URL}/api/admin/get-dasboard-data`,{headers : {Authorization : `Bearer ${token}`}})
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}

@@ -330,3 +330,11 @@ export interface ExpertDashbordType {
   totalMeetings : number,
   walletBalance : number
 }
+
+export interface AdminDashboardType{
+  totalClient : number,
+  totalExpert : number,
+  totalProfit : number,
+  scheduledMeeting : number,
+  openTicket : number
+}
