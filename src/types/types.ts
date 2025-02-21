@@ -338,3 +338,11 @@ export interface AdminDashboardType{
   scheduledMeeting : number,
   openTicket : number
 }
+
+export interface TechnologyType{
+  _id ?: string,
+  title ?: string,
+  status ?: number,
+  createdAt ?: string,
+  updatedAt ?: string
+}

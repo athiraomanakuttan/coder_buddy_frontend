@@ -241,3 +241,16 @@ export const expertProfileValidation = (
 
 
   }
+
+  export const technologyValidation = (technology: string)=>{
+    if(!technology.trim()){
+      return {status: false, message:"Techology is empty" }
+    }
+    else if(!namePattern.test(technology)){
+      return {status:false, message : "technology not in required fortmat"}
+    }
+    else if(technology.length<3){
+      return {status: false, message:"technology should be at least  3 letters"}
+    }
+    return { status : true }
+  }

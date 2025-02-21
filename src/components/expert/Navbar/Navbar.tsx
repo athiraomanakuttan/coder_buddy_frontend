@@ -86,7 +86,6 @@ const Navbar = () => {
           <Link
             href="/expert/profile"
             className="
-              block
               py-2
               px-3
               rounded
@@ -109,7 +108,6 @@ const Navbar = () => {
               <Link
                 href="/Chat"
                 className="
-                  block
                   py-2
                   px-3
                   rounded
@@ -130,7 +128,6 @@ const Navbar = () => {
               <Link
                 href="/expert/post"
                 className="
-                  block
                   py-2
                   px-3
                   rounded
@@ -151,7 +148,6 @@ const Navbar = () => {
               <Link
                 href="/expert/wallet"
                 className="
-                  block
                   py-2
                   px-3
                   rounded
@@ -172,7 +168,6 @@ const Navbar = () => {
               <Link
                 href="/payment"
                 className="
-                  block
                   py-2
                   px-3
                   rounded
@@ -193,7 +188,6 @@ const Navbar = () => {
               <Link
                 href="/expert/meetingList"
                 className="
-                  block
                   py-2
                   px-3
                   rounded
@@ -214,7 +208,6 @@ const Navbar = () => {
               <Link
                 href="/complaintRegistration"
                 className="
-                  block
                   py-2
                   px-3
                   rounded
@@ -237,7 +230,6 @@ const Navbar = () => {
           <Link
             href="#"
             className="
-              block
               py-2
               px-3
               rounded
