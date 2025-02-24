@@ -93,10 +93,9 @@ formDataToSend.append("role",userType)
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-96 p-6">
-                <h2 className="text-lg font-semibold mb-4">Do you have a concern?</h2>
+            <div className="bg-white rounded-lg shadow-lg w-98 p-6">
                 <div>
-                    <label>Title</label>
+                    <label className="text-primarys">Title</label>
                     <input
                         type="text"
                         placeholder="Title"
@@ -105,7 +104,7 @@ formDataToSend.append("role",userType)
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     />
 
-                    <label>Description</label>
+                    <label className="text-primarys">Description</label>
                     <textarea
                         placeholder="Detailed concern"
                         className="border rounded w-full p-2 mb-3"
@@ -113,7 +112,9 @@ formDataToSend.append("role",userType)
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     ></textarea>
 
-                    <label>{isExpert ? "Select User" : "Select Expert"}</label>
+                    <div className="flex gap-2">
+                    <div className="flex-row">
+                    <label className="text-primarys">{isExpert ? "Select User" : "Select Expert"}</label>
                     <select
                         className="border rounded w-full p-2 mb-3"
                         onChange={(e) => setSelectedUser(e.target.value)}
@@ -125,8 +126,10 @@ formDataToSend.append("role",userType)
                             </option>
                         ))}
                     </select>
+                    </div>
 
-                    <label>Select Meeting</label>
+                    <div className="flex-row ">
+                    <label className="text-primarys">Select Meeting</label>
                     <select
                         className="border rounded w-full p-2 mb-3"
                         onChange={(e) => setSelectedMeeting(e.target.value)}
@@ -137,22 +140,25 @@ formDataToSend.append("role",userType)
                                 {meeting.title}
                             </option>
                         ))}
-                    </select>
+                    </select></div>
 
-                    <label>Upload Video</label>
+                    </div>
+
+                    <label className="text-primarys">Upload Video</label>
                     <input 
                         type="file" 
                         accept="video/*" 
                         className="border rounded w-full p-2 mb-3" 
                         onChange={handleVideoUpload} 
                     />
-
+                    <div className="flex justify-center">
                     {videoFile && (
-                        <video controls width="100%" className="mb-3">
+                        <video controls width="30%" className="mb-3">
                             <source src={URL.createObjectURL(videoFile)} type={videoFile.type} />
                             Your browser does not support the video tag.
                         </video>
                     )}
+                    </div>
                 </div>
 
                 <div className="flex justify-between">

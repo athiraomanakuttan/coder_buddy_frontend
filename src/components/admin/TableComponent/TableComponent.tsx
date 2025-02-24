@@ -14,6 +14,7 @@ interface TableComponentProps {
 
 const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, role, functions,expertState}) => {
   const router = useRouter()
+  console.log("valueList",valueList)
   const handleMeetingJoin = (_id : string, meetingId: string,userId : string)=>{
     
     const data =  JSON.stringify({_id,meetingId,userId} )
@@ -46,7 +47,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
             </tr>
           </thead>
           <tbody>
-            {valueList && valueList.length > 0 ? (
+            {valueList && valueList.length > 0 && (valueList[0].title || valueList[0].first_name)  ? (
               valueList.map((item, itemIndex) => (
                 <tr 
                   key={itemIndex} 
@@ -57,12 +58,12 @@ const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, ro
     key={headingIndex}
     className="px-6 py-4"
   >
-    {heading === "createdAt" || heading === "updatedAt" 
+    { heading === "createdAt" || heading === "updatedAt"  || heading === "dateTime"
       ? formatDate(item[heading])
       : Array.isArray(item[heading])
         ? item[heading].join(', ')
         : item[heading] || 'N/A'
-    }
+    } 
   </td>
 ))}
                   <td>

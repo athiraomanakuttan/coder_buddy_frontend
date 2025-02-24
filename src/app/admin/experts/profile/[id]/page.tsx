@@ -191,7 +191,7 @@ const handleMeetingSchedule = (id : string )=>{
             <div></div>
             <div className=" w-100  flex justify-end mt-2 mb-2  gap-3">
               <button className="border bg-red-700 pt-2 pb-2 pr-5 pl-5 text-white" onClick={()=>rejectExpert(params?.id as string)}>Reject </button> 
-              <button className="border bg-adminprimary pt-2 pb-2 pr-5 pl-5 text-black " onClick={()=>handleMeetingSchedule(params?.id as string)}>Schedule meeting </button>
+              <button className="border bg-adminprimary pt-2 pb-2 pr-5 pl-5 text-white " onClick={()=>handleMeetingSchedule(params?.id as string)}>Schedule meeting </button>
             </div>
 
           </div>

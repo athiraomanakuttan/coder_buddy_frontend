@@ -54,7 +54,7 @@ const Navbar = () => {
   return (
     <aside
       className="
-        bg-gray-900 
+        bg-adminprimary 
         text-white 
         w-60 
         h-screen 
@@ -90,6 +90,7 @@ const Navbar = () => {
                 px-6 
                 py-3 
                 text-sm 
+                text-white
                 font-medium 
                 rounded-md 
                 transition-colors 
@@ -109,6 +110,7 @@ const Navbar = () => {
                 gap-3 
                 px-6 
                 py-3 
+                text-white
                 text-sm 
                 font-medium 
                 rounded-md 

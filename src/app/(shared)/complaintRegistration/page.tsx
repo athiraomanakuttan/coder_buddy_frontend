@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/user/Navbar/Navbar";
 import ExpertNavbar from "@/components/expert/Navbar/Navbar";
-import { Plus } from "lucide-react";
+import { Cross, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import ConcernComponent from "@/components/shared/concernComponent";
 import { ConcernDataType, MessageType } from "@/types/types";
@@ -40,7 +40,6 @@ const ComplaintRegistration = () => {
           dateAndTime: new Date(),
         };
 
-        // Update state immediately to show the new message
         setSelectedConcern({
           ...selectedConcern,
           message: [...(selectedConcern.message || []), newMessage],
@@ -52,76 +51,109 @@ const ComplaintRegistration = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      <div className="p-0 m-0">{isExpert ? <ExpertNavbar /> : <Navbar />}</div>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar (Navbar) */}
+      <div className="p-0 m-0 shadow-md bg-white">
+        {isExpert ? <ExpertNavbar /> : <Navbar />}
+      </div>
+
+      {/* Main Content */}
       <div className="flex flex-1">
-        {/* Left Side: Concern List */}
-        <div className={`p-4 border-r overflow-y-auto ${selectedConcern ? "w-1/2" : "w-full"}`}>
-          <div className="flex justify-end gap-3 mb-4">
+        {/* Left Panel - Concern List */}
+        <div className={`p-6 border-r overflow-y-auto transition-all duration-300 ${selectedConcern ? "w-3/5" : "w-full"}`}>
+          {/* Filter & Add Button */}
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex gap-3">
+              <button
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  status === 0 ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"
+                }`}
+                onClick={() => setStatus(0)}
+              >
+                Open
+              </button>
+              <button
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  status === 1 ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"
+                }`}
+                onClick={() => setStatus(1)}
+              >
+                Closed
+              </button>
+            </div>
             <button
-              className={`border p-2 rounded ${status === 0 ? "bg-sky-300" : "bg-yellow-50"}`}
-              onClick={() => setStatus(0)}
+              className="bg-blue-500 text-white p-2 rounded-full shadow-md hover:bg-blue-600 transition"
+              onClick={() => setConcernModel(true)}
             >
-              Open
-            </button>
-            <button
-              className={`border p-2 rounded ${status === 1 ? "bg-sky-300" : "bg-yellow-50"}`}
-              onClick={() => setStatus(1)}
-            >
-              Closed
-            </button>
-            <button className="border p-2 rounded" onClick={() => setConcernModel(true)}>
               <Plus />
             </button>
           </div>
 
+          {/* Concern Grid List */}
           {concernData.length === 0 ? (
             <p className="text-gray-500 text-center">No records found</p>
           ) : (
-            concernData.map((concern) => (
-              <div
-                key={concern._id}
-                className="p-4 border rounded-lg shadow mb-4 cursor-pointer hover:bg-gray-100"
-                onClick={() => setSelectedConcern(concern)}
-              >
-                <h3 className="font-semibold text-lg">{concern.title}</h3>
-                <p className="text-gray-600">
-                  {concern.description.length > 50
-                    ? concern.description.slice(0, 50) + "..."
-                    : concern.description}
-                </p>
-                <p className="text-sm text-gray-500">Status: {concern.status === 0 ? "Open" : "Closed"}</p>
-              </div>
-            ))
+            <div className={`grid gap-6 ${selectedConcern ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`}>
+              {concernData.map((concern) => (
+                <div
+                  key={concern._id}
+                  className="p-4 bg-white border rounded-xl shadow-md cursor-pointer hover:bg-gray-50 transition-all hover:shadow-lg min-w-[200px]"
+                  onClick={() => setSelectedConcern(concern)}
+                >
+                  <h3 className="font-semibold text-lg text-gray-900">{concern.title}</h3>
+                  <p className="text-gray-600 mt-2">
+                    {concern.description.length > 50
+                      ? concern.description.slice(0, 50) + "..."
+                      : concern.description}
+                  </p>
+                  <p
+                    className={`text-sm mt-2 font-medium ${
+                      concern.status === 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    Status: {concern.status === 0 ? "Open" : "Closed"}
+                  </p>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
-        {/* Right Side: Chat Section (Visible only when a concern is selected) */}
+        {/* Right Panel - Chat Section */}
         {selectedConcern && (
-          <div className="w-1/2 p-4 flex flex-col">
-            <h2 className="text-xl font-semibold">{selectedConcern.title}</h2>
-            <p className="text-gray-600 mb-4">{selectedConcern.description}</p>
+          <div className="w-full max-w-md p-6 flex flex-col bg-white shadow-md">
+            <h2 className="text-2xl font-bold mb-2">{selectedConcern.title}</h2>
+            <p className="text-gray-700 mb-4">{selectedConcern.description}</p>
+
             {selectedConcern.video && (
-              <Link href={selectedConcern.video} target="_blank" className="text-blue-500 mb-4">
+              <Link
+                href={selectedConcern.video}
+                target="_blank"
+                className="text-blue-500 font-medium underline mb-4"
+              >
                 View Attachment
               </Link>
             )}
+
             {/* Chat Messages */}
-            <div className="flex flex-col flex-grow overflow-y-auto border p-4 rounded-lg bg-gray-100">
+            <div className="flex flex-col flex-grow overflow-y-auto border p-4 rounded-lg bg-gray-100 space-y-3">
+              <div><Cross /> </div>
               {selectedConcern.message && selectedConcern.message.length > 0 ? (
                 selectedConcern.message.map((msg, index) => (
                   <div
                     key={index}
-                    className={`p-2 my-1 rounded-lg ${
+                    className={`p-3 rounded-lg shadow-sm w-fit max-w-xs ${
                       msg.userType === "expert"
-                        ? "bg-blue-300 self-end"
+                        ? "bg-blue-500 text-white self-end"
                         : msg.userType === "admin"
-                        ? "bg-white"
-                        : "bg-gray-200"
+                        ? "bg-gray-200"
+                        : "bg-gray-300"
                     }`}
                   >
                     <p>{msg.message}</p>
-                    <span className="text-xs text-gray-500">{new Date(msg.dateAndTime).toLocaleString()}</span>
+                    <span className="text-xs text-gray-700 block mt-1">
+                      {new Date(msg.dateAndTime).toLocaleString()}
+                    </span>
                   </div>
                 ))
               ) : (
@@ -129,17 +161,20 @@ const ComplaintRegistration = () => {
               )}
             </div>
 
-            {/* Show Input Box only when status === 0 */}
+            {/* Message Input */}
             {selectedConcern.status === 0 && (
               <div className="mt-4 flex">
                 <input
                   type="text"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="flex-1 p-2 border rounded-lg"
+                  className="flex-1 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400"
                   placeholder="Type your message..."
                 />
-                <button onClick={handleCommentSend} className="ml-2 bg-blue-500 text-white p-2 rounded-lg">
+                <button
+                  onClick={handleCommentSend}
+                  className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+                >
                   Send
                 </button>
               </div>
@@ -147,6 +182,7 @@ const ComplaintRegistration = () => {
           </div>
         )}
       </div>
+
       {concernModel && <ConcernComponent setConcernModel={setConcernModel} isExpert={isExpert} />}
     </div>
   );

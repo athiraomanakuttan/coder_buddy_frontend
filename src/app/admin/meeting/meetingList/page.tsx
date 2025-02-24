@@ -12,7 +12,7 @@ const ClientListPage = () => {
         totalMeetings: 0,
         limit: 10
     })
-    const [ meetingStatus , setStatus] = useState<number>(0)
+    const [ meetingStatus , setStatus] = useState<number>(1)
     const [meetingData, setMeetingData]= useState<NewMeetingType[]>([{
         title:"",
         meetingDate: "",
@@ -22,7 +22,6 @@ const ClientListPage = () => {
     const getMeetingData = async (newPage : number =1, meetingStatus : number =0)=>{
         const token = localStorage.getItem('userAccessToken') as string
         const response =  await getMeetingDetails(token, newPage, meetingStatus)
-        console.log(response)
         if(response){
             setMeetingData(response.data)
             setPagination({...pagination,totalMeetings : response.count, totalPages: response.totalPages})
@@ -30,7 +29,7 @@ const ClientListPage = () => {
     }
     useEffect(()=>{
         getMeetingData(1,meetingStatus)
-    },[meetingStatus,meetingData])
+    },[meetingStatus])
 
     const handlePageChange = (newPage: number) => {
         const status = meetingStatus

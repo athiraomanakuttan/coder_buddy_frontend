@@ -46,8 +46,8 @@ const ExpertListPage = () => {
             </div>
             <div className="w-100 border p-8">
                 <div className="flex gap-3 justify-end mb-2"> 
-                    <button className={`${expertState? "bg-adminprimary"  : "bg-sky-100" } p-2 rounded border`} onClick={()=>setExpertState(1)}>Active </button>
-                    <button className={`${expertState ?"bg-sky-50" : "bg-adminprimary"} p-3 rounded border `} onClick={()=>setExpertState(0)}>Pending</button>
+                    <button className={`${expertState? "bg-adminprimary text-white"  : "bg-sky-100 text-black" } p-2 rounded border`} onClick={()=>setExpertState(1)}>Active </button>
+                    <button className={`${expertState ?"bg-sky-50 text-black" : "bg-adminprimary text-white"} p-3 rounded border `} onClick={()=>setExpertState(0)}>Pending</button>
                 </div>
                 <TableComponent 
                     headings={['first_name', 'last_name', 'email', 'skills', 'primary_contact', 'createdAt']} 
@@ -57,11 +57,11 @@ const ExpertListPage = () => {
                     expertState={expertState}
                 />
 
-                <div className="flex justify-center items-center mt-4 space-x-2">
+                <div className="flex justify-end items-center mt-4 space-x-2">
                     <button 
                         onClick={() => handlePageChange(currentPage - 1)} 
                         disabled={currentPage === 1 || isLoading}
-                        className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+                        className="px-4 py-2 bg-adminprimary text-white rounded disabled:opacity-50"
                     >
                         Previous
                     </button>
@@ -73,7 +73,7 @@ const ExpertListPage = () => {
                     <button 
                         onClick={() => handlePageChange(currentPage + 1)} 
                         disabled={currentPage === totalPages || isLoading}
-                        className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+                        className="px-4 py-2 bg-adminprimary text-white rounded disabled:opacity-50"
                     >
                         Next
                     </button>
