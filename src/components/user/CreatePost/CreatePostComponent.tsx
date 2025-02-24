@@ -1,10 +1,10 @@
 'use client'
 import { X } from 'lucide-react';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { PostType } from "@/types/types";
+import { PostType, TechnologyType } from "@/types/types";
 import { parseSkills } from '@/app/utils/skillUtils'
 import { toast } from 'react-toastify';
-import { addPost } from '@/app/services/user/userApi';
+import { addPost, getAllTechnology } from '@/app/services/user/userApi';
 import { postValidation } from '@/app/utils/validation';
 import Image from 'next/image';
 
@@ -17,14 +17,15 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   isOpen, 
   onClose,
 }) => {
-  const [technologies, setTechnologies] = useState('');
   const [fileInput, setFileInput] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false)
+  const [allTechnplogy, setAllTechnology] = useState<TechnologyType[]>([])
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState<PostType>({
     title: "",
     description: "",
-    technologies: [""],
+    technologies: [],
     uploads: "",
   })
 
@@ -38,6 +39,10 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         userId: user.id ? user.id : user._id
       }));
     }
+  }, [])
+
+  useEffect(() => {
+    getTechnology()
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,7 +77,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
           technologies: [],
           uploads: "",
         });
-        setTechnologies('');
         setFileInput(null);
         setPreviewUrl(null);
         onClose();
@@ -83,8 +87,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
       console.error("Post submission error:", error);
       toast.error("An error occurred while creating the post");
     }
-    finally{
-    setIsLoading(false)
+    finally {
+      setIsLoading(false)
     }
   };
   
@@ -119,9 +123,12 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     setPreviewUrl(null);
   };
 
-  const handleTechnologies = (e: ChangeEvent<HTMLInputElement>) => {
-    setTechnologies(e.target.value)
-    setFormData({...formData, 'technologies': parseSkills(e.target.value)})
+  const getTechnology = async () => {
+    const token = localStorage.getItem("userAccessToken") || ""
+    const response = await getAllTechnology(token)
+    if (response) {
+      setAllTechnology(response.data)
+    }
   }
 
   if (!isOpen) return null;
@@ -163,13 +170,67 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
           <div>
             <label className="block mb-2 text-sm font-medium">Technologies</label>
-            <input 
-              type="text" 
-              value={technologies}
-              onChange={handleTechnologies}
-              className="w-full border rounded p-2" 
-              placeholder="React Node.js MongoDB"
-            />
+            <div className="relative">
+              <input 
+                type="text" 
+                className="w-full border rounded p-2"
+                placeholder="Search technologies..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                }}
+              />
+              {searchTerm && (
+                <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                  {allTechnplogy
+                    .filter(tech => 
+                      tech?.title!.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                      !formData.technologies.includes(`#${tech.title}`)
+                    )
+                    .map((tech, id) => (
+                      <div
+                        key={id}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          const newTech = `#${tech.title}`;
+                          if (!formData.technologies.includes(newTech)) {
+                            setFormData({
+                              ...formData,
+                              technologies: [...formData.technologies, newTech]
+                            });
+                          }
+                          setSearchTerm('');
+                        }}
+                      >
+                        {tech.title}
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex flex-wrap gap-2 mt-2">
+              {formData.technologies.map((tech, index) => (
+                tech && (
+                  <div 
+                    key={index}
+                    className="flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded"
+                  >
+                    <span>{tech}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedTechs = formData.technologies.filter(t => t !== tech);
+                        setFormData({...formData, technologies: updatedTechs});
+                      }}
+                      className="ml-1 text-blue-600 hover:text-blue-800"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )
+              ))}
+            </div>
           </div>
 
           <div>
@@ -185,7 +246,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 <Image 
                   src={previewUrl} 
                   alt="Preview" 
-                  className="w-20 h-20 object-cover rounded mr-2"  width={100} height={100}
+                  className="w-20 h-20 object-cover rounded mr-2"
+                  width={100}
+                  height={100}
                 />
                 <button 
                   type="button"

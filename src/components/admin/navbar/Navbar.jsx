@@ -19,7 +19,7 @@ import {
 const navItems = [
   { href: "/admin/client", label: "Clients", icon: <Users className="w-5 h-5" /> },
   { href: "/admin/experts", label: "Experts", icon: <UserCheck className="w-5 h-5" /> },
-  { href: "#", label: "Payments", icon: <CreditCard className="w-5 h-5" /> },
+  { href: "/admin/wallet", label: "Wallet", icon: <CreditCard className="w-5 h-5" /> },
   { href: "/admin/technologies", label: "Technologies", icon: <MonitorCog className="w-5 h-5" /> },
   { href: "/admin/meeting/meetingList", label: "Meeting History", icon: <Calendar className="w-5 h-5" /> },
   { href: "/admin/concerns", label: "Support Requests", icon: <HelpCircle className="w-5 h-5" /> },

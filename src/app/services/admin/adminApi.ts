@@ -1,4 +1,4 @@
-import { basicType, ExpertType } from "@/types/types";
+import { basicType } from "@/types/types";
 import axios from "axios";
 import { toast } from "react-toastify";
 const API_URL = process.env.NEXT_PUBLIC_API_URI
@@ -136,5 +136,14 @@ export const getAdminDashboardData = async (token: string)=>{
         return response.data
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const getWalletDetails  = async (token: string)=>{
+    try {
+        const response = await axios.get(`${API_URL}/api/admin/get-wallet-data`,{headers:{Authorization:`Bearer ${token}`}})
+        return response.data
+    } catch (error) {
+        toast.error("unable to get the wallet data")
     }
 }

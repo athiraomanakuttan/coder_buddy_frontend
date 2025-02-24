@@ -294,4 +294,11 @@ export const getUserDashboardStatus = async (token: string)=>{
   }
 }
 
-
+export const getAllTechnology = async (token: string)=>{
+  try {
+      const response = await axios.get(`${API_URI}/api/get-all-technologies`,{headers:{Authorization:`Bearer ${token}`}})
+      return response.data
+  } catch (error) {
+      console.log("error",error)
+  }
+}
