@@ -346,3 +346,102 @@ export interface TechnologyType{
   createdAt ?: string,
   updatedAt ?: string
 }
+
+export interface ParticipentsType {
+  id: string,
+  role: string,
+  name: string,
+  profile_pic: string
+}
+
+export interface ChatResponseType {
+  id: string,
+  chatId : string,
+  participant : ParticipentsType
+  postId:string | null
+  postTitle : string
+  messages : string
+  createdAt : string
+  updatedAt: string
+}
+
+export interface Participant {
+  id: string;
+  name: string;
+  profile_pic?: string;
+  role: string;
+}
+
+export interface Post {
+  _id: string;
+  title: string;
+  description: string;
+}
+
+export interface ChatResType {
+  _id: string;
+  participents: Participant[];
+  postId?: Post;
+  messages: Message[];
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ChatingResponseType  {
+  chatId: string;
+  participant: Participant;
+  postId: string | null;
+  postTitle: string;
+  postDescription: string;
+  messages: Message[];
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ChatMessage {
+  chatId: string;
+  receiverId: string;
+  senderId: string;
+  text: string;
+  timestamp: Date;
+}
+
+export interface PaymentType {
+  amount: number;
+  title: string;
+  _id: string;
+}
+
+export interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+export interface RazorpayOrderResponse {
+  key: string;
+  amount: number;
+  currency: string;
+  id: string;
+}
+
+export interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void;
+  prefill: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+}
+
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => {
+      open: () => void;
+    };
+  }
+}

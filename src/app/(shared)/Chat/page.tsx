@@ -6,7 +6,7 @@ import {
   getUserChat,
   newMessage,
 } from "@/app/services/shared/ChatApi";
-import { Message, formDataType, MeetingDataType } from "@/types/types";
+import { Message, formDataType, MeetingDataType, ChatResponseType, ChatResType, Participant, ChatMessage } from "@/types/types";
 import conversationStore from "@/store/conversationStore";
 import MesssageComponent from "@/components/shared/MessageComponent";
 import { SocketContext } from "@/Context/SocketContext";
@@ -23,7 +23,7 @@ const ChatInterface = () => {
   const {  setSelectedConversation } = conversationStore();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
-  const [chats, setChats] = useState<any[]>([]);
+  const [chats, setChats] = useState<ChatResponseType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -51,9 +51,9 @@ const ChatInterface = () => {
         }
         const response = await getConversationList(token);
         // Transform the data to include post title
-        const transformedChats = response.data.map((chat: any) => ({
+        const transformedChats = response.data.map((chat: ChatResType) => ({
           chatId: chat._id,
-          participant: chat.participents.find((p: any) => p.id !== user.id) || chat.participents[0],
+          participant: chat.participents.find((p: Participant) => p.id !== user.id) || chat.participents[0],
           postId: chat.postId?._id || null,
           postTitle: chat.postId?.title || "No title",
           postDescription: chat.postId?.description || "",
@@ -76,7 +76,7 @@ const ChatInterface = () => {
     if (socket && selectedChatId) {
       socket.emit("join-chat", selectedChatId);
 
-      const handleNewMessage = (newMessage: any) => {
+      const handleNewMessage = (newMessage: Message) => {
         if (newMessage.chatId === selectedChatId) {
           setChatMessages(prev => [...prev, newMessage]);
         }

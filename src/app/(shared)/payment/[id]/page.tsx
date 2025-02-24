@@ -2,7 +2,7 @@
 
 import { createOrder, getPaymentById, verifyPayment } from "@/app/services/shared/paymentApi"
 import Navbar from "@/components/user/Navbar/Navbar"
-import { PaymentType } from "@/types/types"
+import { PaymentType, RazorpayOptions, RazorpayOrderResponse, RazorpayResponse } from "@/types/types"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -22,16 +22,16 @@ const PaymentCompnent = () => {
                 return
             }
 
-            const response = await createOrder(token,paymentDetails.amount,id as string)
+            const response: RazorpayOrderResponse = await createOrder(token, paymentDetails.amount, id as string)
 
-            const options = {
+            const options : RazorpayOptions  = {
                 key: response.key,
                 amount: response.amount,
                 currency: "INR",
                 name: "Your Company Name",
                 description: paymentDetails.title,
                 order_id: response.id,
-                handler: async (response: any) => {
+                handler: async (response: RazorpayResponse) => {
                     const res = await verifyPayment(
                         token, 
                         response.razorpay_payment_id, 
@@ -55,7 +55,7 @@ const PaymentCompnent = () => {
                 }
             }
             console.log("options",options)
-            const razorpay = new (window as any).Razorpay(options)
+            const razorpay = new window.Razorpay(options)
             razorpay.open()
         } catch (error) {
             console.error("Payment initiation failed", error)

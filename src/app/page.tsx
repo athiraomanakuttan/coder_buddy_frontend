@@ -28,7 +28,7 @@ const userLogin = () => {
     const validate = signupValidation(formData);
     if (validate.status) {
       
-        const response: any = await signinPost(formData.email, formData.password);
+        const response = await signinPost(formData.email, formData.password);
         if (response?.success) {
           const message = response.message || "Successfully logged in";
           toast.success(message);
