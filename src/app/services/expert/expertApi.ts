@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { basicType, CommentType, ExpertType } from "@/types/types";
+import { basicType, CommentType, ErrorResponse, ExpertType } from "@/types/types";
 import { headers } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URI
@@ -12,15 +12,17 @@ export const signupPost = async(data:basicType)=>{
          const responce =  await axios.post(`${API_URL}/api/expert/signup`,data)  
          console.log(responce) 
          return responce
-    } catch (error:any) {
-        if(axios.isAxiosError(error))
-        {
-            if(error.status===400)
-            {
-                toast.error(error.response?.data.message)
-            }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          const errorData = error.response.data as ErrorResponse;
+          toast.error(errorData.message);
+        } else {
+          toast.error("Unable to login. Try again");
         }
-        return error.message ? error.message : "unable to add user"
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
 }
 
@@ -28,9 +30,17 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
     try {
         const responce = await axios.post(`${API_URL}/api/expert/verify-otp`,{otp, storedOTP,storedEmail})
         return responce.data;
-    } catch (error:any) {
-      if(error.response)
-        toast.error(error.response.data.message)
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          const errorData = error.response.data as ErrorResponse;
+          toast.error(errorData.message);
+        } else {
+          toast.error("Unable to login. Try again");
+        }
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   }
 
@@ -42,11 +52,17 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
     try {
       const response = await axios.post(`${API_URL}/api/expert/login`, { email, password });
       return response.data; 
-    } catch (error:any) {
-      if(error.response)
-        toast.error(error.response.data.message)
-      else
-      toast.error("something went wrong try again")
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          const errorData = error.response.data as ErrorResponse;
+          toast.error(errorData.message);
+        } else {
+          toast.error("Unable to login. Try again");
+        }
+      } else {
+        toast.error("An unexpected error occurred");
+      }
 
     }
   };
@@ -121,11 +137,17 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
     try {
       const response =  await axios.post(`${API_URL}/api/expert/forgot-password`,{email})
       return response.data
-    } catch (error: any) {
-      if(error.status)
-        toast.error(error?.response?.data?.message)
-      else
-      toast.error("not ble t send the otp try again")
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          const errorData = error.response.data as ErrorResponse;
+          toast.error(errorData.message);
+        } else {
+          toast.error("Unable to login. Try again");
+        }
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   }
 
@@ -141,11 +163,17 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
      try {
       const response =  await axios.put(`${API_URL}/api/expert/update-password`,{email,password})
       return response.data
-     } catch (error: any) {
-      if(error.response)
-        toast.error(error?.responce?.data?.message)
-      else
-      toast.error("unable to update the password")
+     } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          const errorData = error.response.data as ErrorResponse;
+          toast.error(errorData.message);
+        } else {
+          toast.error("Unable to login. Try again");
+        }
+      } else {
+        toast.error("An unexpected error occurred");
+      }
      }
   }
 
@@ -173,8 +201,17 @@ export const getUserPost = async (token : string, page :  number = 1 , limit:num
         headers:{ Authorization:`Bearer ${token}` }
       })
       return response.data
-  } catch (error:any) {
-    console.log(error)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 }
 
@@ -186,9 +223,17 @@ export const addComment= async (token :  string, comment: string, postId :  stri
       }
     })
     return response.data
-  } catch (error:any) {
-    if(error.response)
-      toast.error(error.response.message)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 }
 
@@ -201,9 +246,17 @@ export const deleteComment =  async (token:string , data:{commentId : string, ex
     })
     console.log(response)
     return response.data
-  }catch(error:any){
-    console.log("error", error)
-    toast.error(error.response.data.message)
+  }catch(error){
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    } 
   }
 }
 

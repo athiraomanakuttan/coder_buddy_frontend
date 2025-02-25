@@ -1,5 +1,5 @@
-import { NewMeetingType } from "@/types/types"
-import axios from "axios";
+import { ErrorResponse, NewMeetingType } from "@/types/types"
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URI
@@ -16,10 +16,17 @@ export const createMeetingLink = async (token : string , data: NewMeetingType)=>
             }
         })
         return response.data
-    } catch (error : any) {
-        console.log(error)
-        if(error.response)
-            toast.error(error.response.data.message)
+    } catch (error ) {
+        if (error instanceof AxiosError) {
+            if (error.response?.status === 400) {
+              const errorData = error.response.data as ErrorResponse;
+              toast.error(errorData.message);
+            } else {
+              toast.error("Unable to login. Try again");
+            }
+          } else {
+            toast.error("An unexpected error occurred");
+          }
     }
     
 }
@@ -36,8 +43,17 @@ export const getMeetingDetails = async (token : string , page : number , status 
                 }
             })
             return response.data
-    } catch (error:any) {
-            console.log(error)
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            if (error.response?.status === 400) {
+              const errorData = error.response.data as ErrorResponse;
+              toast.error(errorData.message);
+            } else {
+              toast.error("Unable to login. Try again");
+            }
+          } else {
+            toast.error("An unexpected error occurred");
+          }
     }
 }
 
@@ -47,9 +63,16 @@ export const changeExpert =  async (token:string, expertId:string , meetingId : 
             headers:{ Authorization:`Bearer ${token}`}
         })
         return response.data;
-    } catch (error:any) {
-        if(error.response){
-            toast.error(error?.response?.data?.message)
-        }
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            if (error.response?.status === 400) {
+              const errorData = error.response.data as ErrorResponse;
+              toast.error(errorData.message);
+            } else {
+              toast.error("Unable to login. Try again");
+            }
+          } else {
+            toast.error("An unexpected error occurred");
+          }
     }
 }

@@ -438,6 +438,11 @@ export interface RazorpayOptions {
   };
 }
 
+export interface ErrorResponse {
+  message: string;
+  status?: number;
+}
+
 declare global {
   interface Window {
     Razorpay: new (options: RazorpayOptions) => {

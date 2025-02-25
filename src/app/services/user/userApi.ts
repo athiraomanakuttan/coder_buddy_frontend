@@ -1,5 +1,5 @@
-import axios from "axios";
-import { basicType, PostType, UserProfileType } from "@/types/types";
+import axios, { AxiosError } from "axios";
+import { basicType, ErrorResponse, PostType, UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
 
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
@@ -12,14 +12,17 @@ export const userSignup = async (userData: basicType) => {
   try {
     const response = await axios.post(`${API_URI}/api/signup`, { ...userData });
     return response.data;
-  } catch (error: any) {
-    if (error.response) {
-      const { status, data } = error.response;
-      if (status === 409) {
-        throw new Error(data.message || "User already exists.");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
       }
+    } else {
+      toast.error("An unexpected error occurred");
     }
-    throw new Error(error.message || "An unknown error occurred.");
   }
 };
 
@@ -27,8 +30,17 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
   try {
       const responce = await axios.post(`${API_URI}/api/verify-otp`,{otp, storedOTP,storedEmail})
       return responce.data;
-  } catch (error:any) {
-        toast.error(error?.response?.data?.message)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 }
 
@@ -40,13 +52,17 @@ export const signinPost = async (email: string, password: string) => {
     try{const response = await axios.post(`${API_URI}/api/login`, { email, password },{
       withCredentials: true
     });
-    return response.data; }catch (error : any) {
-      if(error?.status === 403)
-      {
-        toast.error("Your account has been blocked")
+    return response.data; }catch (error ) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          const errorData = error.response.data as ErrorResponse;
+          toast.error(errorData.message);
+        } else {
+          toast.error("Unable to login. Try again");
+        }
+      } else {
+        toast.error("An unexpected error occurred");
       }
-      else
-      toast.error(error.response.data.message)
     }
   
 };
@@ -98,10 +114,17 @@ export const userForgotPassword = async (email: string)=>{
   try {
     const response = await axios.post(`${API_URI}/api/forgot-password`,{email})
     return response.data
-  } catch (error : any) {
-    console.log(error)
-    if(error.status === 400)
-      toast.error(error.response.data.message)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 }
 
@@ -113,11 +136,17 @@ export const resetUserPassword = async (email:string, password: string)=>{
   try {
     const response = await axios.put(`${API_URI}/api/update-password`,{email,password})
     return response.data
-  } catch (error:any) {
-    if(error.status)
-      toast.error(error.response.data.message)
-    else
-      toast.error("unable to update the password.")
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 
 }
@@ -135,14 +164,17 @@ export const googleSignup = async (userData: {
       }
     })
     return response.data
-  } catch (error: any) {
-    console.error('Google Signup Error:', error)
-    
-    if (error.response) {
-      toast.error(error.response.data.message || 'Google signup failed')
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
     }
-    
-    return null
   }
 }
 
@@ -170,29 +202,16 @@ export const addPost = async (token: string, data: PostType) => {
       message: response.data.message || "Post created successfully",
       data: response.data
     };
-  } catch (error: any) {
-    console.error("Post upload error:", error);
-    
-    if (error.response) {
-      const errorMessage = error.response.data.message || "Failed to upload post";
-      toast.error(errorMessage);
-      
-      return {
-        status: false,
-        message: errorMessage
-      };
-    } else if (error.request) {
-      toast.error("No response received from server");
-      return {
-        status: false,
-        message: "No response from server"
-      };
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
     } else {
-      toast.error("Error uploading post");
-      return {
-        status: false,
-        message: "Unknown error occurred"
-      };
+      toast.error("An unexpected error occurred");
     }
   }
 };
@@ -229,9 +248,17 @@ export const postStatus  = async (token : string, params:{ postId: string, statu
       }
     })
     return response.data
-  } catch (error:any) {
-    if(error.response)
-      toast.error(error.response.message)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 }
 
@@ -241,8 +268,17 @@ export const searchPost = async (token: string , query : string , currentStatus:
       headers:{ Authorization:`Bearer ${token}`}
     })
     return response.data
-  } catch (error:any) {
-    console.log("error while searching post",error)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 400) {
+        const errorData = error.response.data as ErrorResponse;
+        toast.error(errorData.message);
+      } else {
+        toast.error("Unable to login. Try again");
+      }
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 
 }

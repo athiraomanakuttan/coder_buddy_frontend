@@ -2,7 +2,7 @@
 import Navbar from "@/components/expert/Navbar/Navbar";
 import ProgressBar from "@/components/expert/Progressbar/ProgressBar";
 import { useState, ChangeEvent, useEffect } from "react";
-import { ExpertType } from "@/types/types";
+import { experienceType, ExpertType, QualificationType } from "@/types/types";
 import { toast } from "react-toastify";
 import { getProfile, updateProfile } from "@/app/services/expert/expertApi";
 import {parseSkills} from '@/app/utils/skillUtils'
@@ -45,14 +45,14 @@ const ProfilePage = () => {
           primary_contact: userData.data.primary_contact,
           secondary_contact: userData.data.secondary_contact,
           qualification: userData.data.qualification?.length
-            ? userData.data.qualification.map((qual: any) => ({
+            ? userData.data.qualification.map((qual: QualificationType) => ({
                 qualification: qual.qualification || "",
                 college: qual.college || "",
                 year_of_passout: qual.year_of_passout || ""
               }))
             : [{ qualification: "", college: "", year_of_passout: "" }],
           experience: userData.data.experience?.length
-            ? userData.data.experience.map((exp: any) => ({
+            ? userData.data.experience.map((exp: experienceType) => ({
                 job_role: exp.job_role || "",
                 employer: exp.employer || "",
                 start_date: exp.start_date

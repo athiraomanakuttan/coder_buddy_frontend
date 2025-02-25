@@ -1,5 +1,5 @@
 
-import { Chat, concernFormDataType, ParticipantInfo } from "@/types/types";
+import { Chat, ChatResType, concernFormDataType, Participant, ParticipantInfo } from "@/types/types";
 import axios from "axios";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
@@ -19,13 +19,13 @@ export const getUserData = async (token: string) => {
       }
   
       const participants = response.data.data
-        .flatMap((chat: any) =>chat.participents?.map((participant: any) => ({
+        .flatMap((chat: ChatResType) =>chat.participents?.map((participant: Participant) => ({
             id: participant?.id || "",
             name: participant?.name || "Unknown",
           })) || []
         )
         .filter(
-          (participant: any, index: number, self: any[]) =>
+          (participant: Participant, index: number, self: Participant[]) =>
             index === self.findIndex((p) => p.id === participant.id)
         );
   
