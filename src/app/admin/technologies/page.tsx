@@ -5,7 +5,6 @@ import Navbar from "@/components/admin/navbar/Navbar";
 import TechnologyModel from "@/components/admin/technologies/TechnolgyModal";
 import { TechnologyType } from "@/types/types";
 import { PenBox, Plus } from "lucide-react";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 

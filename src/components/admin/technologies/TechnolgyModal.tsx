@@ -1,7 +1,6 @@
 'use client'
 import { createNewTechnology, UpdateTechnologies } from "@/app/services/admin/TechnologyApi"
-import { expertPayOut } from "@/app/services/expert/paymentApi"
-import { payoutValidation, technologyValidation } from "@/app/utils/validation"
+import {  technologyValidation } from "@/app/utils/validation"
 import { TechnologyType } from "@/types/types"
 import { useState } from "react"
 import { toast } from "react-toastify"
@@ -31,7 +30,7 @@ const TechnologyModel = ({setIsModalOpen, data}: PayoutModalType) => {
         toast.error(validate.message)
         return
     }
-    const response = await UpdateTechnologies(token,data?._id!,{title:tech})
+    const response = await UpdateTechnologies(token,data?._id ?? "",{title:tech})
     if(response)
     {
         toast.success("updated sucessfully")

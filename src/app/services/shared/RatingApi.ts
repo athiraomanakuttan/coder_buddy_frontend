@@ -1,4 +1,4 @@
-import { Chat, concernFormDataType, ParticipantInfo, RatingData } from "@/types/types";
+import {  RatingData } from "@/types/types";
 import axios from "axios";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;

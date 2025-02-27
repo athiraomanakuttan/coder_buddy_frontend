@@ -6,7 +6,7 @@ import {
   getUserChat,
   newMessage,
 } from "@/app/services/shared/ChatApi";
-import { Message, formDataType, MeetingDataType, ChatResponseType, ChatResType, Participant, ChatMessage } from "@/types/types";
+import { Message, formDataType, MeetingDataType, ChatResponseType, ChatResType, Participant } from "@/types/types";
 import conversationStore from "@/store/conversationStore";
 import MesssageComponent from "@/components/shared/MessageComponent";
 import { SocketContext } from "@/Context/SocketContext";

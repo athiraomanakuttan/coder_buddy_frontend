@@ -11,6 +11,7 @@ export const getConcerns =  async (token: string, status: number = 0,page: numbe
         })
         return response.data
     } catch (error) {
+        console.log(error)
         toast.error("unable to get the tickets. Try again")
     }
 }
@@ -22,7 +23,7 @@ export const getUserProfile = async (token: string, userId: string)=>{
         )
         return response.data;
     } catch (error) {
-        console.log("error while fetching data")
+        console.log("error while fetching data",error)
         toast.error("Error fetching  profile")
     }
 }
@@ -32,6 +33,6 @@ export const updateUserConcern = async (token: string, concernId: string, status
         const response = await axios.put(`${API_URL}/api/admin/update-concern-status`,{concernId,status},{headers:{Authorization: `Bearer ${token}`}})
         return response.data
     } catch (error) {
-        console.log("unable to update the status. Try again")
+        console.log("unable to update the status. Try again",error)
     }
 }

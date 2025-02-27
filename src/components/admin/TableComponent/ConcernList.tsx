@@ -102,7 +102,7 @@ const ConcernList = ({ concernData }: ConcernType) => {
       onClick={() => { 
         setProfileView(true); 
         setSelectedRole("expert"); 
-        setSelectedUserId(concern?.concernUserId!);
+        setSelectedUserId(concern?.concernUserId ?? "");
       }}
     >
       View Profile
@@ -113,7 +113,7 @@ const ConcernList = ({ concernData }: ConcernType) => {
       onClick={() => { 
         setProfileView(true); 
         setSelectedRole("user"); 
-        setSelectedUserId(concern?.concernUserId!);
+        setSelectedUserId(concern?.concernUserId ?? "");
       }}
     >
       View Profile

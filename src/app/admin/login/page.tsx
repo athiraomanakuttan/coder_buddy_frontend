@@ -2,7 +2,7 @@
 
 import { basicType } from "@/types/types";
 import { useRouter } from "next/navigation";
-import {  useState,useEffect } from "react";
+import {  useState } from "react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore";
 import { signupValidation } from "@/app/utils/validation";
@@ -10,7 +10,7 @@ import { signupPost } from "@/app/services/admin/adminApi";
 import Image from "next/image";
 
 const AdminLogin = () => {
-  const {setUserAuth, isAuthenticated} = useAuthStore()
+  const {setUserAuth} = useAuthStore()
   const router = useRouter()
   const [isLoading,setIsLoading] = useState(false)
   const [formData,steFormData]= useState<basicType>({

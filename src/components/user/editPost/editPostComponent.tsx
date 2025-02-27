@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { PostType } from "@/types/types";
 import { parseSkills } from '@/app/utils/skillUtils'
 import { toast } from 'react-toastify';
-import { addPost, updatePost } from '@/app/services/user/userApi';
+import {  updatePost } from '@/app/services/user/userApi';
 import { postValidation } from '@/app/utils/validation';
 import Image from 'next/image';
 

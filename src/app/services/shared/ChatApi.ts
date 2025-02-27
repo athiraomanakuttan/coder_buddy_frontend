@@ -1,5 +1,4 @@
 import axios from "axios";
-import { headers } from "next/headers";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
@@ -12,7 +11,7 @@ export const getConversationList = async (token:string)=>{
         })
         return response.data
     } catch (error) {
-        console.log("error getting details of conversations")
+        console.log("error getting details of conversations",error)
     }
 }
 
@@ -24,6 +23,7 @@ export const getUserChat = async (chatId:string, token:string | null)=>{
         const response = await axios.get(`${API_URI}/api/chat/${chatId}`,{ headers:{Authorization:`Bearer ${token}`}})
         return response.data
     } catch (error) {
+        console.log(error)
         toast.error("Unable to load chat try again ");
     }
 }
@@ -52,6 +52,7 @@ export const createExpertChat = async (token : string , expertId : string, postI
         })
         return response.data
     } catch (error) {
+        console.log(error)
         toast.error("Something went wrong. Try again")
     }
 }

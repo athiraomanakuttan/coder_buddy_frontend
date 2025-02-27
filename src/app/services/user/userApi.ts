@@ -307,6 +307,7 @@ export const updatePost = async (token: string, postData : PostType)=>{
     })
     return response.data
   } catch (error) {
+    console.log(error)
     toast.error("unable to update post. Try again")
   }
 }
@@ -326,7 +327,7 @@ export const getUserDashboardStatus = async (token: string)=>{
     const response = await axios.get(`${API_URI}/api/get-dashboard-report`,{headers:{Authorization:`Bearer ${token}`}})
     return response.data
   } catch (error) {
-    console.log("error while getting report")
+    console.log("error while getting report", error)
   }
 }
 

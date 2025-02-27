@@ -44,6 +44,7 @@ const ConcernComponent = ({ setConcernModel, isExpert }: ConcernType) => {
                 const response = await getMeetingData(token, selectedUser);
                 if (response) setMeetingData(response.data);
             } catch (error) {
+                console.log(error)
                 toast.error("Failed to fetch meetings");
             }
         };
@@ -87,6 +88,7 @@ formDataToSend.append("role",userType)
                 setConcernModel(false);
             }
         } catch (error) {
+            console.log("error",error)
             toast.error("Failed to create concern");
         }
     };

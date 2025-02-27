@@ -4,7 +4,7 @@ import { getadminexpertMeeting } from "@/app/services/expert/meetingApi";
 import Navbar from "@/components/expert/Navbar/Navbar";
 import { ExpertDashbordType, ExpertMeetingType } from "@/types/types";
 import { useEffect, useState } from "react";
-import { BookOpen, Star, Video, Wallet } from "lucide-react";
+import { Star, Video, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import useAuthStore from "@/store/authStore";

@@ -2,7 +2,6 @@
 import { X } from 'lucide-react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { PostType, TechnologyType } from "@/types/types";
-import { parseSkills } from '@/app/utils/skillUtils'
 import { toast } from 'react-toastify';
 import { addPost, getAllTechnology } from '@/app/services/user/userApi';
 import { postValidation } from '@/app/utils/validation';
@@ -69,8 +68,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
       const token = localStorage.getItem("userAccessToken") as string;
       const response = await addPost(token, submissionData);
       
-      if (response.status) {
-        toast.success(response.message);
+      if (response && response?.status) {
+        toast.success(response?.message);
         setFormData({
           title: "",
           description: "",
@@ -80,9 +79,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         setFileInput(null);
         setPreviewUrl(null);
         onClose();
-      } else {
-        toast.error(response.message || "Failed to create post");
-      }
+      } 
     } catch (error) {
       console.error("Post submission error:", error);
       toast.error("An error occurred while creating the post");

@@ -8,6 +8,7 @@ export const createNewTechnology = async (token: string, title: string)=>{
         const response =  await axios.post(`${API_URL}/api/admin/create-technology`,{title},{headers:{Authorization:`Bearer ${token}`}})
         return response.data
     } catch (error) {
+        console.log(error)
         toast.error("unable to create technology")
     }
 }

@@ -16,7 +16,7 @@ interface PostComponentProps {
 
 const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
   const [editPostStatus, setEditPostStatus] =  useState(false)
-  const { _id, title, description, uploads, technologies, comments, status } =
+  const { _id, title, description, technologies, comments, status } =
     postdata;
   const token = localStorage.getItem("userAccessToken") as string;
   const changePostStatus = async (postId: string, status: number) => {

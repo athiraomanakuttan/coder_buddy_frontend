@@ -29,7 +29,7 @@ export default function VideoCallPage() {
           return;
         }
         const { _id, meetingId } = JSON.parse(storedMeeting);
-        const response = await verificationMeeting(token,_id,meetingId)
+        const response = await verificationMeeting(meetingId)
         if(!response.status){
             return
         }

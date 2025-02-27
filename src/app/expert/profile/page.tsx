@@ -197,6 +197,7 @@ const ProfilePage = () => {
           toast.error(updateExpert.message || "Failed to update profile");
         }
     } catch (error) {
+      console.log(error)
       toast.error("An error occurred while updating profile");
     }
   };

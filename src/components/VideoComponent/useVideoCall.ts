@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { IceCandidateMessage, OfferMessage, AnswerMessage, Message, MessageEvent, ChatMessageEvent } from './types';
+import { IceCandidateMessage, OfferMessage, AnswerMessage, Message, ChatMessageEvent } from './types';
 
 export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
     const socketRef = useRef<Socket | null>(null);
@@ -54,44 +54,44 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
         // by the chat-message event listener
     };
 
-    const handleRemoteStream = async (stream: MediaStream) => {
-        if (!remoteVideoRef.current) return;
+    // const handleRemoteStream = async (stream: MediaStream) => {
+    //     if (!remoteVideoRef.current) return;
         
-        try {
-            remoteVideoRef.current.srcObject = stream;
+    //     try {
+    //         remoteVideoRef.current.srcObject = stream;
             
-            await new Promise((resolve) => {
-                if (!remoteVideoRef.current) return;
+    //         await new Promise((resolve) => {
+    //             if (!remoteVideoRef.current) return;
                 
-                remoteVideoRef.current.onloadedmetadata = () => {
-                    console.log('Remote video metadata loaded');
-                    resolve(true);
-                };
-            });
+    //             remoteVideoRef.current.onloadedmetadata = () => {
+    //                 console.log('Remote video metadata loaded');
+    //                 resolve(true);
+    //             };
+    //         });
 
-            const attemptPlay = async (attempts = 3) => {
-                try {
-                    if (!remoteVideoRef.current) return;
-                    await remoteVideoRef.current.play();
-                    console.log('Remote video started playing');
-                } catch (error) {
-                    if (error instanceof Error) {
-                        console.warn(`Play attempt failed: ${error.message}`);
-                        if (attempts > 0 && remoteVideoRef.current) {
-                            await new Promise(resolve => setTimeout(resolve, 1000));
-                            await attemptPlay(attempts - 1);
-                        } else {
-                            console.error('Failed to auto-play after all attempts');
-                        }
-                    }
-                }
-            };
+    //         const attemptPlay = async (attempts = 3) => {
+    //             try {
+    //                 if (!remoteVideoRef.current) return;
+    //                 await remoteVideoRef.current.play();
+    //                 console.log('Remote video started playing');
+    //             } catch (error) {
+    //                 if (error instanceof Error) {
+    //                     console.warn(`Play attempt failed: ${error.message}`);
+    //                     if (attempts > 0 && remoteVideoRef.current) {
+    //                         await new Promise(resolve => setTimeout(resolve, 1000));
+    //                         await attemptPlay(attempts - 1);
+    //                     } else {
+    //                         console.error('Failed to auto-play after all attempts');
+    //                     }
+    //                 }
+    //             }
+    //         };
 
-            await attemptPlay();
-        } catch (error) {
-            console.error('Error handling remote stream:', error);
-        }
-    };
+    //         await attemptPlay();
+    //     } catch (error) {
+    //         console.error('Error handling remote stream:', error);
+    //     }
+    // };
 
     const processPendingCandidates = async () => {
         const pc = peerConnection.current;
@@ -165,7 +165,7 @@ export const useVideoCall = (roomId: string, onCallEnd?: () => void) => {
                             } catch (error) {
                                 attempts--;
                                 if (attempts === 0) {
-                                    console.error('Failed to play remote video after all attempts');
+                                    console.error('Failed to play remote video after all attempts', error);
                                     break;
                                 }
                                 console.warn(`Play attempt failed, retrying... (${attempts} attempts left)`);

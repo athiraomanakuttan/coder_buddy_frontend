@@ -144,6 +144,7 @@ export const changeExpertStatus = async (token: string, expertId: string, status
             )
             return response.data;
     } catch (error) {
+        console.log(error)
         toast.error("unable to change the expert status.")
     }
 }
@@ -174,6 +175,7 @@ export const getWalletDetails  = async (token: string)=>{
         const response = await axios.get(`${API_URL}/api/admin/get-wallet-data`,{headers:{Authorization:`Bearer ${token}`}})
         return response.data
     } catch (error) {
+        console.log(error)
         toast.error("unable to get the wallet data")
     }
 }

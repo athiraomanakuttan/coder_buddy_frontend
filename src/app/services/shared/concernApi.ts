@@ -1,5 +1,5 @@
 
-import { Chat, ChatResType, concernFormDataType, Participant, ParticipantInfo } from "@/types/types";
+import {  ChatResType, Participant,  } from "@/types/types";
 import axios from "axios";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
@@ -45,7 +45,7 @@ export const getMeetingData = async (token: string, userId: string)=>{
         })
         return response.data
     } catch (error) {
-        
+        console.log(error)
     }
 }
 
@@ -73,7 +73,7 @@ export const getUserConcernData = async (token: string, status:number)=>{
         })
         return response.data
     } catch (error) {
-        console.log("unable to fetch data")
+        console.log("unable to fetch data",error)
     }
 }
 
@@ -82,6 +82,7 @@ try {
   const response = await axios.post(`${API_URI}/api/concern/add-concern-replay`,{comment,userType,meetingId},{headers:{Authorization:`Bearer ${token}`}})
   return response.data
 } catch (error) {
+  console.log(error)
   toast.error("error while adding replay")
 }
 }

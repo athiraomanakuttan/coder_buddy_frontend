@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { basicType, CommentType, ErrorResponse, ExpertType } from "@/types/types";
-import { headers } from "next/headers";
+import { basicType, ErrorResponse, ExpertType } from "@/types/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URI
 

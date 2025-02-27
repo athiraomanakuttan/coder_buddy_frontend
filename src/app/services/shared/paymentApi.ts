@@ -1,5 +1,4 @@
 import axios from "axios";
-import { headers } from "next/headers";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
@@ -63,6 +62,7 @@ export const getUserById  =  async (token: string,userId: string)=>{
       const responce =  await axios.get(`${API_URI}/api/expert/get-user-profile/${userId}`,{headers:{Authorization:`Bearer ${token}`}})
       return responce.data
     } catch (error) {
+        console.log(error)
       toast.error("unable to fetch user data")
     }
   }

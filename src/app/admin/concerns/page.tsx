@@ -53,7 +53,7 @@ const ConcernPage = () => {
                 message: [...(selectedConcern.message || []), newMessage],
             });
 
-            const response = await addConernComment(token,comment,meetingId  as string ,"admin")
+             await addConernComment(token,comment,meetingId  as string ,"admin")
 
             setComment('');
         }

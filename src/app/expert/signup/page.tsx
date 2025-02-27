@@ -27,7 +27,7 @@ const signup = ()=>{
     try {
       const response =  await signupPost(formData)
       console.log(response)
-      if(response.data.status){
+      if(response && response.data.status){
         const data = response.data;
         toast.success(data.message)
         localStorage.setItem('email', data.data.email)
@@ -35,11 +35,10 @@ const signup = ()=>{
         localStorage.setItem("isAdmin","1")
         router.push('/expert/otp')
       }
-      else
-      toast.error(response.data.message)
+      
 
     } catch (error) {
-      
+      console.log(error)
     }
   }
 

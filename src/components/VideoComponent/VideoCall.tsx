@@ -28,7 +28,7 @@ interface VideoCallProps {
 
 const socket: Socket = io(process.env.NEXT_PUBLIC_API_URI as string);
 
-const VideoCall: React.FC<VideoCallProps> = ({ roomId, meetingId , onCallEnd }) => {
+const VideoCall: React.FC<VideoCallProps> = ({ roomId , onCallEnd }) => {
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
     const peerConnection = useRef<RTCPeerConnection | null>(null);
@@ -41,7 +41,7 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, meetingId , onCallEnd }) 
     const [isVideoEnabled, setIsVideoEnabled] = useState(true);
     const [isAudioEnabled, setIsAudioEnabled] = useState(true);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
-    const [participantCount, setParticipantCount] = useState(1);
+    // const [participantCount, setParticipantCount] = useState(1);
     const [isRecording, setIsRecording] = useState(false);
 
     
@@ -246,7 +246,7 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, meetingId , onCallEnd }) 
         });
 
         socket.on('participant-count', async (count: number) => {
-            setParticipantCount(count);
+            // setParticipantCount(count);
             if (count === 2) {
                 // Create and send offer when second participant joins
                 try {
@@ -269,7 +269,7 @@ const VideoCall: React.FC<VideoCallProps> = ({ roomId, meetingId , onCallEnd }) 
 
         socket.on('participant-left', () => {
             setIsConnected(false);
-            setParticipantCount(prev => prev - 1);
+            // setParticipantCount(prev => prev - 1);
             if (remoteVideoRef.current) {
                 remoteVideoRef.current.srcObject = null;
             }

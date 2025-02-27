@@ -1,16 +1,16 @@
 import { MeetingDataType } from "@/types/types";
 import axios from "axios";
-import { headers } from "next/headers";
 import { toast } from "react-toastify";
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
-export const createMeeting = async (token: string, formData:MeetingDataType, participentId: string, postId: String)=>{
+export const createMeeting = async (token: string, formData:MeetingDataType, participentId: string, postId: string)=>{
     try {
         const reponse = await axios.post(`${API_URI}/api/meeting/create-meeting`, {...formData, userId:participentId,postId},{ 
             headers:{Authorization:`Bearer ${token}`}
         })
         return reponse.data
     } catch (error) {
+        console.log(error)
         toast.error("unable to create meeting link. Try again")
     }
 }
@@ -43,6 +43,7 @@ export const meetingVerification = async (token: string, meetingId :  string)=>{
         })
         return response.data
     } catch (error) {
+        console.log(error)
         toast.error("Invalid meeting. Try again !")
     }
 
@@ -79,6 +80,7 @@ export const getMeetingFeedback = async (token: string, meetingId: string)=>{
         })
         return response.data
     } catch (error) {
+        console.log(error)
         toast.error("unable to fetch th meeting feedback")
     }
 }
