@@ -57,7 +57,7 @@ export const getexpertDetails = async (token: string,expertState: number , page:
     }
 }
 
-export const userStatusChange = async (id:string, status: string,token: string)=>{
+export const userStatusChange = async (id:string, status: number,token: string)=>{
     if(!id || status=== undefined){
         toast.error("unable to change the user status")
         return;

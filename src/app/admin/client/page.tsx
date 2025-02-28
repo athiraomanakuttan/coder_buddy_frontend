@@ -15,7 +15,7 @@ const ClientListPage = () => {
         limit: 10
     })
 
-    const changeUserStatus = async (id: string, status: string) => {
+    const changeUserStatus = async (id: string, status: number) => {
         if (!id) {
             toast.error("Unable to change the status. Please try again");
             return;
