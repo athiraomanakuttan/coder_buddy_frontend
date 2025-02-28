@@ -13,12 +13,8 @@ const ClientListPage = () => {
         limit: 10
     })
     const [ meetingStatus , setStatus] = useState<number>(1)
-    const [meetingData, setMeetingData]= useState<NewMeetingType[]>([{
-        title:"",
-        meetingDate: "",
-        expertId: ""
-    }])
-   
+    const [meetingData, setMeetingData]= useState<NewMeetingType[]>([])
+   console.log("meetingData",meetingData)
     const getMeetingData = async (newPage : number =1, meetingStatus : number =0)=>{
         const token = localStorage.getItem('userAccessToken') as string
         const response =  await getMeetingDetails(token, newPage, meetingStatus)
@@ -35,10 +31,7 @@ const ClientListPage = () => {
         const status = meetingStatus
         getMeetingData(newPage, status)
     }
-    const handleGetList = (status : number = 0)=>{
-        setStatus(status)
-        getMeetingData(1,meetingStatus)
-    }
+    
     
 
     return (
@@ -48,14 +41,13 @@ const ClientListPage = () => {
             </div>
             <div className="w-100 border p-8">
             <div className="flex gap-3 mb-3 justify-end">
-            <button className='border rounded bg-adminprimary pl-3 pr-3 pt-2 pb-2' onClick={()=>handleGetList(1)}>Scheduled</button>   
-            <button className='border rounded pl-3 pr-3 pt-2 pb-2' onClick={()=>handleGetList(0)}>History</button>
+            <button className={`${meetingStatus === 1 && 'bg-adminprimary text-white' } border rounded  pl-3 pr-3 pt-2 pb-2`} onClick={()=>setStatus(1)}>Scheduled</button>   
+            <button className={` ${meetingStatus === 0 && 'bg-adminprimary text-white' }border rounded pl-3 pr-3 pt-2 pb-2`} onClick={()=>setStatus(0)}>History</button>
             </div>   
                  <TableComponent
                     headings={['title', 'dateTime', 'userId', 'createdAt']}
                     valueList={meetingData}
                     role="meetingList"
-                    
                 /> 
                 {/* Pagination Controls */}
                 <div className="flex justify-end items-end mt-4 space-x-4">

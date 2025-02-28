@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { jwtDecode } from 'jwt-decode';
+import { authUserType } from '@/types/types';
 
 interface AuthUser {
   id?: string | undefined;
@@ -9,7 +10,7 @@ interface AuthUser {
   image?: string | undefined;
   googleId?: string | undefined;
   access?: string | undefined;
-  userData?: any;
+  userData?: authUserType;
   isExpert?: boolean | undefined;
 }
 
@@ -69,7 +70,7 @@ const useAuthStore = create<AuthState>()(
           const token = localStorage.getItem('userAccessToken');
           if (!token) return false;
           try {
-            const decodedToken: any = jwtDecode(token);
+            const decodedToken: {exp: number} = jwtDecode(token);
             const currentTime = Date.now() / 1000;
             return decodedToken.exp > currentTime;
           } catch (error) {

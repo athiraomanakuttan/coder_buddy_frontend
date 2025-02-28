@@ -25,7 +25,7 @@ const ExpertListPage = () => {
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page)
-        getUserData(page)
+        getUserData(page) 
     }
     const handleChangeExpertStatus = async (expertId : string, status : number)=>{
         const response =  await changeExpertStatus(token, expertId, status)
@@ -44,7 +44,7 @@ const ExpertListPage = () => {
             <div className="p-0 m-0">
                 <Navbar />
             </div>
-            <div className="w-100 border p-8">
+            <div className="w-100 border p-8 overflow-y-auto">
                 <div className="flex gap-3 justify-end mb-2"> 
                     <button className={`${expertState? "bg-adminprimary text-white"  : "bg-sky-100 text-black" } p-2 rounded border`} onClick={()=>setExpertState(1)}>Active </button>
                     <button className={`${expertState ?"bg-sky-50 text-black" : "bg-adminprimary text-white"} p-3 rounded border `} onClick={()=>setExpertState(0)}>Pending</button>

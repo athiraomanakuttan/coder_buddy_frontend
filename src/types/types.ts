@@ -450,3 +450,96 @@ declare global {
     };
   }
 }
+
+export interface GoogleSignupResponse {
+  status: boolean;
+  data: {
+    token: string;
+    status?:boolean,
+    message?:string,
+    userData: {
+      _id: string;
+      name?: string;
+      email?: string;
+      image?: string;
+      googleId?: string;
+      first_name?:string,
+      status?:string,
+      skills?:string[],
+      profilePicture?:string,
+      qualification?:string[],
+      experience?:string[],
+      password?:string,
+      isVerified?:number,
+      isMeetingScheduled?:number,
+      createdAt?:string,
+      updatedAt?:string,
+      address?:string,
+      last_name?:string,
+      primary_contact?: number
+      secondary_contact?:number,
+    };
+  };
+}
+
+export interface TableComponentValueType {
+  _id?: string;
+  firstName?: string;
+  first_name?:string;
+  lastName?: string;
+  qualification?: string;
+  college?: string;
+  address?: string;
+  totalExperience?: string;
+  currentJobTitle?: string;
+  occupation?: string;
+  employer?: string;
+  startDate?: string;
+  endDate?: string;
+  skills?: string | string[];
+  profilePicture?: string | File;
+  title?: string;
+  meetingDate?: string;
+  expertId?: string;
+  createdAt?:string,
+  updatedAt?:string,
+  dateTime?:string
+  userId?:string,
+  meetingId?:string
+  status?:number
+
+}
+
+export interface authUserType{
+  firstName?: string;
+  lastName?: string;
+  college?: string;
+  address?: string;
+  totalExperience?: string;
+  currentJobTitle?: string;
+  occupation?: string;
+  employer?: string;
+  startDate?: string;
+  endDate?: string;
+  skills?: string | string[];
+  profilePicture?: string | File;
+ _id ?: string;
+  first_name ?: string;
+  last_name ?: string;
+  email?: string;
+  primary_contact?: string;
+  secondary_contact?: string;
+  qualification ?: {
+    qualification: string;
+    college: string;
+    year_of_passout: string;
+  }[] | string;
+  experience ?: {
+    job_role ?: string;
+    employer ?: string;
+    start_date ?: string;
+    end_date ?: string;
+  }[];
+
+
+}

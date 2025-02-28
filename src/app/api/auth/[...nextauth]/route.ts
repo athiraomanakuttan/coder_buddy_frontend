@@ -2,64 +2,8 @@ import { googleSignup } from "@/app/services/user/userApi";
 import { googleExpertSignup } from "@/app/services/expert/expertApi";
 import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { ProfileType } from "@/types/types";
+import { GoogleSignupResponse, ProfileType } from "@/types/types";
 
-interface GoogleSignupResponse {
-  status: boolean;
-  data: {
-    token: string;
-    userData: {
-      _id: string;
-      name?: string;
-      email?: string;
-      image?: string;
-      googleId?: string;
-      [key: string]: any;
-    };
-  };
-}
-
-declare module "next-auth" {
-  interface Session {
-    isExpert?: boolean;
-    user: {
-      id?: string | undefined;
-      name?: string | undefined;
-      email?: string | undefined;
-      image?: string | undefined;
-      googleId?: string | undefined;
-      access?: string | undefined;
-      userData?: any;
-      isExpert?: boolean | undefined;
-    }
-  }
-
-  interface User {
-    id?: string;
-    name?: string;
-    email?: string;
-    image?: string;
-    googleId?: string;
-    access?: string;
-    userData?: Record<string, any>;
-    isExpert?: boolean;
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    sub?: string;
-    id?: string;
-    googleId?: string;
-    name?: string;
-    email?: string;
-    picture?: string;
-    image?: string | null;
-    access?: string;
-    userData?: Record<string, any>;
-    isExpert?: boolean;
-  }
-}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -110,6 +54,7 @@ export const authOptions: AuthOptions = {
               image: picture,
             });
           }
+          console.log("3248",res)
 
           if (res?.status) {
             return {
