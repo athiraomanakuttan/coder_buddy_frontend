@@ -74,7 +74,7 @@ const useAuthStore = create<AuthState>()(
             const currentTime = Date.now() / 1000;
             return decodedToken.exp > currentTime;
           } catch (error) {
-            console.error('Error decoding token:', error);
+            console.error('Error decoding token :', error);
             return false;
           }
         }

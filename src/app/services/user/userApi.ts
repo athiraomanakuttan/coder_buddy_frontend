@@ -13,8 +13,9 @@ export const userSignup = async (userData: basicType) => {
     const response = await axios.post(`${API_URI}/api/signup`, { ...userData });
     return response.data;
   } catch (error) {
+    console.log(error)
     if (error instanceof AxiosError) {
-      if (error.response?.status === 400) {
+      if (error.response?.status) {
         const errorData = error.response.data as ErrorResponse;
         toast.error(errorData.message);
       } else {
