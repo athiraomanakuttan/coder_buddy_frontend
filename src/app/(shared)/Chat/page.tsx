@@ -36,11 +36,18 @@ const ChatInterface = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Local Storage Data
-  const token = localStorage.getItem("userAccessToken") as string;
-  const isExpert = localStorage.getItem("isExpert") ;
-  console.log("isExpert",isExpert)
-  const userString = localStorage.getItem("user") as string;
-  const user = JSON.parse(userString);
+  const [token, setToken] = useState<string>("");
+const [isExpert, setIsExpert] = useState<string | null>(null);
+const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+  setToken(localStorage.getItem("userAccessToken") || "");
+  setIsExpert(localStorage.getItem("isExpert"));
+  const userString = localStorage.getItem("user");
+  if (userString) {
+    setUser(JSON.parse(userString));
+  }
+}, []);
 
   useEffect(() => {
     const fetchChats = async () => {
