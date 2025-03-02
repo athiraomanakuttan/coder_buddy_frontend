@@ -10,8 +10,8 @@ import { addConernComment, getUserConcernData } from "@/app/services/shared/conc
 import Link from "next/link";
 
 const ComplaintRegistration = () => {
-  const isExpert = localStorage.getItem("isExpert") || "";
-  const token = (localStorage.getItem("userAccessToken") as string) || "";
+  const [isExpert,setIsExpert]= useState<string>("")
+  const [token, setToken]= useState<string>("")
   const [status, setStatus] = useState(0);
   const [concernModel, setConcernModel] = useState(false);
   const [concernData, setConcernData] = useState<ConcernDataType[]>([]);
@@ -22,6 +22,10 @@ const ComplaintRegistration = () => {
     const response = await getUserConcernData(token, status);
     if (response) setConcernData(response.data);
   };
+  useEffect(()=>{
+    setIsExpert(localStorage.getItem("isExpert") || "")
+    setToken(localStorage.getItem("userAccessToken") || "")
+  },[])
 
   useEffect(() => {
     getConcernData();

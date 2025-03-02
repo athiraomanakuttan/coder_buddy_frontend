@@ -1,146 +1,28 @@
-"use client";
-import { useEffect, useState } from "react";
-import Navbar from "../../../components/user/Navbar/Navbar";
-import { useSession } from "next-auth/react";
-import useAuthStore from "@/store/authStore";
-import PostReportPage from "@/components/user/PostReport/page";
-import { Activity, BookAudio, BookOpen, Video } from "lucide-react";
-import { getUserDashboardStatus } from "@/app/services/user/userApi";
-import { DashboardStatusType } from "@/types/types";
+'use client'
 
-const Dashboard = () => {
-  const { data: session, status } = useSession();
-  const setUserAuth = useAuthStore((state) => state.setUserAuth);
+import dynamic from 'next/dynamic'
+import { Loader2 } from 'lucide-react'
 
-  // Initialize token as empty and update on client-side
-  const [token, setToken] = useState<string>("");
-  useEffect(() => {
-    const storedToken = localStorage.getItem("userAccessToken") || "";
-    setToken(storedToken);
-  }, []);
-
-  // Initialize stats with default values to avoid hydration mismatches
-  const [stats, setstats] = useState<DashboardStatusType>({
-    totalPost: 0,
-    resolvedPost: 0,
-    pendingPost: 0,
-    totalMeetings: 0,
-    scheduledMeeting: 0,
-  });
-
-  const getDashboardStatus = async () => {
-    if (!token) return;
-    const response = await getUserDashboardStatus(token);
-    if (response) setstats(response.data);
-  };
-
-  useEffect(() => {
-    if (session?.user && status === "authenticated") {
-      setUserAuth(session.user.userData, session.user.access || "");
-      document.cookie = `accessToken=${session.user.access}; path=/; max-age=${
-        60 * 60
-      }; SameSite=Lax`;
-    }
-    if (token) {
-      getDashboardStatus();
-    }
-  }, [session, status, setUserAuth, token]);
-
-  return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Fixed Navbar */}
-      <div className="flex-none">
-        <Navbar />
-      </div>
-
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-6">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-6">
-            Dashboard Overview
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
-              <div className="space-y-1">
-                <div className="flex gap-4">
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    {stats.totalPost}
-                  </h3>
-                  <Activity className="h-5 w-5 text-gray-400" />
-                </div>
-                <p className="text-xs text-gray-500">
-                  <span className="text-xl text-primarys">Total issues</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
-              <div className="space-y-1">
-                <div className="flex gap-4">
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    {stats.resolvedPost}
-                  </h3>
-                  <BookAudio className="h-5 w-5 text-gray-400" />
-                </div>
-                <p className="text-xs text-gray-500">
-                  <span className="text-xl text-primarys">Resolved issues</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
-              <div className="space-y-1">
-                <div className="flex gap-4">
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    {stats.pendingPost}
-                  </h3>
-                  <BookOpen className="h-5 w-5 text-gray-400" />
-                </div>
-                <p className="text-xs text-gray-500">
-                  <span className="text-xl text-primarys">Pending Issues</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
-              <div className="space-y-1">
-                <div className="flex gap-4">
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    {stats.totalMeetings}
-                  </h3>
-                  <Video className="h-5 w-5 text-gray-400" />
-                </div>
-                <p className="text-xs text-gray-500">
-                  <span className="text-xl text-primarys">Meetings Taken</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200 border border-gray-200">
-              <div className="space-y-1">
-                <div className="flex gap-4">
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    {stats.scheduledMeeting}
-                  </h3>
-                  <Video className="h-5 w-5 text-gray-400" />
-                </div>
-                <p className="text-xs text-gray-500">
-                  <span className="text-sm text-primarys">Scheduled Meetings</span>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6">
-              <PostReportPage />
-            </div>
-          </div>
-        </div>
-      </div>
+// Create a loading component to show while the dashboard is loading
+const DashboardLoading = () => (
+  <div className="flex h-screen items-center justify-center bg-gray-50">
+    <div className="flex flex-col items-center gap-4">
+      <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      <p className="text-lg font-medium text-gray-700">Loading dashboard...</p>
     </div>
-  );
-};
+  </div>
+)
 
-export default Dashboard;
+// Import the actual Dashboard component dynamically with SSR disabled
+const ClientDashboard = dynamic(
+  () => import('@/components/user/dashboard/DashboardContent'),
+  { 
+    ssr: false,
+    loading: () => <DashboardLoading />
+  }
+)
+
+// Wrapper component that is exported from this file
+export default function Dashboard() {
+  return <ClientDashboard />
+}

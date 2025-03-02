@@ -8,9 +8,10 @@ const Page = () => {
   const {param1,param2} = useParams()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter()
-  const token = localStorage.getItem("userAccessToken") as string
+  const [token,setToken] = useState("")
 
   useEffect(() => {
+    setToken(localStorage.getItem("userAccessToken") || "")
     setIsModalOpen(true);
   }, []);
 

@@ -3,6 +3,7 @@
 import { getMeetingDatas } from "@/app/services/shared/meetingApi"
 import ListComponent from "@/components/shared/ListComponent"
 import Navbar from "@/components/user/Navbar/Navbar"
+import { useLocalStorage } from "@/Hooks/useLocalStorage"
 import { MeetingDataType } from "@/types/types"
 import { useEffect, useState } from "react"
 
@@ -10,7 +11,7 @@ const MeetingPage = () => {
     const [meetingDetails,setMeetingDetails] = useState<MeetingDataType[]>([])
     const [meetingStatus,setMeetingStatus]= useState(0)
     const heading = ["title", "meetingDate","postId"]
-    const token = localStorage.getItem("userAccessToken") as string
+    const [token] = useLocalStorage("userAccessToken","")
     const [pagination, setPagination] = useState({
       currentPage: 1,
       totalPages: 0,

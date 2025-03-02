@@ -8,7 +8,10 @@ import { getWalletDetails } from "@/app/services/admin/adminApi";
 
 const WalletPage = () => {
   const [walletData, setWalletData] = useState<WalletDataType>();
-  const token = localStorage.getItem("userAccessToken") || "";
+  const [token,setToken]= useState<string>("")
+  useEffect(()=>{ 
+    setToken(localStorage.getItem("userAccessToken") || "")
+  },[])
 
   const getWalletData = async () => {
     const response = await getWalletDetails(token)

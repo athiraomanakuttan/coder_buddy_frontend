@@ -36,20 +36,22 @@ const Dashboard = () => {
       setVarified(session?.user?.userData?.isVerified || 0);
     }
   }, [session, status, setUserAuth]);
-  const isVarified = localStorage.getItem("isVerified");
-  const token = localStorage.getItem("userAccessToken") as string;
-  const [varified, setVarified] = useState<string | number | null>(isVarified);
+  const [varified, setVarified] = useState<string | number | null>("");
+  const [token,setToken]= useState<string>("")
   const [meetingData, setMeetingData] = useState<ExpertMeetingType | null>(
     null
   );
   const [isJoining, setIsJoining] = useState(false);
   const router = useRouter();
-
+useEffect(()=>{
+  setVarified(localStorage.getItem("isVerified"))
+  setToken(localStorage.getItem("userAccessToken")  || "")
+})
   useEffect(() => {
-    if (isVarified === "0") {
+    if (varified === "0") {
       getMeetingDetails();
     }
-  }, [isVarified]);
+  }, [varified]);
 
   // To get the verification meeting details with admin
   const getMeetingDetails = async () => {

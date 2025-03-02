@@ -18,7 +18,9 @@ const ConcernPage = () => {
     });
     const [concernData, setConcernData] = useState<ConcernDataType[]>([]);
     
-    const token = localStorage.getItem('userAccessToken') as string || '';
+    const [token,setToken] = useState("");
+
+    useEffect(()=>{ setToken(localStorage.getItem('userAccessToken') as string || '') },[])
 
     const getConcernData = async (page: number = 1) => {
         const response = await getConcerns(token, status, page);

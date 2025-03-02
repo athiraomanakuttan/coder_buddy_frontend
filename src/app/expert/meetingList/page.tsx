@@ -9,19 +9,22 @@ import { useEffect, useState } from "react"
 const meetingPage = () => {
     const [meetingDetails,setMeetingDetails] = useState<MeetingDataType[]>([])
     const [status,setStatus]= useState(0)
+    const [token,setToken]= useState<string>("")
     const [pagination, setPagination] = useState({
       currentPage: 1,
       totalPages: 0,
       totalRecords: 0,
       limit: 5,
   });
+  useEffect(()=>{
+    setToken(localStorage.getItem("userAccessToken") || "")
+  },[])
   const handlePageChange = (newPage: number) => {
     console.log("new page", newPage);
     getMeetingData(newPage);
 };
 
     const heading = ["title", "meetingDate","postId"]
-    const token = localStorage.getItem("userAccessToken") as string
     const getMeetingData = async (page: number = 1)=>{
         const response =  await getMeetingDatas(token , status, page)
         if(response){

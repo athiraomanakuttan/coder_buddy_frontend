@@ -12,7 +12,7 @@ const ExpertListPage = () => {
     const [totalPages, setTotalPages] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
     const [expertState, setExpertState] = useState(0)
-    const token = localStorage.getItem('userAccessToken') || ""
+    const [token,setToken]= useState<string>("")
     const getUserData = async (page: number = 1) => {
             setIsLoading(true)
             
@@ -34,6 +34,9 @@ const ExpertListPage = () => {
             getUserData()
          }
     }
+    useEffect(()=>{
+        setToken(localStorage.getItem('userAccessToken') || "")
+    },[])
 
     useEffect(() => {
         getUserData()

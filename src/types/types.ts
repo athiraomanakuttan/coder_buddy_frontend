@@ -511,6 +511,7 @@ export interface TableComponentValueType {
 }
 
 export interface authUserType{
+  id?:string,
   firstName?: string;
   lastName?: string;
   college?: string;

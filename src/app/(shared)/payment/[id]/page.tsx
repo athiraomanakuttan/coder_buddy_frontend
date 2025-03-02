@@ -12,9 +12,11 @@ const PaymentCompnent = () => {
     const {id} = useParams()
     const router = useRouter()
     const [paymentDetails,setPaymentDetails] =  useState<PaymentType>()
+    const [token,setToken]= useState("")
 
-    const token =  localStorage.getItem("userAccessToken") as string
-
+    useEffect(()=>{
+        setToken(localStorage.getItem("userAccessToken") || "")
+    },[])
     const initiateRazorpayPayment = async () => {
         try {
             if(!paymentDetails){

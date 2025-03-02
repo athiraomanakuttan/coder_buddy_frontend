@@ -6,6 +6,7 @@ import { PostType } from "@/types/types";
 import CreatePostModal from '@/components/user/CreatePost/CreatePostComponent'
 import { useEffect, useState } from "react";
 import { getPostDetails, searchPost } from "@/app/services/user/userApi";
+import { useLocalStorage } from "@/Hooks/useLocalStorage";
 
 const PostPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +16,8 @@ const PostPage = () => {
   const [currentStatus, setCurrentStatus] = useState<number | null>(null);
   const [query,setQuery] = useState<string>('')
   const [debouncingQuery,setDebouncingQuery] = useState<string>(query)
-  const token = localStorage.getItem('userAccessToken') as string
+  const [token] = useLocalStorage("userAccessToken", "");
+  
 
   const getPostData = async (postStatus: number | null = null, page: number = 1) => {
     try {

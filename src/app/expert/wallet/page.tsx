@@ -6,11 +6,12 @@ import { useEffect, useState } from "react";
 import { Wallet, ArrowDownCircle } from "lucide-react";
 import { formatDate } from "@/app/utils/dateUtils";
 import PayoutModal from "@/components/expert/Payout/page";
+import { useLocalStorage } from "@/Hooks/useLocalStorage";
 
 const WalletPage = () => {
   const [walletData, setWalletData] = useState<WalletDataType>();
   const [payoutModel, setPayoutModel] = useState(false);
-  const token = localStorage.getItem("userAccessToken") || "";
+  const [token] = useLocalStorage("userAccessToken","")
 
   const getWalletData = async () => {
     const response = await getExpertWalletData(token);
