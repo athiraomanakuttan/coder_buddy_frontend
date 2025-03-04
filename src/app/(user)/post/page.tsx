@@ -37,10 +37,9 @@ const PostPage = () => {
       console.error("Failed to fetch posts", error);
     }
   }
-
   useEffect(() => {
     getPostData()
-  }, [])
+  }, [token])
 
   const handlePageChange = (newPage: number) => {
     getPostData(currentStatus, newPage);
@@ -55,7 +54,6 @@ const PostPage = () => {
 
   useEffect(()=>{
     (async ()=>{
-      console.log("inside of this function")
       if(debouncingQuery){
         const response =  await searchPost(token,debouncingQuery ,currentStatus)
         if(response)
@@ -138,7 +136,7 @@ const PostPage = () => {
                   </div>
                 </>
               ) : (
-                <h1 className="text-2xl">No Post Yet</h1>
+                <h1 className="text-2xl">No Post Available </h1>
               )}
             </div>
           </div>

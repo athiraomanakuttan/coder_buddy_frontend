@@ -176,6 +176,5 @@ export const getWalletDetails  = async (token: string)=>{
         return response.data
     } catch (error) {
         console.log(error)
-        toast.error("unable to get the wallet data")
     }
 }

@@ -42,7 +42,7 @@ const ClientListPage = () => {
             <div className="w-100 border p-8">
             <div className="flex gap-3 mb-3 justify-end">
             <button className={`${meetingStatus === 0 && 'bg-adminprimary text-white' } border rounded  pl-3 pr-3 pt-2 pb-2`} onClick={()=>setStatus(0)}>Scheduled</button>   
-            <button className={` ${meetingStatus === 1 && 'bg-adminprimary text-white' }border rounded pl-3 pr-3 pt-2 pb-2`} onClick={()=>setStatus(1)}>History</button>
+            <button className={` ${meetingStatus === 1 && 'bg-adminprimary text-white' } border rounded pl-3 pr-3 pt-2 pb-2`} onClick={()=>setStatus(1)}>History</button>
             </div>   
                  <TableComponent
                     headings={['title', 'dateTime', 'userId', 'createdAt']}

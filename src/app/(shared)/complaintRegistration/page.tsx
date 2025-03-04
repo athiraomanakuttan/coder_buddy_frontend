@@ -29,7 +29,7 @@ const ComplaintRegistration = () => {
 
   useEffect(() => {
     getConcernData();
-  }, [concernModel, status]);
+  }, [concernModel, status,token]);
 
   const handleCommentSend = async () => {
     if (selectedConcern && comment.trim()) {

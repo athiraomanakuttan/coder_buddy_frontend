@@ -33,7 +33,7 @@ const ConcernPage = () => {
 
     useEffect(() => {
         getConcernData();
-    }, [status]);
+    }, [status,token]);
 
     const handlePageChange = (newPage: number) => {
         getConcernData(newPage);

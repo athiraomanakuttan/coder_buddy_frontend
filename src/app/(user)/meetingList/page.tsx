@@ -36,7 +36,7 @@ const MeetingPage = () => {
     
     useEffect(()=>{
         getMeetingData(1);
-    },[meetingStatus])
+    },[meetingStatus,token])
   return (
     <div className=" m-0 p-0 flex">
       <div className=" p-0 m-0">

@@ -77,7 +77,7 @@ const [user, setUser] = useState<authUserType>();
     };
     fetchChats();
     return () => setSelectedConversation(null);
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (socket && selectedChatId) {

@@ -23,7 +23,7 @@ const UserProfilePage = () => {
 
     useEffect(() => {
         getUserData()
-    }, [id])
+    }, [id,token])
 
     if (!userData) {
         return <div>Loading...</div>
