@@ -12,7 +12,7 @@ const ClientListPage = () => {
         totalMeetings: 0,
         limit: 10
     })
-    const [ meetingStatus , setStatus] = useState<number>(1)
+    const [ meetingStatus , setStatus] = useState<number>(0)
     const [meetingData, setMeetingData]= useState<NewMeetingType[]>([])
    console.log("meetingData",meetingData)
     const getMeetingData = async (newPage : number =1, meetingStatus : number =0)=>{
@@ -24,7 +24,7 @@ const ClientListPage = () => {
         }
     }
     useEffect(()=>{
-        getMeetingData(0,meetingStatus)
+        getMeetingData(1,meetingStatus)
     },[meetingStatus])
 
     const handlePageChange = (newPage: number) => {
