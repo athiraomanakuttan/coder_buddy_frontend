@@ -40,7 +40,7 @@ const signup = ()=>{
     } catch (error) {
       console.log(error)
     }
-  }
+  } 
 
    const handleGoogleSignUp = async () => {
     setIsLoading(true)
@@ -96,7 +96,7 @@ return (
                   <Image 
                     src="/icons/g-icon.png" 
                     alt="Google Icon" 
-                    className="d-inline m-1 mr-2" width={100} height={100}
+                    className="d-inline m-1 mr-2" width={30} height={30}
                   />
                   {isLoading ? 'Signing in...' : 'Sign in with Google'}
                 </button>
@@ -108,7 +108,7 @@ return (
           </div>
           <div className="col-5 d-none d-md-inline pt-5 ">
             <div className="inner-div border rounded ">
-              <Image src="/images/expert_login.png" alt="" className="mx-auto" width={100} height={100} />
+              <Image src="/images/expert_login.png" alt="" className="mx-auto" width={450} height={450} />
             </div>
           </div>
           
