@@ -22,7 +22,6 @@ export const getExpertWalletData = async (token: string)=>{
         return responce.data
     } catch (error) {
         console.log(error)
-        toast.error("unable to fetch the wallet");
     }
 }
 
