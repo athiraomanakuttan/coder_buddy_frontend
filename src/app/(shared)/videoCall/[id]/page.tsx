@@ -15,13 +15,13 @@ export default function VideoCallPage() {
     meetingId: string;
   } | null>(null);
 
-  const redirectUser = ()=>{
-    if(isAdmin)
-      router.push(`/admin/expertApproval/${expertId}/${meetingData?.meetingId}`)
-    else
-    router.push('/expert/dashboard')
+  // const redirectUser = ()=>{
+  //   if(isAdmin)
+  //     router.push(`/admin/expertApproval/${expertId}/${meetingData?.meetingId}`)
+  //   else
+  //   router.push('/expert/dashboard')
     
-  }
+  // }
   useEffect(()=>{
     setIsAdmin(localStorage.getItem("isAdmin") || "")
   },[])
