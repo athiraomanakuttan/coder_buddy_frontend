@@ -12,7 +12,6 @@ export const getConcerns =  async (token: string, status: number = 0,page: numbe
         return response.data
     } catch (error) {
         console.log(error)
-        toast.error("unable to get the tickets. Try again")
     }
 }
 

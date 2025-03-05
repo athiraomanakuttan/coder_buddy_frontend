@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import useAuthStore from "@/store/authStore";
 import MeetingMonthlyReport from "@/components/shared/MeetingMonthlyReport";
 import { getExpertDashboardData } from "@/app/services/expert/expertApi";
+import { formatDateAndTime } from "@/app/utils/dateUtils";
 
 const Dashboard = () => {
   const { data: session, status } = useSession();
@@ -181,7 +182,7 @@ useEffect(()=>{
                   {[
                     { label: "Host", value: "ADMIN" },
                     { label: "Title", value: meetingData.title },
-                    { label: "Date", value: meetingData.dateTime },
+                    { label: "Date", value: formatDateAndTime(meetingData.dateTime) },
                     { label: "Meeting ID", value: meetingData.meetingId },
                   ].map(({ label, value }) => (
                     <div key={label} className="flex justify-between">

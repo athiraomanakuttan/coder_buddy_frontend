@@ -15,12 +15,14 @@ const WalletPage = () => {
 
   const getWalletData = async () => {
     const response = await getWalletDetails(token)
-    if(response.data){
+    console.log("response",response)
+    if(response){
       setWalletData(response.data)
     }
   };
 
-  useEffect(() => {console.log("runing")
+  useEffect(() => {
+    if(token)
     getWalletData()
   }, [token]);
 

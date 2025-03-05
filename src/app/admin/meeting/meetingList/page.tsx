@@ -14,7 +14,7 @@ const ClientListPage = () => {
     })
     const [ meetingStatus , setStatus] = useState<number>(0)
     const [meetingData, setMeetingData]= useState<NewMeetingType[]>([])
-   console.log("meetingData",meetingData)
+    const [meetingType,setMeetingType] = useState("meetingList")
     const getMeetingData = async (newPage : number =1, meetingStatus : number =0)=>{
         const token = localStorage.getItem('userAccessToken') as string
         const response =  await getMeetingDetails(token, newPage, meetingStatus)
@@ -23,6 +23,12 @@ const ClientListPage = () => {
             setPagination({...pagination,totalMeetings : response.count, totalPages: response.totalPages})
         }
     }
+    useEffect(()=>{
+        if(meetingStatus)
+            setMeetingType("meetingActiveList")
+        else 
+        setMeetingType("meetingList")
+    },[meetingStatus])
     useEffect(()=>{
         getMeetingData(1,meetingStatus)
     },[meetingStatus])
@@ -47,7 +53,7 @@ const ClientListPage = () => {
                  <TableComponent
                     headings={['title', 'dateTime', 'userId', 'createdAt']}
                     valueList={meetingData}
-                    role="meetingList"
+                    role={meetingType}
                 /> 
                 {/* Pagination Controls */}
                 <div className="flex justify-end items-end mt-4 space-x-4">

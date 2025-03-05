@@ -32,6 +32,7 @@ const ConcernPage = () => {
     };
 
     useEffect(() => {
+        if(token)
         getConcernData();
     }, [status,token]);
 
