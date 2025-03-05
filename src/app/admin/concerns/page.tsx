@@ -17,7 +17,6 @@ const ConcernPage = () => {
         limit: 10,
     });
     const [concernData, setConcernData] = useState<ConcernDataType[]>([]);
-    
     const [token,setToken] = useState("");
 
     useEffect(()=>{ setToken(localStorage.getItem('userAccessToken') as string || '') },[])
