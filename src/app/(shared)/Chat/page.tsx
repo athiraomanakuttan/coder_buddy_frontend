@@ -48,13 +48,13 @@ const [user, setUser] = useState<authUserType>();
     setUser(JSON.parse(userString));
   }
 }, []);
-
+console.log("token", token)
   useEffect(() => {
     const fetchChats = async () => {
       try {
         setLoading(true);
         if (!token) {
-          throw new Error("No access token found");
+          return
         }
         const response = await getConversationList(token);
         // Transform the data to include post title

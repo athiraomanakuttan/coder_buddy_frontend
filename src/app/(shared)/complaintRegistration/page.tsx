@@ -29,7 +29,7 @@ const ComplaintRegistration = () => {
 
   useEffect(() => {
     getConcernData();
-  }, [concernModel, status,token]);
+  }, [concernModel, status]);
 
   const handleCommentSend = async () => {
     if (selectedConcern && comment.trim()) {
@@ -87,7 +87,9 @@ const ComplaintRegistration = () => {
             </div>
             <button
               className="bg-blue-500 text-white p-2 rounded-full shadow-md hover:bg-blue-600 transition"
-              onClick={() => setConcernModel(true)}
+              onClick={() =>{
+                setSelectedConcern(null);
+                setConcernModel(true)}}
             >
               <Plus />
             </button>
