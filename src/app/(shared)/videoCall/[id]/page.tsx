@@ -1,5 +1,5 @@
 'use client'
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { verificationMeeting } from '@/app/services/expert/meetingApi';
 import VideoCallUI from '@/components/VideoComponent/VideoCallUI';
@@ -35,7 +35,7 @@ export default function VideoCallPage() {
         console.error('Meeting validation failed:', error);
       }
     };
-    
+     
     validateMeeting();
   }, [params]); // Add params as a dependency
     
