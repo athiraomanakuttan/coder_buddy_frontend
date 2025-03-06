@@ -68,6 +68,7 @@ const PaymentCompnent = () => {
      
 
     useEffect(()=>{
+       
         const getPayementDetails = async ()=>{
             const response =  await getPaymentById(token,id as string)
             if(!response.data){
@@ -82,7 +83,7 @@ const PaymentCompnent = () => {
     
         }
         
-        if(!id){
+        if(!id || !token){
             toast.error("payment is empty")
             return
         }
@@ -90,7 +91,7 @@ const PaymentCompnent = () => {
         getPayementDetails()
 
         
-    },[id])
+    },[id,token])
   return (
 
     <div className=" m-0 p-0 flex">
