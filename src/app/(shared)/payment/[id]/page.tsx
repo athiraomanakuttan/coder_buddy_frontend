@@ -84,7 +84,6 @@ const PaymentCompnent = () => {
         }
         
         if(!id || !token){
-            toast.error("payment is empty")
             return
         }
         else
