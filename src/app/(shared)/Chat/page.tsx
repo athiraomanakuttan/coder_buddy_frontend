@@ -184,7 +184,7 @@ console.log("token", token)
 
     if (response?.data) {
       setMessage(
-        `I have created a payment link\nAmount: ₹ ${response.data.amount}\nPayment Id: ${response.data._id}\nPayment Link: ${process.env.NEXT_PUBLIC_API_URI}/payment/${response.data._id}/`
+        `I have created a payment link\nAmount: ₹ ${response.data.amount}\nPayment Id: ${response.data._id}\nPayment Link: https://www.coderbuddy.shop/payment/${response.data._id}/`
       );
       setShowModal(false);
     }
