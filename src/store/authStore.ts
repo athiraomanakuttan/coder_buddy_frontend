@@ -20,7 +20,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   isVerified?: number;
-  setUserAuth: (user: AuthUser, token: string) => void;
+  setUserAuth: (user : AuthUser, token : string) => void;
   setUser: (user: AuthUser) => void;
   logout: () => void;
   initAuth: () => Promise<void>;

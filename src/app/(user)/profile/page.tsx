@@ -28,8 +28,7 @@ const ProfilePage: React.FC = () => {
   });
 
   const getProfileData = async () => {
-    const token = localStorage.getItem("userAccessToken")!;
-    const userData = await getProfile(token as string);
+    const userData = await getProfile();
     if (userData.status) {
       const transformedData = {
         _id:userData.data._id,
@@ -93,8 +92,7 @@ const ProfilePage: React.FC = () => {
       toast.error(validation.message)
     else{
       try {
-        const token = localStorage.getItem('userAccessToken') as string
-        const updateUser =  await  updateProfile(token,parsedData)
+        const updateUser =  await  updateProfile(parsedData)
         if(updateUser.status)
           toast.success(updateUser.message)
         getProfileData()

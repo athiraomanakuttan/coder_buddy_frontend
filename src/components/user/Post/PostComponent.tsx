@@ -18,13 +18,12 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
   const [editPostStatus, setEditPostStatus] =  useState(false)
   const { _id, title, description, technologies, comments, status } =
     postdata;
-  const token = localStorage.getItem("userAccessToken") as string;
   const changePostStatus = async (postId: string, status: number) => {
     if (!postId || !status) {
       toast.error("unable to change the status");
       return;
     }
-    const response = await postStatus(token, { postId, status });
+    const response = await postStatus( { postId, status });
     getPostData()
     if (response) toast.success(response.message);
   };

@@ -65,8 +65,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
         submissionData.userId = user?.id ? user.id : user?._id;
       }
 
-      const token = localStorage.getItem("userAccessToken") as string;
-      const response = await addPost(token, submissionData);
+      const response = await addPost(submissionData);
       
       if (response && response?.status) {
         toast.success(response?.message);
@@ -121,8 +120,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   };
 
   const getTechnology = async () => {
-    const token = localStorage.getItem("userAccessToken") || ""
-    const response = await getAllTechnology(token)
+    const response = await getAllTechnology()
     if (response) {
       setAllTechnology(response.data)
     }

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { basicType, ErrorResponse, PostType, UserProfileType } from "@/types/types";
 import { toast } from "react-toastify";
+import axiosInstance from "./userAxiosInstance";
 
 const API_URI = process.env.NEXT_PUBLIC_API_URI;
 
@@ -68,42 +69,34 @@ export const signinPost = async (email: string, password: string) => {
   
 };
 
-export const getProfile = async (token: string) => {
+
+
+export const getProfile = async () => {
   try {
-    const profileData = await axios.get(
-      `${API_URI}/api/get-profile`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,  
-        },
-        withCredentials: true,  
-      }
-    );
-    
+    const profileData = await axiosInstance.get('/api/get-profile');
     return profileData.data;
   } catch (error) {
-    console.log( error);
+    console.log(error);
+    throw error; // Optionally rethrow to let caller handle it
   }
 };
 
-export const updateProfile = async (token: string, updateData: UserProfileType) => {
-  console.log("======",updateData)
+export const updateProfile = async (updateData: UserProfileType) => {
   try {
-    const response = await axios.put(
-      `${API_URI}/api/update-profile`,
+    const response = await axiosInstance.put(
+      '/api/update-profile',
       updateData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true,
+          'Content-Type': 'multipart/form-data'
+        }
       }
     );
-    console.log(response)
+    console.log(response);
     return response.data;
   } catch (error) {
     console.log(error);
+    throw error; // Optional: rethrow the error so the caller can handle it
   }
 };
 
@@ -179,23 +172,15 @@ export const googleSignup = async (userData: {
   }
 }
 
-export const addPost = async (token: string, data: PostType) => {
-  console.log(token)
-  console.log('token',token)
-  if (!token) {
-    toast.error("Session timeout. Please login");
-    return { status: false, message: "Unauthorized" };
-  }
+export const addPost = async ( data: PostType) => {
 
   try {
     
 
-    const response = await axios.post(`${API_URI}/api/upload-post`, data, {
+    const response = await axiosInstance.post(`/api/upload-post`, data, {
       headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
       },
-      withCredentials: true,
     });
     
     return {
@@ -217,19 +202,14 @@ export const addPost = async (token: string, data: PostType) => {
   }
 };
 
-export const getPostDetails = async (token: string, params: {
+export const getPostDetails = async ( params: {
   status?: number | null, 
   page?: number, 
   limit?: number
 }) => {
   
-  console.log("params",params)
   try {
-    const response = await axios.post(`${API_URI}/api/get-post-details`, params, {
-      headers: { 
-        'Authorization': `Bearer ${token}` 
-      }
-    });
+    const response = await axiosInstance.post(`/api/get-post-details`, params);
     return response.data;
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -237,17 +217,13 @@ export const getPostDetails = async (token: string, params: {
   }
 }
 
-export const postStatus  = async (token : string, params:{ postId: string, status:number})=>{
+export const postStatus  = async ( params:{ postId: string, status:number})=>{
   if(!params.postId || !params.status){
     toast.error("unable to update the post status")
     return
   }
   try {
-    const response =  await axios.put(`${API_URI}/api/update-post-status`,params,{
-      headers:{
-        Authorization: `Bearer ${token}`
-      }
-    })
+    const response =  await axiosInstance.put(`/api/update-post-status`,params)
     return response.data
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -263,11 +239,9 @@ export const postStatus  = async (token : string, params:{ postId: string, statu
   }
 }
 
-export const searchPost = async (token: string , query : string , currentStatus:number | null = 1)=>{
+export const searchPost = async ( query : string , currentStatus:number | null = 1)=>{
   try {
-    const response = await axios.get(`${API_URI}/api/search-post/${query}/${currentStatus}`,{
-      headers:{ Authorization:`Bearer ${token}`}
-    })
+    const response = await axiosInstance.get(`/api/search-post/${query}/${currentStatus}`)
     return response.data
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -285,27 +259,19 @@ export const searchPost = async (token: string , query : string , currentStatus:
 }
 
 
-export const getExpertProfile = async (token : string , expertId:string)=>{
+export const getExpertProfile = async ( expertId:string)=>{
   try {
-    if(!token || !expertId)
-    {
-      console.log("token or expert id is empty");
-      return
-    }
-    const response =  await axios.get(`${API_URI}/api/expert-profile/${expertId}`,{
-      headers:{Authorization : `Bearer ${token}`}
-    })
+    
+    const response =  await axiosInstance.get(`/api/expert-profile/${expertId}`)
     return response.data
   } catch (error) {
       console.log("error while getting profile details",error)
   }
 }
 
-export const updatePost = async (token: string, postData : PostType)=>{
+export const updatePost = async ( postData : PostType)=>{
   try {
-    const response = await axios.put(`${API_URI}/api/update-post`,{...postData},{
-      headers:{Authorization: `Bearer ${token}`}
-    })
+    const response = await axiosInstance.put(`/api/update-post`,{...postData})
     return response.data
   } catch (error) {
     console.log(error)
@@ -314,27 +280,27 @@ export const updatePost = async (token: string, postData : PostType)=>{
 }
 
 
-export const getUserPostReport = async (token: string)=>{
+export const getUserPostReport = async ()=>{
 try {
-  const responce =  await axios.get(`${API_URI}/api/get-post-report`,{ headers : {Authorization : `Bearer ${token}`}})
+  const responce =  await axiosInstance.get(`/api/get-post-report`)
   return responce;
 } catch (error) {
   console.log(error)
 }
 }
 
-export const getUserDashboardStatus = async (token: string)=>{
+export const getUserDashboardStatus = async ()=>{
   try {
-    const response = await axios.get(`${API_URI}/api/get-dashboard-report`,{headers:{Authorization:`Bearer ${token}`}})
+    const response = await axiosInstance.get(`/api/get-dashboard-report`)
     return response.data
   } catch (error) {
     console.log("error while getting report", error)
   }
 }
 
-export const getAllTechnology = async (token: string)=>{
+export const getAllTechnology = async ()=>{
   try {
-      const response = await axios.get(`${API_URI}/api/get-all-technologies`,{headers:{Authorization:`Bearer ${token}`}})
+      const response = await axiosInstance.get(`/api/get-all-technologies`)
       return response.data
   } catch (error) {
       console.log("error",error)

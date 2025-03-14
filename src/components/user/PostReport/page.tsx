@@ -8,13 +8,11 @@ import { ApiResponseItem, ChartData } from "@/types/types";
 const PostReportPage: React.FC = () => {
     const [postReport, setPostReport] = useState<ChartData[]>([]);
     const [reportYear, setReportYear] = useState<number>(new Date().getFullYear());
-    const token = localStorage.getItem("userAccessToken") || "";
-
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     const fetchPostReport = async () => {
         try {
-            const response = await getUserPostReport(token);
+            const response = await getUserPostReport();
             if (!response || !response.data) return;
 
             console.log("response", response.data.data);

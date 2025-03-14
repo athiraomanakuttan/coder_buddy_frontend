@@ -8,16 +8,10 @@ import PostReportPage from "@/components/user/PostReport/page";
 import { Activity, BookAudio, BookOpen, Video } from "lucide-react";
 import { getUserDashboardStatus } from "@/app/services/user/userApi";
 import { DashboardStatusType } from "@/types/types";
-import { useLocalStorage } from "@/Hooks/useLocalStorage";
 
 const DashboardContent = () => {
   const { data: session, status } = useSession();
   const setUserAuth = useAuthStore((state) => state.setUserAuth);
-
-  // Since this component only runs on client-side, we can safely use localStorage
-  const [token] = useLocalStorage("userAccessToken", "");
-  
-  // Initialize stats with default values
   const [stats, setstats] = useState<DashboardStatusType>({
     totalPost: 0,
     resolvedPost: 0,
@@ -27,9 +21,9 @@ const DashboardContent = () => {
   });
   
   const getDashboardStatus = async () => {
-    if (!token) return;
+    
     try {
-      const response = await getUserDashboardStatus(token);
+      const response = await getUserDashboardStatus();
       if (response) setstats(response.data);
     } catch (error) {
       console.error("Error fetching dashboard status:", error);
@@ -45,10 +39,10 @@ const DashboardContent = () => {
     }
     
     // No need to check for isClient since this component only runs on client
-    if (token) {
+   
       getDashboardStatus();
-    }
-  }, [session, status, setUserAuth, token]);
+    
+  }, [session, status, setUserAuth]);
 
   return (
     <div className="flex h-screen bg-gray-50">

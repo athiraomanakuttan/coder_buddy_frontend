@@ -53,8 +53,7 @@ const EditPostModal: React.FC<CreatePostModalProps> = ({
 
       console.log("submissionData", submissionData)
 
-      const token = localStorage.getItem("userAccessToken") as string;
-      const response = await updatePost(token, submissionData)
+      const response = await updatePost(submissionData)
       if(response){
         toast.success("post updated")
         setEditPostStatus(false)

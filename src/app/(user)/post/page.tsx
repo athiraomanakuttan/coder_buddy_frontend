@@ -21,7 +21,7 @@ const PostPage = () => {
 
   const getPostData = async (postStatus: number | null = null, page: number = 1) => {
     try {
-      const response = await getPostDetails(token, {
+      const response = await getPostDetails( {
         status: postStatus,
         page: page,
         limit: 5
@@ -55,7 +55,7 @@ const PostPage = () => {
   useEffect(()=>{
     (async ()=>{
       if(debouncingQuery){
-        const response =  await searchPost(token,debouncingQuery ,currentStatus)
+        const response =  await searchPost(debouncingQuery ,currentStatus)
         if(response)
         {
           setPostData(response.data)

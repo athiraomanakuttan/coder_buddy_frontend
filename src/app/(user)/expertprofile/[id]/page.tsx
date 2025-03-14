@@ -26,7 +26,7 @@ const ProfilePage = () => {
 
     useEffect(()=>{
         ( async ()=>{
-            const response = await getExpertProfile(token , String(id))
+            const response = await getExpertProfile( String(id))
             if(response)
                 setExpertData(response.data)
         })()
