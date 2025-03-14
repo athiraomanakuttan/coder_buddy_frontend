@@ -16,8 +16,9 @@ interface PostComponentProps {
 
 const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostData }) => {
   const [editPostStatus, setEditPostStatus] =  useState(false)
-  const { _id, title, description, technologies, comments, status } =
+  const { _id, title, description, technologies, comments, status , uploads} =
     postdata;
+    
   const changePostStatus = async (postId: string, status: number) => {
     if (!postId || !status) {
       toast.error("unable to change the status");
@@ -28,7 +29,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
     if (response) toast.success(response.message);
   };
 
-  
+   
   return (
     <>
     <div className="border-gray-300 rounded-md mb-2">
@@ -71,9 +72,30 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
     )}
   </>
 )}
-                <button>
-                  <Paperclip className="text-lg text-secondarys" />
-                </button>
+                {uploads && (
+                  <a
+                    href={
+                      typeof uploads === "string"
+                        ? uploads
+                        : uploads instanceof File
+                        ? URL.createObjectURL(uploads)
+                        : undefined
+                    }
+                    download={
+                      typeof uploads === "string"
+                        ? uploads.split('/').pop() 
+                        : uploads instanceof File
+                        ? uploads.name 
+                        : undefined
+                    }
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-center gap-1 text-secondarys"
+                  >
+                    <Paperclip className="text-lg" />
+                  </a>
+                )}
+
                 <button onClick={()=>changePostStatus(_id!, -1)}>
                   <Trash className="text-lg text-red-400" />
                 </button>
