@@ -20,8 +20,7 @@ const ClientListPage = () => {
             toast.error("Unable to change the status. Please try again");
             return;
         }
-        const token = localStorage.getItem("userAccessToken") as string
-        const response = await userStatusChange(id, status, token)
+        const response = await userStatusChange(id, status)
         if (response)
             toast.success("User status changed")
         getUserData(pagination.currentPage)
@@ -29,8 +28,7 @@ const ClientListPage = () => {
 
     const getUserData = async (page: number = 1) => {
         try {
-            const token = localStorage.getItem('userAccessToken') || ""
-            const response = await getUserDetails(token, page)
+            const response = await getUserDetails( page)
             
             if (response.status) {
                 setUserData(response.data.users)

@@ -17,8 +17,8 @@ const ProfileView = ({ role, userId, setProfileView }: ProfileDataType) => {
   useEffect(() => {
     (async () => {
       let response;
-      if (role === "user") response = await getUserProfile(token, userId);
-      else response = await getExpertsProfile(userId, token);
+      if (role === "user") response = await getUserProfile( userId);
+      else response = await getExpertsProfile(userId);
 
       if (response) {
         setProfileData(response.data);

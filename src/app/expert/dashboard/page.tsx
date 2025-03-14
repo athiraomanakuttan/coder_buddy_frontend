@@ -38,7 +38,6 @@ const Dashboard = () => {
     }
   }, [session, status, setUserAuth]);
   const [varified, setVarified] = useState<string | number | null>("");
-  const [token,setToken]= useState<string>("")
   const [meetingData, setMeetingData] = useState<ExpertMeetingType | null>(
     null
   );
@@ -46,7 +45,6 @@ const Dashboard = () => {
   const router = useRouter();
 useEffect(()=>{
   setVarified(localStorage.getItem("isVerified"))
-  setToken(localStorage.getItem("userAccessToken")  || "")
 })
   useEffect(() => {
     if (varified === "0") {
@@ -56,7 +54,7 @@ useEffect(()=>{
 
   // To get the verification meeting details with admin
   const getMeetingDetails = async () => {
-    const response = await getadminexpertMeeting(token);
+    const response = await getadminexpertMeeting();
     console.log("response");
     if (response) {
       setMeetingData(response.data);
@@ -78,7 +76,7 @@ useEffect(()=>{
 
   useEffect(()=>{
     const getExpertStatus = async ()=>{
-      const response = await getExpertDashboardData(token)
+      const response = await getExpertDashboardData()
       if(response)
         setDashbordStatus(response.data) 
     }

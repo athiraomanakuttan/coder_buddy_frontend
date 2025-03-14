@@ -21,8 +21,7 @@ const TechnologiesPage = () => {
 });
 
   const getData = async (page = 1)=>{
-    const token = localStorage.getItem("userAccessToken") || ""
-    const response = await getTechnologies(token,page)
+    const response = await getTechnologies(page)
     console.log("response",response)
     const {technologies , totalRecords} = response.data
     if(response){
@@ -37,8 +36,7 @@ const TechnologiesPage = () => {
   }
 
   const updateTechnology = async (id: string,status: number)=>{
-    const token = localStorage.getItem("userAccessToken") || ""
-    const response = await UpdateTechnologies(token,id,{status})
+    const response = await UpdateTechnologies(id,{status})
     if(response){
       toast.success("updated")
       getData()

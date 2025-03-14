@@ -22,8 +22,7 @@ const handleFormSubmit = async (e : React.FormEvent<HTMLFormElement>)=>{
         toast.error(validate.message)
         return
     }
-    const token =  localStorage.getItem('userAccessToken') as string
-    const response =  await createMeetingLink(token,formData)
+    const response =  await createMeetingLink(formData)
     if(response){
       toast.success(response.message)
       router.push('/admin/experts')

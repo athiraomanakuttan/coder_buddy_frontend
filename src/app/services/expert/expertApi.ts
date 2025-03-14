@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { basicType, ErrorResponse, ExpertType } from "@/types/types";
+import axiosInstance from "./expertAxiosInstance";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URI
 
@@ -66,31 +67,18 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
     }
   };
 
-  export const getProfile = async (token : string)=>{
-    if(!token)
-      toast.error("user is not autherized please login again");
-    else{
+  export const getProfile = async ()=>{
       try {
-        const response =  await axios.get(`${API_URL}/api/expert/get-expert-details`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
-          })
+        const response =  await axiosInstance.get(`/api/expert/get-expert-details`)
           console.log("response.data",response.data)
           return response.data
       } catch (error) {
         console.log( error);
       }
-
-    }
   }
 
-  export const updateProfile = async (token: string, data: ExpertType) => {
-    if (!token) {
-      toast.error("User is not authorized. Please login again.");
-    } else {
+  export const updateProfile = async (data: ExpertType) => {
+    
       try {
         const formData = new FormData();
         
@@ -108,15 +96,8 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
         }
 
         const response = await axios.put(
-          `${API_URL}/api/expert/update-profile`,
+          `/api/expert/update-profile`,
           formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data',
-            },
-            withCredentials: true,
-          }
         );
   
         console.log(response.data);
@@ -125,7 +106,6 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
         console.error("Error while updating user profile", error);
         throw error;
       }
-    }
   };
 
   export const forgotPssword = async (email :  string)=>{
@@ -192,12 +172,11 @@ export const googleExpertSignup = async (expertData: {
   }
 };
 
-export const getUserPost = async (token : string, page :  number = 1 , limit:number = 5 )=>{
+export const getUserPost = async ( page :  number = 1 , limit:number = 5 )=>{
   try {
     
-      const response = await axios.get(`${API_URL}/api/expert/get-post`,{
+      const response = await axiosInstance.get(`/api/expert/get-post`,{
         params: { page, limit },
-        headers:{ Authorization:`Bearer ${token}` }
       })
       return response.data
   } catch (error) {
@@ -214,13 +193,9 @@ export const getUserPost = async (token : string, page :  number = 1 , limit:num
   }
 }
 
-export const addComment= async (token :  string, comment: string, postId :  string)=>{
+export const addComment= async (  comment: string, postId :  string)=>{
   try {
-    const response =  await axios.post(`${API_URL}/api/expert/add-comment`,{comment, postId},{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
-    })
+    const response =  await axios.post(`/api/expert/add-comment`,{comment, postId})
     return response.data
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -236,13 +211,9 @@ export const addComment= async (token :  string, comment: string, postId :  stri
   }
 }
 
-export const deleteComment =  async (token:string , data:{commentId : string, expertId : string , postId:string})=>{
+export const deleteComment =  async ( data:{commentId : string, expertId : string , postId:string})=>{
   try{
-    const response = await axios.put(`${API_URL}/api/expert/delete-comment`, data , {
-      headers :{
-        Authorization : `Bearer ${token}`
-      }
-    })
+    const response = await axios.put(`/api/expert/delete-comment`, data )
     console.log(response)
     return response.data
   }catch(error){
@@ -259,9 +230,9 @@ export const deleteComment =  async (token:string , data:{commentId : string, ex
   }
 }
 
-export const getExpertDashboardData = async (token : string)=>{
+export const getExpertDashboardData = async ()=>{
   try {
-    const response = await axios.get(`${API_URL}/api/expert/get-dashbord-data`,{headers: {Authorization : `Bearer ${token}`}})
+    const response = await axios.get(`/api/expert/get-dashbord-data`)
     return response.data
   } catch (error) {
     console.log("error", error)

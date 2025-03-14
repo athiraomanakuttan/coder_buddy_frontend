@@ -1,14 +1,11 @@
 import { ErrorResponse } from "@/types/types";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import {toast} from 'react-toastify'
-const API_URL =  process.env.NEXT_PUBLIC_API_URI
+import axiosInstance from "./expertAxiosInstance";
 
-
-export const getadminexpertMeeting = async (token: string)=>{
+export const getadminexpertMeeting = async ()=>{
     try {
-        const response =  await axios.get(`${API_URL}/api/expert/admin-meeting`,{
-            headers:{ Authorization:`Bearer ${token}`}
-        })
+        const response =  await axiosInstance.get(`/api/expert/admin-meeting`)
         return response.data
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -26,7 +23,7 @@ export const getadminexpertMeeting = async (token: string)=>{
 
 export  const verificationMeeting = async (meetingId:string)=>{
     try {
-        const response =  await axios.post(`${API_URL}/api/expert/meetings/join`,{meetingId},)
+        const response =  await axiosInstance.post(`/api/expert/meetings/join`,{meetingId},)
         return response.data
     } catch (error) {
         if (error instanceof AxiosError) {

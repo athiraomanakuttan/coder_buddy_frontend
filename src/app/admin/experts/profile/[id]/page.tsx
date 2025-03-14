@@ -44,8 +44,7 @@ const ExpertProfilePage = ({
 
   const getExpertProfile = async () => {
     if (params) {
-      const token = localStorage.getItem("userAccessToken") as string;
-      const response = await getExpertsProfile(params.id, token);
+      const response = await getExpertsProfile(params.id);
       if (response.data) setExpertData(response.data);
     }
   };
@@ -60,8 +59,7 @@ const ExpertProfilePage = ({
       toast.error("not able to reject the request")
       return;
     }
-    const token = localStorage.getItem("userAccessToken") as string
-    const response =  await rejectExpertRequest(id, token)
+    const response =  await rejectExpertRequest(id)
     if(response){
       toast.success("Expert Rejected");
       router.push('/admin/experts')

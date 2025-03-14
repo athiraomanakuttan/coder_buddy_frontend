@@ -15,7 +15,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, getPostData }) 
   const [comment, setComment] = useState<string>("");
   const { _id, title, description, uploads, technologies, comments } =
     postdata;
-  const token = localStorage.getItem("userAccessToken") as string;
   const expertString= localStorage.getItem("user") 
   const expert =  expertString && JSON.parse(expertString)
   const expertId = expert._id
@@ -29,7 +28,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, getPostData }) 
     toast.error("comment field is required")
     return
   }
-  const response =   await addComment(token,comment, postId)
+  const response =   await addComment(comment, postId)
   if(response){
     getPostData();
     setComment("")
@@ -37,7 +36,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, getPostData }) 
     toast.success(response.message)
  }
 const handleCommentDelete = async (commentId : string, expertId : string ,  postId :  string) => {
-    const response = await deleteComment(token,{commentId,expertId,postId})
+    const response = await deleteComment({commentId,expertId,postId})
     if(response){
       toast.success(response.message)
     getPostData()}

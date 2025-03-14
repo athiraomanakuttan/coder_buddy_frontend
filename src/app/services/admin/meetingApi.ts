@@ -1,20 +1,14 @@
 import { ErrorResponse, NewMeetingType } from "@/types/types"
-import axios, { AxiosError } from "axios";
+import  { AxiosError } from "axios";
 import { toast } from "react-toastify"
+import axiosInstance from "./adminAxiosInstance";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URI
 
-export const createMeetingLink = async (token : string , data: NewMeetingType)=>{
-    if(!token){
-        toast.error("session Timeout please login again");
-        return
-    }
+export const createMeetingLink = async (data: NewMeetingType)=>{
+    
     try {
-        const response =  await axios.post(`${API_URL}/api/admin/create-meeting-link`,data,{
-            headers:{
-                Authorization:`Bearer ${token}`
-            }
-        })
+        const response =  await axiosInstance.post(`${API_URL}/api/admin/create-meeting-link`,data)
         return response.data
     } catch (error ) {
         if (error instanceof AxiosError) {
@@ -31,17 +25,10 @@ export const createMeetingLink = async (token : string , data: NewMeetingType)=>
     
 }
 
-export const getMeetingDetails = async (token : string , page : number , status :  number) =>{
-    if(!token){
-        toast.error("Not authorized try again")
-        return
-    }
+export const getMeetingDetails = async (page : number , status :  number) =>{
+    
     try {
-            const response =  await axios.post(`${API_URL}/api/admin/get-meeting-details`,{page,status},{
-                headers:{
-                    Authorization:`Bearer ${token}`
-                }
-            })
+            const response =  await axiosInstance.post(`${API_URL}/api/admin/get-meeting-details`,{page,status})
             return response.data
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -57,11 +44,9 @@ export const getMeetingDetails = async (token : string , page : number , status 
     }
 }
 
-export const changeExpert =  async (token:string, expertId:string , meetingId :  string ,  status :  string)=>{
+export const changeExpert =  async (expertId:string , meetingId :  string ,  status :  string)=>{
     try {
-        const response =  await axios.put(`${API_URL}/api/admin/approve-expert`,{expertId,meetingId,status},{ 
-            headers:{ Authorization:`Bearer ${token}`}
-        })
+        const response =  await axiosInstance.put(`${API_URL}/api/admin/approve-expert`,{expertId,meetingId,status})
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {

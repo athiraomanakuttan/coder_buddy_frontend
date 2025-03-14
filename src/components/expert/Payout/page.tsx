@@ -10,15 +10,13 @@ interface PayoutModalType{
 const PayoutModal = ({setIsModalOpen,balance}: PayoutModalType) => {
     const [payoutAmount,setPayoutAmount] = useState("")
     const [payoutUPI,setPayoutUPI] = useState("")
-    const token = localStorage.getItem("userAccessToken") || ""
-
     const handlePayout = async ()=>{
         const isValid = payoutValidation(payoutUPI, balance, Number(payoutAmount))
         if(!isValid.status){
             toast.error(isValid.message)
             return
         }
-        const response = await expertPayOut(token , payoutAmount, payoutUPI)
+        const response = await expertPayOut( payoutAmount, payoutUPI)
         if(response){
            toast.success("payment initiated sucessfully")
            setIsModalOpen(false)

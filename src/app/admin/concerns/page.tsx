@@ -22,7 +22,7 @@ const ConcernPage = () => {
     useEffect(()=>{ setToken(localStorage.getItem('userAccessToken') as string || '') },[])
 
     const getConcernData = async (page: number = 1) => {
-        const response = await getConcerns(token, status, page);
+        const response = await getConcerns( status, page);
         if (response) {
             const totalPages = Math.ceil(response.data.totalRecord / pagination.limit);
             setPagination({ ...pagination, totalPages, totalData: response.data.totalRecord });
@@ -63,7 +63,7 @@ const ConcernPage = () => {
 
     const updateConcernStatus = async (concernId:string, status:number)=>{
         console.log("function called")
-        const response = await updateUserConcern(token, concernId,status)
+        const response = await updateUserConcern(concernId,status)
         console.log("response",response)
         if(response)
         {    toast.success("status updated sucessfully")

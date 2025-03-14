@@ -8,10 +8,8 @@ const Page = () => {
   const {param1,param2} = useParams()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter()
-  const [token,setToken] = useState("")
 
   useEffect(() => {
-    setToken(localStorage.getItem("userAccessToken") || "")
     setIsModalOpen(true);
   }, []);
 
@@ -20,7 +18,7 @@ const Page = () => {
       toast.error("expert id is empty please try again");
       return;
     }
-    const response =  await changeExpert(token , experId , meetingId,"1")
+    const response =  await changeExpert( experId , meetingId,"1")
     if(response){
       toast.success(response.message)
       router.push('/admin/dashboard')
@@ -33,7 +31,7 @@ const Page = () => {
       toast.error("expert id is missing");
       return;
     }
-      const response =  await changeExpert(token,expertId,meetingId,"0")
+      const response =  await changeExpert(expertId,meetingId,"0")
       if(response){
         toast.success("Expert Rejected");
         router.push('/admin/dashboard')

@@ -34,8 +34,7 @@ const ProfilePage = () => {
 
   const getProfileData = async () => {
     try {
-      const token = localStorage.getItem("userAccessToken")!;
-      const userData = await getProfile(token);
+      const userData = await getProfile();
 
       if (userData.status) {
         const transformedData: ExpertType = {
@@ -170,9 +169,7 @@ const ProfilePage = () => {
       return;
     }
     try {
-      const token = localStorage.getItem("userAccessToken")!;
       const parsedSkills = parseSkills(skills);
-      
       const updatedFormData: ExpertType = {
         ...formData,
         qualification: qualifications.map(qual => ({
@@ -189,7 +186,7 @@ const ProfilePage = () => {
         skills: parsedSkills
       };
   
-      const updateExpert = await updateProfile(token, updatedFormData);
+      const updateExpert = await updateProfile( updatedFormData);
       if (updateExpert.status) {
           toast.success("Profile updated successfully");
           getProfileData()

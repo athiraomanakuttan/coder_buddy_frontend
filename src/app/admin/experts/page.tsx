@@ -16,7 +16,7 @@ const ExpertListPage = () => {
     const getUserData = async (page: number = 1) => {
             setIsLoading(true)
             
-            const response = await getexpertDetails(token,expertState, page)
+            const response = await getexpertDetails(expertState, page)
             if (response.status) {
                 setUserData(response.data?.experts)
                 setTotalPages(response.data?.pagination?.totalPages) }
@@ -28,7 +28,7 @@ const ExpertListPage = () => {
         getUserData(page) 
     }
     const handleChangeExpertStatus = async (expertId : string, status : number)=>{
-        const response =  await changeExpertStatus(token, expertId, status)
+        const response =  await changeExpertStatus( expertId, status)
         if(response)
          {   toast.success("expert status changed") 
             getUserData()

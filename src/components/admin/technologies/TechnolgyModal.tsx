@@ -11,26 +11,24 @@ interface PayoutModalType{
 const TechnologyModel = ({setIsModalOpen, data}: PayoutModalType) => {
     const [tech, setTech]= useState<string>(data?.title ?? "")
     const createTechnology = async ()=>{
-        const token = localStorage.getItem("userAccessToken") || ""
         const validate = technologyValidation(tech)
         if(!validate.status){
             toast.error(validate.message)
             return
         }
-        const response = await createNewTechnology(token, tech) 
+        const response = await createNewTechnology( tech) 
         if(response) 
         {    toast.success("Technology created sucessfully")
              setIsModalOpen(false)
         }
     }
     const updateTechnology = async ()=>{
-      const token = localStorage.getItem("userAccessToken") || ""
       const validate = technologyValidation(tech)
       if(!validate.status){
         toast.error(validate.message)
         return
     }
-    const response = await UpdateTechnologies(token,data?._id ?? "",{title:tech})
+    const response = await UpdateTechnologies(data?._id ?? "",{title:tech})
     if(response)
     {
         toast.success("updated sucessfully")

@@ -14,7 +14,7 @@ const WalletPage = () => {
   },[])
 
   const getWalletData = async () => {
-    const response = await getWalletDetails(token)
+    const response = await getWalletDetails()
     console.log("response",response)
     if(response){
       setWalletData(response.data)

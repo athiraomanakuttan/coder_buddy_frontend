@@ -48,7 +48,6 @@ const [user, setUser] = useState<authUserType>();
     setUser(JSON.parse(userString));
   }
 }, []);
-console.log("token", token)
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -175,7 +174,6 @@ console.log("token", token)
     }
 
     const response = await paymentCreation(
-      token,
       formData.title,
       formData.amount,
       participantId,

@@ -10,11 +10,10 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep
 const ProfitReportComponent = () => {
     const [profitData, setProfitData] = useState<MonthlyAdminProfitReport[]>([]) 
     const [year, setYear] = useState(new Date().getFullYear())
-    const token = localStorage.getItem("userAccessToken") || ""
 
     useEffect(() => {
         const getAdminProfitData = async () => {
-            const response = await getProfitData(token, year)
+            const response = await getProfitData( year)
             console.log("response", response)
             if (response) {
                 // Convert month numbers to names

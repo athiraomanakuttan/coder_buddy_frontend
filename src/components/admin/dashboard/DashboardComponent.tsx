@@ -22,7 +22,7 @@ const DashboardComponent = () => {
       if (!token) return;
       
       try {
-        const response = await getAdminDashboardData(token);
+        const response = await getAdminDashboardData();
         if (response) {
           setDashboardStatus(response.data);
         }

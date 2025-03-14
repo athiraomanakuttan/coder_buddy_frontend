@@ -12,8 +12,7 @@ const PostPage = () => {
 
   const getPostData = async (page: number = 1) => {
     try {
-      const token = localStorage.getItem('userAccessToken') as string
-      const response = await getUserPost( token,page,5 );
+      const response = await getUserPost( page,5 );
       console.log(response)
       if (response && response.data) {
         setPostData(response.data);

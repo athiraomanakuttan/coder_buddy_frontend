@@ -16,8 +16,7 @@ const ClientListPage = () => {
     const [meetingData, setMeetingData]= useState<NewMeetingType[]>([])
     const [meetingType,setMeetingType] = useState("meetingList")
     const getMeetingData = async (newPage : number =1, meetingStatus : number =0)=>{
-        const token = localStorage.getItem('userAccessToken') as string
-        const response =  await getMeetingDetails(token, newPage, meetingStatus)
+        const response =  await getMeetingDetails( newPage, meetingStatus)
         if(response){
             setMeetingData(response.data)
             setPagination({...pagination,totalMeetings : response.count, totalPages: response.totalPages})

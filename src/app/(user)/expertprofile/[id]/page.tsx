@@ -9,7 +9,6 @@ import Link from 'next/link'
 import { ArrowLeft, Mail, Briefcase,GraduationCap } from 'lucide-react'
 const ProfilePage = () => {
     const {id} = useParams()
-    const token = localStorage.getItem("userAccessToken") as string
     const [expertData, setExpertData] = useState<ExpertType>({
         _id: String(id),
         experience: [],
@@ -30,7 +29,7 @@ const ProfilePage = () => {
             if(response)
                 setExpertData(response.data)
         })()
-    },[id,token])
+    },[id])
     
   return (
     <div>
