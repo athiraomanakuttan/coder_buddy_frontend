@@ -114,7 +114,6 @@ const PostPage = () => {
                     <Post key={index} postdata={post} role="user" getPostData={getPostData} />
                   ))}
                   
-                  {/* Pagination Controls */}
                   <div className="flex justify-center items-center mt-4 space-x-2">
                     <button 
                       onClick={() => handlePageChange(currentPage - 1)}
