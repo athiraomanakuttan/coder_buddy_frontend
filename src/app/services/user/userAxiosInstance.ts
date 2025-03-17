@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { toast } from "react-toastify";
-
 import useAuthStore from '@/store/authStore'; 
 import { jwtDecode } from 'jwt-decode';
 import { authUserType } from '@/types/types';
