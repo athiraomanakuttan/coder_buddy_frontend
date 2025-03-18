@@ -19,6 +19,7 @@ type PropertyAccessor<T> = {
 };
 
 const TableComponent: React.FC<TableComponentProps> = ({ headings, valueList, role, functions, expertState }) => {
+  console.log("valueList",role)
   const router = useRouter()
   const handleMeetingJoin = (_id: string, meetingId: string, userId: string) => {
     

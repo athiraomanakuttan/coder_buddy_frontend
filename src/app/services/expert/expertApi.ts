@@ -95,7 +95,7 @@ export const otpPost = async (otp:string, storedOTP : string, storedEmail:string
           formData.append('profilePicture', data.profilePicture);
         }
 
-        const response = await axios.put(
+        const response = await axiosInstance.put(
           `/api/expert/update-profile`,
           formData,
         );
@@ -195,7 +195,7 @@ export const getUserPost = async ( page :  number = 1 , limit:number = 5 )=>{
 
 export const addComment= async (  comment: string, postId :  string)=>{
   try {
-    const response =  await axios.post(`/api/expert/add-comment`,{comment, postId})
+    const response =  await axiosInstance.post(`/api/expert/add-comment`,{comment, postId})
     return response.data
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -213,7 +213,7 @@ export const addComment= async (  comment: string, postId :  string)=>{
 
 export const deleteComment =  async ( data:{commentId : string, expertId : string , postId:string})=>{
   try{
-    const response = await axios.put(`/api/expert/delete-comment`, data )
+    const response = await axiosInstance.put(`/api/expert/delete-comment`, data )
     console.log(response)
     return response.data
   }catch(error){
@@ -232,7 +232,7 @@ export const deleteComment =  async ( data:{commentId : string, expertId : strin
 
 export const getExpertDashboardData = async ()=>{
   try {
-    const response = await axios.get(`/api/expert/get-dashbord-data`)
+    const response = await axiosInstance.get(`/api/expert/get-dashbord-data`)
     return response.data
   } catch (error) {
     console.log("error", error)

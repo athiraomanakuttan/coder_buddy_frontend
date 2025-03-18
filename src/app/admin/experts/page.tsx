@@ -17,6 +17,7 @@ const ExpertListPage = () => {
             setIsLoading(true)
             
             const response = await getexpertDetails(expertState, page)
+            console.log("response",response.data?.experts)
             if (response.status) {
                 setUserData(response.data?.experts)
                 setTotalPages(response.data?.pagination?.totalPages) }

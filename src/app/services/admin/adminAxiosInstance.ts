@@ -5,7 +5,7 @@ import useAuthStore from '@/store/authStore';
 import { jwtDecode } from 'jwt-decode';
 import { authUserType } from '@/types/types';
 
-const API_URI = process.env.NEXT_PUBLIC_API_URI || 'http://localhost:3000';
+const API_URI = process.env.NEXT_PUBLIC_API_URI || 'http://localhost:5000';
 
 // Create axios instance
 const axiosInstance: AxiosInstance = axios.create({
