@@ -1,6 +1,6 @@
 'use client'
 import { postStatus } from "@/app/services/user/userApi";
-import { CommentType, PostType } from "@/types/types";
+import {  PostType } from "@/types/types";
 import { Paperclip , PenLine, Trash } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -32,111 +32,131 @@ const PostComponent: React.FC<PostComponentProps> = ({ postdata, role, getPostDa
    
   return (
     <>
-    <div className="border-gray-300 rounded-md mb-2">
-      <div className="container">
-        <div className="flex gap-1">
-          <div className="w-1/2 border rounded p-4 h-[200px]">
-            <div className="h-full overflow-auto">
-              {status === 0  && <button className="float-end" onClick={()=>setEditPostStatus(true)}><PenLine/></button>}
-              <h1 className="text-2xl text-primarys mb-1">{title}</h1>
-              <p className="mb-1">{description}</p>
-              <div className="flex gap-3 text-secondarys">
-                {technologies.map((tech: string, index: number) => (
-                  <p key={index}>{tech}</p>
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
+      <div className="p-1">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Left Column - Post Details */}
+          <div className="w-full md:w-1/2 p-4 bg-gray-50 rounded-lg">
+            <div className="h-full flex flex-col">
+              <div className="flex justify-between items-start mb-2">
+                <h1 className="text-2xl font-bold text-primarys">{title}</h1>
+                {status === 0 && (
+                  <button 
+                    className="text-gray-500 hover:text-primarys transition-colors" 
+                    onClick={() => setEditPostStatus(true)}
+                  >
+                    <PenLine size={18} />
+                  </button>
+                )}
+              </div>
+              
+              <p className="text-gray-700 mb-3">{description}</p>
+              
+              <div className="flex flex-wrap gap-2 mb-4">
+                {technologies.map((tech, index) => (
+                  <span key={index} className="bg-blue-100 text-secondarys px-2 py-1 rounded-md text-sm">
+                    {tech}
+                  </span>
                 ))}
               </div>
-              <div className="flex gap-2 justify-end mt-auto">
-              {role === "user" && (
-  <>
-    {status === 0 && (
-      <div className="flex gap-2 justify-end">
-        <button 
-          className="rounded border border-primarys pl-3 pr-3 pb-1 pt-1" 
-          onClick={() => changePostStatus(_id!, 1)}
-        >
-          Resolved
-        </button>
-        <button 
-          className="border rounded pl-3 pr-3 pb-1 pt-1 bg-primarys text-white" 
-          onClick={() => changePostStatus(_id!, 2)}
-        >
-          Close
-        </button>
-      </div>
-    )}
-    {status === 1 && (
-      <><div className="w-3 h-3 rounded-full bg-green-500"> </div> <label htmlFor="">Resolved</label></>
-    )}
-    {status === 2 && (
-      <><div className="w-3 h-3 rounded-full bg-red-500"></div> <label htmlFor="">Closed</label></>
-    )}
-  </>
-)}
-                {uploads && (
-                  <a
-                    href={
-                      typeof uploads === "string"
-                        ? uploads
-                        : uploads instanceof File
-                        ? URL.createObjectURL(uploads)
-                        : undefined
-                    }
-                    download={
-                      typeof uploads === "string"
-                        ? uploads.split('/').pop() 
-                        : uploads instanceof File
-                        ? uploads.name 
-                        : undefined
-                    }
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="flex items-center gap-1 text-secondarys"
+              
+              <div className="mt-auto flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {role === "user" && (
+                    <>
+                      {status === 0 && (
+                        <div className="flex gap-2">
+                          <button 
+                            className="rounded border border-primarys px-3 py-1 text-primarys hover:bg-primarys hover:text-white transition-colors"
+                            onClick={() => changePostStatus(_id!, 1)}
+                          >
+                            Resolve
+                          </button>
+                          <button 
+                            className="rounded bg-primarys text-white px-3 py-1 hover:bg-blue-700 transition-colors"
+                            onClick={() => changePostStatus(_id!, 2)}
+                          >
+                            Close
+                          </button>
+                        </div>
+                      )}
+                      {status === 1 && (
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                          <span className="text-green-600 font-medium">Resolved</span>
+                        </div>
+                      )}
+                      {status === 2 && (
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                          <span className="text-red-600 font-medium">Closed</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  {uploads && (
+                    <a
+                      href={
+                        typeof uploads === "string"
+                          ? uploads
+                          : uploads instanceof File
+                          ? URL.createObjectURL(uploads)
+                          : undefined
+                      }
+                      download={
+                        typeof uploads === "string"
+                          ? uploads.split('/').pop() 
+                          : uploads instanceof File
+                          ? uploads.name 
+                          : undefined
+                      }
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="flex items-center text-secondarys hover:text-blue-700 transition-colors"
+                    >
+                      <Paperclip size={18} />
+                    </a>
+                  )}
+                  
+                  <button 
+                    onClick={() => changePostStatus(_id!, -1)}
+                    className="text-red-400 hover:text-red-600 transition-colors"
                   >
-                    <Paperclip className="text-lg" />
-                  </a>
-                )}
-
-                <button onClick={()=>changePostStatus(_id!, -1)}>
-                  <Trash className="text-lg text-red-400" />
-                </button>
+                    <Trash size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          <div className="w-1/2 border rounded h-[200px] overflow-auto">
-            <div className="p-4">
-              {comments && comments.length ? (
-                comments.map((comment: CommentType, index: number) => (
-                  
-                  <div key={index} className="mb-2">
-                    
-                    <div className="border rounded p-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Link href={`/expertprofile/${comment.expertId}/${_id}`} ><img
-                            src={comment.expert_image_url || 'https://res.cloudinary.com/dicelwy0k/image/upload/v1734162966/k1hkdcipfx9ywadit4lr.png'}
-                            alt={comment.expert_name}
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <h1 className="font-semibold">
-                            {comment.expert_name}
-                          </h1></Link>
-                        </div>
-                        <>
-                          {" "}
-                          <p className="text-gray-400">
-                            {comment?.uploaded_time && formatDate(comment?.uploaded_time)}
-                          </p>
-                        </>
-                      </div>
-                      <p>{comment.comment}</p>
-                    </div>
+          
+          {/* Right Column - Comments */}
+          <div className="w-full md:w-1/2 p-4 border rounded-lg max-h-64 overflow-auto">
+            <h2 className="font-semibold text-lg mb-3">Comments</h2>
+            {comments && comments.length ? (
+              comments.map((comment, index) => (
+                <div key={index} className="mb-3 bg-white shadow-sm rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <Link href={`/expertprofile/${comment.expertId}/${_id}`} className="flex items-center gap-2 hover:text-primarys">
+                      <img
+                        src={comment.expert_image_url || 'https://res.cloudinary.com/dicelwy0k/image/upload/v1734162966/k1hkdcipfx9ywadit4lr.png'}
+                        alt={comment.expert_name}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <span className="font-medium">{comment.expert_name}</span>
+                    </Link>
+                    <p className="text-sm text-gray-400">
+                      {comment?.uploaded_time && formatDate(comment?.uploaded_time)}
+                    </p>
                   </div>
-                ))
-              ) : (
-                <p>No comments yet !</p>
-              )}
-              {}
-            </div>
+                  <p className="text-gray-700">{comment.comment}</p>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">No comments yet!</div>
+            )}
           </div>
         </div>
       </div>

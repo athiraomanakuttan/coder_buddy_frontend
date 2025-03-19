@@ -20,7 +20,7 @@ const UserLogin = () => {
     }
   }, [isAuthenticated, route]);
 
-  const [formData, steFormData] = useState<basicType>({
+  const [formData, setFormData] = useState<basicType>({
     email: "",
     password: "",
   });
@@ -76,75 +76,85 @@ const UserLogin = () => {
 
   return (
     <>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-7 p-5  col-sm-12">
-            <div className="inner-div border rounded pr-3 pl-3 pt-14 pb-10">
-              <form onSubmit={handleFormSubmit}>
-                <h1 className="text-center text-3xl mb-2">Sign In</h1>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-6xl flex flex-col md:flex-row">
+        {/* Left side - Form */}
+        <div className="w-full md:w-1/2 p-8">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-center text-3xl font-bold mb-6 text-gray-800">Sign In</h1>
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              <div>
                 <input
                   type="email"
                   placeholder="Enter your email id"
-                  className="border rounded w-100 p-2 mb-3 text-black"
+                  className="border rounded-lg w-full p-3 text-black bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={formData.email}
-                  onChange={(e) =>
-                    steFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
+              </div>
+              <div>
                 <input
                   type="password"
                   placeholder="Enter your password"
-                  className="border rounded w-100 p-2 mb-3 text-black"
+                  className="border rounded-lg w-full p-3 text-black bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={formData.password}
-                  onChange={(e) =>
-                    steFormData({ ...formData, password: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
-                <input
+              </div>
+              <div>
+                <button
                   type="submit"
-                  value="Login"
-                  className="w-100 bg-secondarys p-2 mb-3 text-white"
-                />
+                  className="w-full bg-secondarys hover:bg-blue-700 text-white p-3 rounded-lg transition duration-300 font-medium"
+                >
+                  Login
+                </button>
+              </div>
+              <div>
                 <button
                   type="button"
                   onClick={handleGoogleSignIn}
                   disabled={isLoading}
-                  className="border-black border rounded w-100 p-2 mb-3 flex items-center justify-center"
+                  className="border border-gray-300 rounded-lg w-full p-3 flex items-center justify-center bg-white hover:bg-gray-50 transition duration-300"
                 >
                   <Image
                     src="/icons/g-icon.png"
                     alt="Google Icon"
-                    className="d-inline m-1 mr-2"
-                    width={30}
-                    height={30}
+                    width={20}
+                    height={20}
+                    className="mr-2"
                   />
-                  {isLoading ? "Signing in..." : "Sign in with Google"}
+                  <span>{isLoading ? "Signing in..." : "Sign in with Google"}</span>
                 </button>
-              </form>
-              <div className="flex justify-between mb-7">
-                <Link href="/expert/forgot" className="custom-link">
-                  forgot password
+              </div>
+            </form>
+            <div className="flex justify-between mt-6 text-sm">
+              <Link href="/expert/forgot" className="text-blue-600 hover:underline">
+                Forgot password?
+              </Link>
+              <div className="text-gray-600">
+                Don't have an account yet?{" "}
+                <Link href="/expert/signup" className="text-blue-600 hover:underline font-medium">
+                  Register Now
                 </Link>
-                <p className="custom-link hover:text-secondarys">
-                  Don't have an account yet ?{" "}
-                  <Link href="/expert/signup" className="custom-link">
-                    Register Now
-                  </Link>
-                </p>
               </div>
             </div>
           </div>
-          <div className="col-5 d-none d-md-inline pt-5">
+        </div>
+        
+        {/* Right side - Image */}
+        <div className="hidden md:block w-1/2 bg-gray-50">
+          <div className="h-full flex items-center justify-center p-8">
             <Image
-              src="/images/expert_login.png"
-              alt=""
-              className="mx-auto border"
-              width={450}
-              height={450}
+              src="/images/expert-img.png"
+              alt="Expert login illustration"
+              width={400}
+              height={400}
+              className="object-contain"
             />
           </div>
         </div>
       </div>
+    </div>
     </>
   );
 };

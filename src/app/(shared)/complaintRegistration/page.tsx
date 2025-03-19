@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/user/Navbar/Navbar";
 import ExpertNavbar from "@/components/expert/Navbar/Navbar";
-import { Cross, Plus } from "lucide-react";
+import {  Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import ConcernComponent from "@/components/shared/concernComponent";
 import { ConcernDataType, MessageType } from "@/types/types";
@@ -128,6 +128,8 @@ const ComplaintRegistration = () => {
         {/* Right Panel - Chat Section */}
         {selectedConcern && (
           <div className="w-full max-w-md p-6 flex flex-col bg-white shadow-md">
+              <button className="flex justify-end" onClick={()=>setSelectedConcern(null)}><X/> </button>
+
             <h2 className="text-2xl font-bold mb-2">{selectedConcern.title}</h2>
             <p className="text-gray-700 mb-4">{selectedConcern.description}</p>
 
@@ -143,7 +145,6 @@ const ComplaintRegistration = () => {
 
             {/* Chat Messages */}
             <div className="flex flex-col flex-grow overflow-y-auto border p-4 rounded-lg bg-gray-100 space-y-3">
-              <div><Cross /> </div>
               {selectedConcern.message && selectedConcern.message.length > 0 ? (
                 selectedConcern.message.map((msg, index) => (
                   <div
@@ -170,6 +171,7 @@ const ComplaintRegistration = () => {
             {/* Message Input */}
             {selectedConcern.status === 0 && (
               <div className="mt-4 flex">
+                
                 <input
                   type="text"
                   value={comment}

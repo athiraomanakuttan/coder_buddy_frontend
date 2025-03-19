@@ -59,137 +59,150 @@ const PaymentList = () => {
     }
 
     return (
-        <div className=" m-0 p-0 flex">
-            <div className=" p-0 m-0">{isExpert ? <ExpertNavbar /> : <Navbar />}</div>
-            <div className="border w-100">
-                <div className="container mt-5 flex justify-evenly">
-                
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <div className="flex justify-end gap-3 mb-2">
-                            <button
-                                className={`${paymentStatus
-                                        ? "bg-transparent text-black"
-                                        : "bg-sky-300 text-white"
-                                    } pt-1 pb-2 pl-3 pr-3 border rounded `}
-                                    onClick={()=>{setPaymentStatus(0)}}
-                            >
-                                pending
-                            </button>
-
-                            <button
-                                className={`${paymentStatus
-                                        ? "bg-sky-300 text-white"
-                                        : "bg-transparent text-black"
-                                    } pt-1 pb-2 pl-3 pr-3 border rounded `}
-                                    onClick={()=>{setPaymentStatus(1)}}
-                            >
-                                History
-                            </button>
-                        </div>
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                            <thead className="text-xs text-gray-700 uppercase bg-sky-200 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th className="px-6 py-3">Title</th>
-                                    <th className="px-6 py-3">Amount</th>
-                                    <th className="px-6 py-3">Date</th>
-                                    <th className="px-6 py-3">Status</th>
-                                    {!isExpert ? (
-                                        <>
-                                            <th className="px-6 py-3">Actions</th>
-                                            <th className="px-6 py-3">Actions</th>
-                                        </>
-                                    ) : (
-                                        <th className="px-6 py-3">Actions</th>
-                                    )}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {payments.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={5} className="text-center py-4">
-                                            No payments yet
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    payments.map((payment) => (
-                                        <tr
-                                            key={payment._id}
-                                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                                        >
-                                            <td className="px-6 py-4">{payment.title}</td>
-                                            <td className="px-6 py-4">
-                                                ₹{payment.amount.toFixed(2)}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {formatDate(payment.createdAt)}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {payment.status === 0 ? (
-                                                    <label className="bg-yellow-400 text-black rounded p-1">
-                                                        Pending
-                                                    </label>
-                                                ) : (
-                                                    <label className="bg-green-400 text-white rounded p-1">
-                                                        Completed
-                                                    </label>
-                                                )}
-                                            </td>
-                                            {!isExpert ? (
-                                                <>
-                                                    {payment.status === 0 && (
-                                                        <td className="px-6 py-4">
-                                                            <Link href={`/payment/${payment._id}`}>
-                                                                <button className="text-blue-600 hover:bg-sky-500 hover:text-white bg-sky-200 p-2">
-                                                                    Pay Now
-                                                                </button>
-                                                            </Link>
-                                                        </td>
-                                                    )}
-                                                    <td>
-                                                        <Link href={`/expertprofile/${payment.expertId}`}>
-                                                            View Profile
-                                                        </Link>
-                                                    </td>
-                                                </>
-                                            ) : (
-                                                <td>
-                                                    <Link
-                                                        href={`/userProfile/${payment.userId}`}
-                                                        className="text-sky-400"
-                                                    >
-                                                        View User
-                                                    </Link>
-                                                </td>
-                                            )}
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-
-                        <div className="flex justify-end items-end mt-4 space-x-4 mb-2">
-                            <button
-                                onClick={() => handlePageChange(pagination.currentPage - 1)}
-                                disabled={pagination.currentPage === 1}
-                                className="px-4 py-2 bg-primarys text-white rounded disabled:opacity-50"
-                            >
-                                Previous
-                            </button>
-                            <span>
-                                Page {pagination.currentPage} of {pagination.totalPages}
-                            </span>
-                            <button
-                                onClick={() => handlePageChange(pagination.currentPage + 1)}
-                                disabled={pagination.currentPage === pagination.totalPages}
-                                className="px-4 py-2 bg-primarys text-white rounded disabled:opacity-50"
-                            >
-                                Next
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <div className="flex min-h-screen bg-gray-50">
+      <div className="flex-none">
+        {isExpert ? <ExpertNavbar /> : <Navbar />}
+      </div>
+      
+      <div className="flex-1 p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold text-gray-800">Payment Management</h1>
+              
+              <div className="flex gap-2">
+                <button
+                  className={`px-4 py-2 rounded-md transition-colors duration-200 
+                    ${!paymentStatus 
+                      ? "bg-blue-500 text-white" 
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                  onClick={() => setPaymentStatus(0)}
+                >
+                  Pending
+                </button>
+                <button
+                  className={`px-4 py-2 rounded-md transition-colors duration-200
+                    ${paymentStatus 
+                      ? "bg-blue-500 text-white" 
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                  onClick={() => setPaymentStatus(1)}
+                >
+                  History
+                </button>
+              </div>
             </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-left">
+                    <th className="px-6 py-3 font-semibold text-gray-700 rounded-tl-lg">Title</th>
+                    <th className="px-6 py-3 font-semibold text-gray-700">Amount</th>
+                    <th className="px-6 py-3 font-semibold text-gray-700">Date</th>
+                    <th className="px-6 py-3 font-semibold text-gray-700">Status</th>
+                    {!isExpert ? (
+                      <>
+                        <th className="px-6 py-3 font-semibold text-gray-700">Payment</th>
+                        <th className="px-6 py-3 font-semibold text-gray-700 rounded-tr-lg">Profile</th>
+                      </>
+                    ) : (
+                      <th className="px-6 py-3 font-semibold text-gray-700 rounded-tr-lg">User</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {payments.length === 0 ? (
+                    <tr>
+                      <td colSpan={!isExpert ? 6 : 5} className="text-center py-8 text-gray-500 bg-white">
+                        No payments found
+                      </td>
+                    </tr>
+                  ) : (
+                    payments.map((payment, index) => (
+                      <tr
+                        key={payment._id}
+                        className={`border-b hover:bg-gray-50 transition-colors duration-150 ${
+                          index === payments.length - 1 ? "border-none" : ""
+                        }`}
+                      >
+                        <td className="px-6 py-4 font-medium text-gray-800">{payment.title}</td>
+                        <td className="px-6 py-4 text-gray-700">₹{payment.amount.toFixed(2)}</td>
+                        <td className="px-6 py-4 text-gray-600">{formatDate(payment.createdAt)}</td>
+                        <td className="px-6 py-4">
+                          {payment.status === 0 ? (
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              Pending
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              Completed
+                            </span>
+                          )}
+                        </td>
+                        {!isExpert ? (
+                          <>
+                            <td className="px-6 py-4">
+                              {payment.status === 0 && (
+                                <Link href={`/payment/${payment._id}`}>
+                                  <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200">
+                                    Pay Now
+                                  </button>
+                                </Link>
+                              )}
+                            </td>
+                            <td className="px-6 py-4">
+                              <Link href={`/expertprofile/${payment.expertId}`}>
+                                <button className="px-4 py-2 text-blue-500 hover:text-blue-700 transition-colors duration-200">
+                                  View Profile
+                                </button>
+                              </Link>
+                            </td>
+                          </>
+                        ) : (
+                          <td className="px-6 py-4">
+                            <Link href={`/userProfile/${payment.userId}`}>
+                              <button className="px-4 py-2 text-blue-500 hover:text-blue-700 transition-colors duration-200">
+                                View User
+                              </button>
+                            </Link>
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="flex justify-between items-center mt-6">
+              <div className="text-sm text-gray-600">
+                Showing {payments.length} of {pagination.totalRecords} entries
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  disabled={pagination.currentPage === 1}
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <span className="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700">
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  disabled={pagination.currentPage === pagination.totalPages}
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
     );
 };
 
