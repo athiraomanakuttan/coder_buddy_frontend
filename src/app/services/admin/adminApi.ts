@@ -50,13 +50,13 @@ export const getexpertDetails = async (expertState: number , page: number = 1, l
     }
 }
 
-export const userStatusChange = async (id:string, status: number)=>{
-    if(!id || status=== undefined){
+export const userStatusChange = async (userId:string, status: number)=>{
+    if(!userId || status=== undefined){
         toast.error("unable to change the user status")
         return;
     }
     try {
-        const response = await axiosInstance.put(`/api/admin/changeUserStatus`,{ id,status}
+        const response = await axiosInstance.put(`/api/admin/changeUserStatus`,{ userId,status}
         )
         return response.data
     } catch (error) {
@@ -97,7 +97,7 @@ export const getExpertsProfile  = async (id: string)=>{
 export const rejectExpertRequest =  async (expertId:string ) =>{
     
     try {
-        const response = await axiosInstance.put(`/api/admin/reject-expert`,{id:expertId})
+        const response = await axiosInstance.put(`/api/admin/reject-expert`,{expertId})
         return response.data
     } catch (error) {
         if (error instanceof AxiosError) {

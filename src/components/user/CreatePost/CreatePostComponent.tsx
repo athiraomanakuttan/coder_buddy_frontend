@@ -1,6 +1,6 @@
 'use client'
 import { X } from 'lucide-react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { PostType, TechnologyType } from "@/types/types";
 import { toast } from 'react-toastify';
 import { addPost, getAllTechnology } from '@/app/services/user/userApi';
@@ -21,6 +21,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const [allTechnplogy, setAllTechnology] = useState<TechnologyType[]>([])
   const [searchTerm, setSearchTerm] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<PostType>({
     title: "",
     description: "",
@@ -90,22 +91,28 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+  
     if (file) {
-      // Validate file type
       const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
       if (!allowedTypes.includes(file.type)) {
         toast.error("Please upload a valid image file (JPEG, PNG, GIF, or WEBP).");
+  
+        // Clear the file input
+        if (fileInputRef.current) fileInputRef.current.value = "";
         return;
       }
-
-      // Validate file size (e.g., max 5MB)
+  
       const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
         toast.error("File size should not exceed 5MB.");
+        
+        // Clear the file input
+        if (fileInputRef.current) fileInputRef.current.value = "";
         return;
       }
+  
       setFileInput(file);
-      
+  
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
@@ -232,6 +239,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             <label className="block mb-2 text-sm font-medium">Upload Image</label>
             <input 
               type="file" 
+              ref={fileInputRef}
               onChange={handleFileChange}
               className="w-full border rounded p-2" 
               accept="image/jpeg,image/png,image/gif,image/webp"

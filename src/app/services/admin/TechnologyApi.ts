@@ -22,9 +22,9 @@ export const getTechnologies = async (page:number=1, limit:number=5)=>{
     }
 }
 
-export const UpdateTechnologies = async (id: string, data : TechnologyType)=>{
+export const UpdateTechnologies = async (technologyId: string, data : TechnologyType)=>{
     try {
-        const response = await axiosInstance.put(`/api/admin/update-technology`,{id,...data})
+        const response = await axiosInstance.put(`/api/admin/update-technology`,{technologyId,...data})
         return response.data
     } catch (error) {
         console.log("error",error)
